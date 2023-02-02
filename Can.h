@@ -293,6 +293,16 @@ extern Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
  ********************************************************************/
 extern void Can_MainFunction_Read(void);
 
+/*********************************************************************************************
+ * Service name: Can_MainFunction_Write
+ * Syntax: void Can_MainFunction_Write(void)
+ * Service ID[hex]: 0x01
+ * Description: This function performs the polling of TX confirmation when
+ *              CAN_TX_PROCESSING is set to POLLING.
+ *
+ ********************************************************************/
+extern void Can_MainFunction_Write(void);
+
 /********************************************************************************************************/
 /*Service name: Can_EnableControllerInterrupts
 Syntax: void Can_EnableControllerInterrupts(uint8 Controller)
@@ -307,6 +317,7 @@ Parameters (out): None
 Return value: None
 Description: This function enables all allowed interrupts.*/
 /********************************************************************************************************/
+
 void Can_EnableControllerInterrupts( uint8 Controller );
 
 /*********************************************************************************************
