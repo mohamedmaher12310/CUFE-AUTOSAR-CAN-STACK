@@ -6,7 +6,7 @@
  *
  * Description: Header file for TM4C123GH6PM Microcontroller - Can Driver
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 #ifndef CAN_H_
@@ -41,19 +41,6 @@
  */
 #define CAN_READY                (1U)
 #define CAN_UNINIT               (0U)
-
-
-/*
- *  Enable Exceptions ... This Macro enable IRQ interrupts, Programmble Systems Exceptions and Faults by clearing the I-bit in the PRIMASK.
- */
-//#define Enable_Exceptions()    __asm(" CPSIE I ")
-
-/*
- *  Disable Exceptions ... This Macro disable IRQ interrupts, Programmble Systems Exceptions and Faults by clearing the I-bit in the PRIMASK.
- */
-//#define Disable_Exceptions()   __asm(" CPSID I ")
-// uint32 CPUcpsid(void);
-// uint32 CPUcpsie(void);
 
 
 /* Standard AUTOSAR types */
@@ -146,7 +133,7 @@
 /* DET code to report that Parameter Baudrate has an invalid value */
 #define CAN_E_PARAM_BAUDRATE                (uint8)0x07
 
-/* Det Code to report Invalid configuration set selection*/
+/* DET Code to report Invalid configuration set selection*/
 #define CAN_E_INIT_FAILED                   (uint8)0x09
 
 /*******************************************************************************
@@ -186,7 +173,7 @@ typedef enum
 /*BaudRate Configuration Structure*/
 typedef struct Can_BaudRate
 {
-    uint8 BaudRate;
+    uint16 BaudRate;
     uint8 PropSeg;
     uint8 PhaseSeg1;
     uint8 PhaseSeg2;
@@ -275,6 +262,7 @@ extern void Can_Init(
 extern void Can_DeInit(
         void
 );
+
 /************************************************************************************
  *Service name: Can_Write
  *Service ID[hex]: 0x06
@@ -354,29 +342,32 @@ extern void Can_DisableControllerInterrupts( uint8 Controller );
  ************************************************************************************/
 extern Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType Transition);
 
+/*Recieve message from message object*/
+extern uint8 Can_MessageReceive(uint32 Controller_Base_Address,Can_HwHandleType MessageObj_Num, Can_PduType* Message);
+
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/
 
-#define ZERO            (0U)
-#define ONE             (1U)
-#define TWO             (2U)
-#define FOUR            (4U)
-#define SIXTEEN         (16U)
-#define TMILLI          (1000U)
-#define THIRTEEN_BIT_MASK (0x00001FFF)
-#define SIX_BIT_MASK   (0x0000003F)
-#define EIGHT_BITS      (8U)
-#define TWELVE_BITS          (12U)
-#define SIX_BITS          (6U)
-#define FOUR_BIT_MASK      (0x0000000F)
+#define ZERO                (0U)
+#define ONE                 (1U)
+#define TWO                 (2U)
+#define FOUR                (4U)
+#define SIXTEEN             (16U)
+#define TMILLI              (1000U)
+#define THIRTEEN_BIT_MASK   (0x00001FFF)
+#define SIX_BIT_MASK        (0x0000003F)
+#define EIGHT_BITS          (8U)
+#define TWELVE_BITS         (12U)
+#define SIX_BITS            (6U)
+#define FOUR_BIT_MASK       (0x0000000F)
 #define CAN_NOT_INITIALIZED (0u)
-#define TWENTY_NINE_INTD (29u)
-#define THIRTY_INTD (30u)
-#define THIRTY_ONE_INTD (31u)
-#define FIVE_INTA (5u)
-#define SIX_INTA   (6u)
-#define SEVEN_INTA (7u)
+#define TWENTY_NINE_INTD    (29u)
+#define THIRTY_INTD         (30u)
+#define THIRTY_ONE_INTD     (31u)
+#define FIVE_INTA           (5u)
+#define SIX_INTA            (6u)
+#define SEVEN_INTA          (7u)
 
 
 /*******************************************************************************
@@ -386,7 +377,14 @@ extern Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerSta
 /* Extern PB structures to be used by Can and other modules */
 extern const Can_ConfigType Can_Configuration;
 
-/* interrupt Variables */
+/* interrupt variables */
+extern volatile boolean MSG_Object_INT_Flag ;
+extern volatile uint8 MSG_Number_INT ;
+extern volatile boolean Error_Flag ;
+extern volatile uint8 Error_Status ;
+extern volatile uint32 Recieve_Count ;
+extern volatile uint32 Transmit_Count ;
+
 
 #endif /* CAN_H_ */
 

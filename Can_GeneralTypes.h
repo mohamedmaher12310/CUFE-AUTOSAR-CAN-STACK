@@ -6,7 +6,7 @@
  *
  * Description: General Can type definitions
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  *
  *******************************************************************************/
 

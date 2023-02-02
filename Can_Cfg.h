@@ -6,7 +6,7 @@
  *
  * Description: Pre-Compile Configuration Header file for TM4C123GH6PM Microcontroller - Can Driver
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 #ifndef CAN_CFG_H_
@@ -594,7 +594,7 @@ Name: CanObjectType
 Parent Container: CanHardwareObject
 Description: Specifies if the HardwareObject is used as Transmit or as Receive object
  */
-#define CAN0_CONTROLLER_HW_OBJECT_TYPE_0                           (CanObjectType)TRANSMIT
+#define CAN0_CONTROLLER_HW_OBJECT_TYPE_0                           (CanObjectType)RECIEVE
 #define CAN0_CONTROLLER_HW_OBJECT_TYPE_1                           (CanObjectType)TRANSMIT
 #define CAN0_CONTROLLER_HW_OBJECT_TYPE_2                           (CanObjectType)TRANSMIT
 #define CAN0_CONTROLLER_HW_OBJECT_TYPE_3                           (CanObjectType)TRANSMIT
@@ -738,8 +738,8 @@ Parent Container: CanHwFilter
 Description: Specifies (together with the filter mask) the identifiers range that passes
              the hardware filter.
  */
-#define CAN0_CONTROLLER_HW_FILTER_CODE_0                           0b00000000000
-#define CAN0_CONTROLLER_HW_FILTER_CODE_1                           0b00000000000
+#define CAN0_CONTROLLER_HW_FILTER_CODE_0                           0b00000000010
+#define CAN0_CONTROLLER_HW_FILTER_CODE_1                           0b00000000010
 #define CAN0_CONTROLLER_HW_FILTER_CODE_2                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_CODE_3                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_CODE_4                           0b00000000000
@@ -814,13 +814,13 @@ Description: Describes a mask for hardware-based filtering of CAN identifiers. T
              The mask shall be build by filling with leading 0. In case of CanIdType
              EXTENDED or MIXED a 29 bit mask shall be build. In case of CanIdType
  */
-#define CAN0_CONTROLLER_HW_FILTER_MASK_0                           0b00000000000
-#define CAN0_CONTROLLER_HW_FILTER_MASK_1                           0b00000000000
+#define CAN0_CONTROLLER_HW_FILTER_MASK_0                           0b11111111111
+#define CAN0_CONTROLLER_HW_FILTER_MASK_1                           0b11111111111
 #define CAN0_CONTROLLER_HW_FILTER_MASK_2                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_MASK_3                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_MASK_4                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_MASK_5                           0b00000000000
-#define CAN0_CONTROLLER_HW_FILTER_MASK_6                           0b00000000000
+#define CAN0_CONTROLLER_HW_FILTER_MASK_6                           0b11111111111
 #define CAN0_CONTROLLER_HW_FILTER_MASK_7                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_MASK_8                           0b00000000000
 #define CAN0_CONTROLLER_HW_FILTER_MASK_9                           0b00000000000

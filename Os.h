@@ -6,7 +6,7 @@
  *
  * Description: Header file for TM4C123GH6PM Microcontroller - Os Driver
  *
- * Author: Omar Khedr - Nada Mohamed
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 #ifndef OS_H_
@@ -57,8 +57,7 @@
 void SYSTICK_VOIDInit (void);
 /* Function to return the value of the counter which counts every 1 ms*/
 uint32 GetCounterValue(void);
-
-#endif /* OS_H_ */
-
 uint32 CPUcpsid(void);
 uint32 CPUcpsie(void);
+#endif /* OS_H_ */
+

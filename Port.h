@@ -6,7 +6,7 @@
  *
  * Description: Header file for TM4C123GH6PM Microcontroller - Port Driver
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 #ifndef PORT_H

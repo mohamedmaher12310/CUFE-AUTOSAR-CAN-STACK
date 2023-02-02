@@ -7,7 +7,7 @@
  * Description:  This file contains the definitions and macros specified by
  *               AUTOSAR for the abstraction of compiler specific keywords.
  *
- * Author: Mohamed Tarek
+ * Author: CUFE 2023 Team
  *
  *******************************************************************************/
 

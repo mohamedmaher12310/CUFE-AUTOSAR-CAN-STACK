@@ -6,7 +6,7 @@
  *
  * Description: Header file for TM4C123GH6PM Microcontroller - Can Driver Registers
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 #ifndef CAN_REGS_H_
 #define CAN_REGS_H_
