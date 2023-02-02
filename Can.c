@@ -1263,7 +1263,7 @@ void Can_MainFunction_Read(void)
      * -Check on the state of the driver
      * -If Driver state in UNINIT ,Function should not be called and error report
      */
-    if(Can_Status ==  CAN_UNINIT)
+    if(Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_READ_SID, CAN_E_UNINIT) ;
     }
