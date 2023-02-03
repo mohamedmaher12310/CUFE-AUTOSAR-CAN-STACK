@@ -1386,7 +1386,7 @@ void Can_MainFunction_Read(void)
                 for(Object_Index = ZERO ;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
 
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN1_BASE_ADDRESS,HO_Index,&Can_Msg_Received);
+                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN1_BASE_ADDRESS, HO_Index, &Can_Msg_Received);
 
                     /*
                      * Check if the there is a new message in the
