@@ -1214,8 +1214,7 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
    CAN_TX_PROCESSING is set to POLLING.
  *
  */
-/*Check on the controller state*/
-uint8 CanDriverState = CAN_READY;
+
 
 #if  (POLLING == CanConf_CAN0_TX_PROCESSING) || (POLLING == CanConf_CAN1_TX_PROCESSING)
 void Can_MainFunction_Write(void)
@@ -1264,7 +1263,7 @@ void Can_MainFunction_Read(void)
      * -Check on the state of the driver
      * -If Driver state in UNINIT ,Function should not be called and error report
      */
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_READ_SID, CAN_E_UNINIT) ;
     }
@@ -1387,7 +1386,7 @@ void Can_MainFunction_Read(void)
                 for(Object_Index = ZERO ;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
 
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN1_BASE_ADDRESS,HO_Index,&Can_Msg_Received);
+                    uint8 NEW_DATA_UPDATE = Can_MessageReceive( CAN1_BASE_ADDRESS, HO_Index, &Can_Msg_Received);
 
                     /*
                      * Check if the there is a new message in the
@@ -1453,7 +1452,7 @@ void Can_EnableControllerInterrupts( uint8 Controller )
 #if(STD_ON == CAN_DEV_ERROR_DETECT)
 
     /*implementation of the DET*/
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
 
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_ENABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
@@ -1543,7 +1542,7 @@ void Can_DisableControllerInterrupts( uint8 Controller )
 
     /*implementation of the DET*/
 
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
 
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DISABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
@@ -1632,7 +1631,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                          The function Can_Write shall raise the error CAN_E_UNINIT and shall return
                          E_NOT_OK if the driver is not yet initialized.
      */
-    if(CanDriverState == CAN_UNINIT)
+    if(Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_UNINIT) ;
         return E_NOT_OK;
