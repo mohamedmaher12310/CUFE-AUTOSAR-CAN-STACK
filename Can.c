@@ -1308,6 +1308,73 @@ void Can_MainFunction_Write(void)
 #endif
 
 #endif
+    /*
+     * Same configuration and checks but controller 1
+     */
+
+
+
+#if (STD_ON == CanConf_CAN1_CONTROLLER_ACTIVATION)
+    /*
+     *The function Can_MainFunction_Write shall perform the
+     *polling of TX confirmation when CanTxProcessing
+     *is set to POLLING or MIXED. In case of MIXED processing only the hardware
+     *objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
+     *(SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
+     * */
+#if  (POLLING == CanConf_CAN1_TX_PROCESSING)
+
+    uint8 HO_Index=ZERO;
+    uint8 Object_Index = ZERO;
+
+    for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
+    {
+        if(TRANSMIT == Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
+        {
+
+            /*
+             * check if the Reference of CAN Controller 1 to which the HOH is associated to is the same as
+             * Configurations of can controller 1.
+             */
+            if(Can_Configuration.Controller[1].HOH[HO_Index].Reference == CAN1_CONTROLLER_ID)
+            {
+                for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
+                {
+                    if(HO_Index == Can_Configuration.Controller[1].HOH[HO_Index].ID)
+                    {
+                        while(BIT_IS_CLEAR(REG_VAL(CAN1_BASE_ADDRESS,CAN_STS_OFFSET),CAN_STS_TXOK_BIT_NUM)) ;
+                    }
+                    else
+                    {
+                        /*MISRA : do nothing*/
+                    }
+                }
+
+            }
+            else
+            {
+                /*MISRA : do nothing*/
+            }
+
+
+
+
+        }
+        else
+        {
+            /*MISRA : do nothing*/
+        }
+    }
+
+
+
+
+
+
+#endif
+
+#endif
+
 
 }
 
