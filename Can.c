@@ -1773,14 +1773,14 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     }
     /*
      * SWS_Can_00216] If development error detection for the Can module is enabled:
-        The function Can_Write shall raise the error CAN_E_UNINIT and shall return
-        E_NOT_OK if the driver is not yet initialized.
+     *   The function Can_Write shall raise the error CAN_E_UNINIT and shall return
+     *   E_NOT_OK if the driver is not yet initialized.
      */
 #if(STD_ON == CAN_DEV_ERROR_DETECT)
     /*
      * [SWS_Can_00216]  If development error detection for the Can module is enabled:
-                         The function Can_Write shall raise the error CAN_E_UNINIT and shall return
-                         E_NOT_OK if the driver is not yet initialized.
+     *                    The function Can_Write shall raise the error CAN_E_UNINIT and shall return
+     *                    E_NOT_OK if the driver is not yet initialized.
      */
     if(Can_Status == CAN_UNINIT)
     {
