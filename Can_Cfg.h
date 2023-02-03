@@ -147,7 +147,7 @@ gaps
  * Enables / disables API Can_MainFunction_Write() for handling PDU transmission
 events in polling mode.
  */
-#define CanConf_CAN0_TX_PROCESSING           INTERRUPT
+#define CanConf_CAN0_TX_PROCESSING           POLLING
 #define CanConf_CAN1_TX_PROCESSING           INTERRUPT
 
 /*

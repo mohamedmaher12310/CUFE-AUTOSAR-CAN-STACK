@@ -157,6 +157,7 @@
 #define CAN_STS_RXOK            0x00000010  // Received a Message Successfully
 #define CAN_STS_TXOK            0x00000008  // Transmitted a Message
                                             // Successfully
+#define CAN_STS_TXOK_BIT_NUM    3
 #define CAN_STS_LEC_M           0x00000007  // Last Error Code
 #define CAN_STS_LEC_NONE        0x00000000  // No Error
 #define CAN_STS_LEC_STUFF       0x00000001  // Stuff Error
