@@ -1863,16 +1863,16 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
             for(Data_Index = ZERO; Data_Index < PduInfo->length ;)
             {
                 Data_Value =PduInfo->sdu[Data_Index++];
-                if(Data_Index < PduInfo->length)
+                if(Data_Index < PduInfo->length)/*enta leeh heena 3amel check tani ma fl for loop dah l condition bata3ha 2aslan!!!*/
                 {
                     (Data_Value) |= PduInfo->sdu[Data_Index++] << EIGHT_BITS;
                 }
                 else
                 {
-                    /*Misra*/
+                    /*MISRA*/
                 }
                 REG_VAL(CAN0_BASE,Data_REG) = (uint16)Data_Value;
-                Data_REG+=4;
+                Data_REG+=FOUR;
             }
         }
 
@@ -1912,7 +1912,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
          */
         uint16 ui16MsgCtrl = ZERO;
         /* Wait for busy bit to clear */
-        while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
+        while(BIT_IS_SET(REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
         {
             /*Do Nothing*/
         }
@@ -1979,7 +1979,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
         /*
          * Transfer the message object to the message object specified by Hoh ID
          */
-        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
+        SET_BIT(REG_VAL(CAN1_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
         REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET) = ((Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[Hth-ONE].ID) & SIX_BIT_MASK);
 
 
