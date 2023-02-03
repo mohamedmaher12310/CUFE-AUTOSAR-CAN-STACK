@@ -1221,6 +1221,10 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
 /*Check if any of the Can Controllers Receivers is set to Polling
  * If not :Can_MainFunction_Read should be empty [SWS_Can_00180]
  */
+
+/*Check on the controller state*/
+uint8 CanDriverState = CAN_READY;
+
 #if  (POLLING == CanConf_CAN0_TX_PROCESSING) || (POLLING == CanConf_CAN1_TX_PROCESSING)
 void Can_MainFunction_Write(void)
 {
