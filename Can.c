@@ -1206,14 +1206,14 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
     return Flag;
 }
 
-/*
+/***************************************************************************************************************
  * Service name: Can_MainFunction_Write
-   Syntax: void Can_MainFunction_Write(void)
-   Service ID[hex]: 0x01
-   Description: This function performs the polling of TX confirmation when
-   CAN_TX_PROCESSING is set to POLLING.
+ * Syntax: void Can_MainFunction_Write(void)
+ *  Service ID[hex]: 0x01
+ *  Description: This function performs the polling of TX confirmation when
+ *  CAN_TX_PROCESSING is set to POLLING.
  *
- */
+ *************************************************************************************************************/
 
 
 
