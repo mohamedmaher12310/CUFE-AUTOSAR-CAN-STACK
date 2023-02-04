@@ -214,6 +214,12 @@ typedef struct Can_ConfigType
 {
     Can_Controller Controller[CAN_CONTROLLERS_NUMBER];
 } Can_ConfigType;
+
+typedef enum
+{
+    Confirmed,
+    Unconfirmed
+}Confirmation_Check;
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/

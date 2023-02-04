@@ -112,7 +112,10 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller);
 /*CAN_CS_STOPPED state*/
 STATIC Std_ReturnType Can_Stopped_State(uint8 Controller);
 
-
+/*-Array of enums to indicate if the message object is free or not
+ *-Once a message is requested the message object is set used(unconfirmed) until checked on set back to free(confirmed)
+ *and passed to IF*/
+Confirmation_Check Message_Confirmation[CAN_CONTROLLERS_NUMBER][CAN_HARDWARE_OBJECTS_NUMBER];
 STATIC uint8 Interrupts_Enable_Disable_Counter = 0;
 STATIC uint8 Interrupts_Disable_Flag = 0;
 
@@ -494,6 +497,8 @@ void Can_Init(const Can_ConfigType* Config)
         /* Loop through to program all 32 message objects */
         for(iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
         {
+            /*Setting all the message objects to free*/
+            Message_Confirmation[CAN0_CONTROLLER_ID][iter-1] = Confirmed ;
             /* Wait for busy bit to clear */
             while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
             {
@@ -760,6 +765,7 @@ void Can_Init(const Can_ConfigType* Config)
         /* Loop through to program all 32 message objects */
         for(iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
         {
+            Message_Confirmation[CAN1_CONTROLLER_ID][iter-1] = Confirmed;
             /* Wait for busy bit to clear */
             while(BIT_IS_SET(REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
             {
@@ -1214,34 +1220,26 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
  *  CAN_TX_PROCESSING is set to POLLING.
  *
  *************************************************************************************************************/
-
-
-
-
-/*Check if any of the Can Controllers Receivers is set to Polling
- * If not :Can_MainFunction_Read should be empty [SWS_Can_00180]
- */
-
-/*Check on the controller state*/
-uint8 CanDriverState = CAN_READY;
-
-#if  (POLLING == CanConf_CAN0_TX_PROCESSING) || (POLLING == CanConf_CAN1_TX_PROCESSING)
 void Can_MainFunction_Write(void)
 {
-
+    /*
+     * [SWS_Can_00178] The Can module may implement the function
+    Can_MainFunction_Write as empty define in case no polling at all is used.(
+     */
+    #if  (POLLING == CanConf_CAN0_TX_PROCESSING) || (POLLING == CanConf_CAN1_TX_PROCESSING)
 
     /*
      * Check on the errors if the DET is ON
      */
 
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+    #if(STD_ON == CAN_DEV_ERROR_DETECT)
 
     /*
      * -Check on the state of the driver
      * -If Driver state in UNINIT ,Function should not be called and error report
      */
 
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_WRITE_SID, CAN_E_UNINIT);
     }
@@ -1250,9 +1248,9 @@ void Can_MainFunction_Write(void)
         /*MISRA : do nothing*/
     }
 
-#endif
+    #endif
 
-#if (STD_ON == CanConf_CAN0_CONTROLLER_ACTIVATION)
+    #if (STD_ON == CanConf_CAN0_CONTROLLER_ACTIVATION)
     /*
      *The function Can_MainFunction_Write shall perform the
      *polling of TX confirmation when CanTxProcessing
@@ -1260,49 +1258,66 @@ void Can_MainFunction_Write(void)
      *objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
      *(SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
      * */
-#if  (POLLING == CanConf_CAN0_TX_PROCESSING)
+     #if  (POLLING == CanConf_CAN0_TX_PROCESSING)
 
     uint8 HO_Index=ZERO;
     uint8 Object_Index = ZERO;
 
-    for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
-    {
-        if(TRANSMIT == Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
-        {
-
-            /*
-             * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
-             * Configurations of can controller 0.
-             */
-            if(Can_Configuration.Controller[0].HOH[HO_Index].Reference == CAN0_CONTROLLER_ID)
+            for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
             {
-                for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
+                if(TRANSMIT == Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
                 {
-                    if(HO_Index == Can_Configuration.Controller[0].HOH[HO_Index].ID)
+
+                    /*
+                     * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
+                     * Configurations of can controller 0.
+                     */
+                    if(Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].Reference == CAN0_CONTROLLER_ID)
                     {
-                        while(BIT_IS_CLEAR(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),CAN_STS_TXOK_BIT_NUM)) ;
+                        for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
+                        {
+                            /*Check if this message object is used but never released*/
+                          if(Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] == Unconfirmed)
+                          {
+                              /*If it is used:
+                               * Check if it handled or not by checking on TRXQST bit
+                               * If it is cleared,it means that a transmission is handled*/
+                              if(BIT_IS_CLEAR(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1MCTL_OFFSET),TXRQST_BIT))
+                              {
+                                  /*Switch the message object state back to free*/
+                                  Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] = Confirmed;
+                                  /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
+                                            successful transmission. It shall either called by the TX-interrupt service routine of
+                                            the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                            polling mode. (SRS_Can_01051
+                                             CanIf_TxConfirmation();
+                                  */
+                              }
+                              else{
+                                  /*MISRA : do nothing*/}
+                          }
+
+                           else
+                           {
+                                /*MISRA : do nothing*/
+                           }
+                        }
+
                     }
                     else
                     {
                         /*MISRA : do nothing*/
                     }
+
+
+
+
                 }
-
+                else
+                {
+                    /*MISRA : do nothing*/
+                }
             }
-            else
-            {
-                /*MISRA : do nothing*/
-            }
-
-
-
-
-        }
-        else
-        {
-            /*MISRA : do nothing*/
-        }
-    }
 
 
 
@@ -1318,71 +1333,90 @@ void Can_MainFunction_Write(void)
 
 
 
-#if (STD_ON == CanConf_CAN1_CONTROLLER_ACTIVATION)
-    /*
-     *The function Can_MainFunction_Write shall perform the
-     *polling of TX confirmation when CanTxProcessing
-     *is set to POLLING or MIXED. In case of MIXED processing only the hardware
-     *objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
-     *(SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
-     * */
-#if  (POLLING == CanConf_CAN1_TX_PROCESSING)
-
-    uint8 HO_Index=ZERO;
-    uint8 Object_Index = ZERO;
-
-    for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
-    {
-        if(TRANSMIT == Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
-        {
-
-            /*
-             * check if the Reference of CAN Controller 1 to which the HOH is associated to is the same as
-             * Configurations of can controller 1.
-             */
-            if(Can_Configuration.Controller[1].HOH[HO_Index].Reference == CAN1_CONTROLLER_ID)
-            {
-                for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
-                {
-                    if(HO_Index == Can_Configuration.Controller[1].HOH[HO_Index].ID)
-                    {
-                        while(BIT_IS_CLEAR(REG_VAL(CAN1_BASE_ADDRESS,CAN_STS_OFFSET),CAN_STS_TXOK_BIT_NUM)) ;
-                    }
-                    else
-                    {
-                        /*MISRA : do nothing*/
-                    }
-                }
-
-            }
-            else
-            {
-                /*MISRA : do nothing*/
-            }
 
 
+       #if (STD_ON == CanConf_CAN1_CONTROLLER_ACTIVATION)
+               /*
+                *The function Can_MainFunction_Write shall perform the
+                *polling of TX confirmation when CanTxProcessing
+                *is set to POLLING or MIXED. In case of MIXED processing only the hardware
+                *objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
+                *(SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
+                * */
+        #if  (POLLING == CanConf_CAN1_TX_PROCESSING)
+
+           uint8 HO_Index=ZERO;
+           uint8 Object_Index = ZERO;
+
+                   for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
+                   {
+                       if(TRANSMIT == Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
+                       {
+
+                           /*
+                            * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
+                            * Configurations of can controller 0.
+                            */
+                           if(Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].Reference == CAN1_CONTROLLER_ID)
+                           {
+                               for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
+                               {
+                                   /*Check if this message object is used but never released*/
+                                 if(Message_Confirmation[CAN1_CONTROLLER_ID][HO_Index] == Unconfirmed)
+                                 {
+                                     /*If it is used:
+                                      * Check if it handled or not by checking on TRXQST bit
+                                      * If it is cleared,it means that a transmission is handled*/
+                                     if(BIT_IS_CLEAR(REG_VAL(CAN1_BASE_ADDRESS,CAN_IF1MCTL_OFFSET),TXRQST_BIT))
+                                     {
+                                         /*Switch the message object state back to free*/
+                                         Message_Confirmation[CAN1_CONTROLLER_ID][HO_Index] = Confirmed;
+                                         /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
+                                                   successful transmission. It shall either called by the TX-interrupt service routine of
+                                                   the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                                   polling mode. (SRS_Can_01051
+                                                    CanIf_TxConfirmation();
+                                         */
+                                     }
+                                     else{
+                                         /*MISRA : do nothing*/}
+                                 }
+
+                                  else
+                                  {
+                                       /*MISRA : do nothing*/
+                                  }
+                               }
+
+                           }
+                           else
+                           {
+                               /*MISRA : do nothing*/
+                           }
 
 
-        }
-        else
-        {
-            /*MISRA : do nothing*/
-        }
-    }
+
+
+                       }
+                       else
+                       {
+                           /*MISRA : do nothing*/
+                       }
+                   }
 
 
 
 
 
+
+           #endif
+
+           #endif
 
 #endif
-
-#endif
-
 
 }
 
-#endif
 
 
 
@@ -1903,6 +1937,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
          */
         SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
         REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = ((Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[Hth-ONE].ID) & SIX_BIT_MASK);
+        Message_Confirmation[Can_Controller_ID][Hth] = Unconfirmed;
 
 #elif (CanConf_CAN1_CONTROLLER_ACTIVATION == STD_ON)
 
@@ -1982,7 +2017,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
         SET_BIT(REG_VAL(CAN1_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
         REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET) = ((Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[Hth-ONE].ID) & SIX_BIT_MASK);
 
-
+        Message_Confirmation[Can_Controller_ID][Hth] = Unconfirmed;
 #endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
 
