@@ -1279,6 +1279,12 @@ void Can_MainFunction_Write(void)
                             /*Check if this message object is used but never released*/
                           if(Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] == Unconfirmed)
                           {
+                              REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET) = HO_Index & SIX_BIT_MASK;
+                              while (BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
+                                {
+                                    /* Do nothing ,wait for busy bit to clear */
+                                }
+
                               /*If it is used:
                                * Check if it handled or not by checking on TRXQST bit
                                * If it is cleared,it means that a transmission is handled*/
