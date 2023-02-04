@@ -1987,3 +1987,35 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     }
 
 }
+
+
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
+{
+    uint8 Can_Write_return ;
+    PduInfoPtr->MetaDataPtrCan_PduType;
+
+    if(Can_ControllerStateType != )
+    {
+
+    }
+    else{
+
+    }
+   // Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
+    Can_Write_return= Can_Write(TxPduId , PduInfoPtr);
+    if(Can_Write_return == E_OK)
+    {
+        return E_OK;
+    }
+    else
+    {
+
+    }
+
+
+}
+
+
+
+
+
