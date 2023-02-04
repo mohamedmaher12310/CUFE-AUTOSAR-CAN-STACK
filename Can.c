@@ -1293,10 +1293,10 @@ void Can_MainFunction_Write(void)
                                   /*Switch the message object state back to free*/
                                   Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] = Confirmed;
                                   /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
-                                            successful transmission. It shall either called by the TX-interrupt service routine of
-                                            the corresponding HW resource or inside the Can_MainFunction_Write in case of
-                                            polling mode. (SRS_Can_01051
-                                             CanIf_TxConfirmation();
+                                    successful transmission. It shall either called by the TX-interrupt service routine of
+                                    the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                    polling mode. (SRS_Can_01051
+                                     CanIf_TxConfirmation();
                                   */
                               }
                               else{

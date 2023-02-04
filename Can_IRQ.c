@@ -57,10 +57,12 @@ void CAN0_Handler(void)
 
         if(Can_Configuration.Controller[0].HOH[MSG_Number_INT-ONE].HardwareObjectType==TRANSMIT) /* interrupt caused by transmit message object */
         {
+            /*CanIf_TxConfirmation()*/
             Transmit_Count++; /* increment the transmit count */
         }
         else if(Can_Configuration.Controller[0].HOH[MSG_Number_INT-ONE].HardwareObjectType==RECIEVE) /* interrupt caused by receive message object */
         {
+            /*CanIf_Rxindication()*/
             Recieve_Count++; /* increment the receive count */
         }
         MSG_Object_INT_Flag =1; /* raise the message object flag to detect that an interrupt occurred */
