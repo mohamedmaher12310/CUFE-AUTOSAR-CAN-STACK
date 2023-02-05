@@ -2055,6 +2055,6 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
         Message_Confirmation[Can_Controller_ID][Hth] = Unconfirmed;
 #endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
-
+return E_OK;
 }
 
