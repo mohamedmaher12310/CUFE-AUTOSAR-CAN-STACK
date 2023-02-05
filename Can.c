@@ -2024,6 +2024,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
         REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET) = ((Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[Hth-ONE].ID) & SIX_BIT_MASK);
 
         Message_Confirmation[Can_Controller_ID][Hth] = Unconfirmed;
+		return E_OK;
 #endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
 
