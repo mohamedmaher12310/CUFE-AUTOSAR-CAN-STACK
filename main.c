@@ -65,7 +65,7 @@ int main(void)
     SDU_Ptr = Tx_Message_Data_Buffer;
     Can_PduType Can_Message_Tx;
     Can_PduType Can_Message_Rx;
-    Can_Message_Tx.id=CAN0_CONTROLLER_HW_OBJECT_ID_1;
+    Can_Message_Tx.id=2;
     Can_Message_Tx.length= EIGHT_BYTES;
     Can_Message_Tx.swPduHandle = ZERO;
     Can_Message_Tx.sdu = SDU_Ptr;

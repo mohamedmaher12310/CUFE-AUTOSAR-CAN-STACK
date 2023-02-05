@@ -1293,10 +1293,10 @@ void Can_MainFunction_Write(void)
                                   /*Switch the message object state back to free*/
                                   Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] = Confirmed;
                                   /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
-                                            successful transmission. It shall either called by the TX-interrupt service routine of
-                                            the corresponding HW resource or inside the Can_MainFunction_Write in case of
-                                            polling mode. (SRS_Can_01051
-                                             CanIf_TxConfirmation();
+                                    successful transmission. It shall either called by the TX-interrupt service routine of
+                                    the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                    polling mode. (SRS_Can_01051
+                                     CanIf_TxConfirmation();
                                   */
                               }
                               else{
@@ -1894,6 +1894,35 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
              * Mark this as the last entry if this is not the last entry in a FIFO.
              */
             SET_BIT(ui16MsgCtrl,EOB_BIT);
+			/*
+             * Configure the Arbitration registers.
+             */
+            if(Can_Configuration.Controller[Can_Controller_ID].HOH[Hth-1].IDType == ID_EXTENDED)
+            {
+                /*
+                 * Set the 29 bit version of the Identifier for this message object.
+                 */
+                registers[Hth-ONE].ui16ArbReg0 = (uint16)(PduInfo->id);
+                registers[Hth-ONE].ui16ArbReg1 = (((uint16)(PduInfo->id) >> SIXTEEN) & THIRTEEN_BIT_MASK);
+                /*
+                 * Mark the message as valid and set the extended ID bit.
+                 */
+                SET_BIT(registers[Hth-ONE].ui16ArbReg1,MSGVAL_BIT);
+                SET_BIT(registers[Hth-ONE].ui16ArbReg1,XTD_BIT);
+            }
+            else
+            {
+                /*
+                 * Set the 11 bit version of the Identifier for this message object.
+                 * The lower 18 bits are set to zero.
+                 */
+                registers[Hth-ONE].ui16ArbReg0 = ZERO;
+                registers[Hth-ONE].ui16ArbReg1 = (((uint16)(PduInfo->id) << TWO) & THIRTEEN_BIT_MASK);
+                /*
+                 * Mark the message as valid.
+                 */
+                SET_BIT(registers[Hth-ONE].ui16ArbReg1,MSGVAL_BIT);
+            }
             /*
              * Write the data out to the CAN Data registers
              */
@@ -1903,7 +1932,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
             for(Data_Index = ZERO; Data_Index < PduInfo->length ;)
             {
                 Data_Value =PduInfo->sdu[Data_Index++];
-                if(Data_Index < PduInfo->length)/*enta leeh heena 3amel check tani ma fl for loop dah l condition bata3ha 2aslan!!!*/
+                if(Data_Index < PduInfo->length)
                 {
                     (Data_Value) |= PduInfo->sdu[Data_Index++] << EIGHT_BITS;
                 }
@@ -2027,6 +2056,6 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
 		return E_OK;
 #endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
-
+return E_OK;
 }
 
