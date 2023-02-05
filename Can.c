@@ -1281,6 +1281,12 @@ void Can_MainFunction_Write(void)
                     if(HO_Index == Can_Configuration.Controller[0].HOH[HO_Index].ID)
                     {
                         while(BIT_IS_CLEAR(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),CAN_STS_TXOK_BIT_NUM)) ;
+
+                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
+
+                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
+
+                        /*call CanIf_TxConfirmation function*/
                     }
                     else
                     {
@@ -1987,35 +1993,5 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     }
 
 }
-
-
-Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
-{
-    uint8 Can_Write_return ;
-    PduInfoPtr->MetaDataPtrCan_PduType;
-
-    if(Can_ControllerStateType != )
-    {
-
-    }
-    else{
-
-    }
-   // Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
-    Can_Write_return= Can_Write(TxPduId , PduInfoPtr);
-    if(Can_Write_return == E_OK)
-    {
-        return E_OK;
-    }
-    else
-    {
-
-    }
-
-
-}
-
-
-
 
 
