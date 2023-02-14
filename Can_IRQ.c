@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module: Can Interrupt Request
+ * Module: Can
  *
  * File Name: Can_IRQ.c
  *
