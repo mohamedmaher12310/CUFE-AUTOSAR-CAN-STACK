@@ -373,6 +373,9 @@ Description: Number of hardware objects used to implement one HOH. In case of a
              hardware objects used for multiplexed transmission or for a hardware FIFO
              used by a FullCAN HTH.
  */
+#define MAX_HWOBJECT_COUNT                            (uint8)10
+
+
 #define CAN0_CONTROLLER_HW_OBJECT_COUNT_0             (uint32)1
 #define CAN0_CONTROLLER_HW_OBJECT_COUNT_1             (uint32)1
 #define CAN0_CONTROLLER_HW_OBJECT_COUNT_2             (uint32)1

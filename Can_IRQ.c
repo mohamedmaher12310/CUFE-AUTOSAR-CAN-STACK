@@ -35,6 +35,11 @@ void CAN0_Handler(void)
     else
     {
         MSG_Number_INT = status; /* store the message number that caused the interrupt in a variable */
+        uint8 HOH=0,iter,object_count;
+        for (iter =0 ; iter<32 ;)
+        {
+            object_count = Can_Configuration.Controller[0].HOH[HOH].CanHardwareObjectCount;
+        }
         /* Wait for busy bit to clear */
         while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
         {
@@ -55,12 +60,13 @@ void CAN0_Handler(void)
             /*Do Nothing*/
         }
 
-        if(Can_Configuration.Controller[0].HOH[MSG_Number_INT-ONE].HardwareObjectType==TRANSMIT) /* interrupt caused by transmit message object */
+        if(Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[MSG_Number_INT-ONE].HardwareObjectType==TRANSMIT) /* interrupt caused by transmit message object */
         {
+            Object_Check[CAN0_CONTROLLER_ID][][MSG_Number_INT-ONE].
             /*CanIf_TxConfirmation()*/
             Transmit_Count++; /* increment the transmit count */
         }
-        else if(Can_Configuration.Controller[0].HOH[MSG_Number_INT-ONE].HardwareObjectType==RECIEVE) /* interrupt caused by receive message object */
+        else if(Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[MSG_Number_INT-ONE].HardwareObjectType==RECIEVE) /* interrupt caused by receive message object */
         {
             /*CanIf_Rxindication()*/
             Recieve_Count++; /* increment the receive count */
@@ -87,11 +93,11 @@ void CAN1_Handler(void)
 
         MSG_Object_INT_Flag =1; /* raise the message object flag to detect that an interrupt occurred */
         MSG_Number_INT = status; /* store the message number that caused the interrupt in a variable */
-        if(Can_Configuration.Controller[1].HOH[MSG_Number_INT].HardwareObjectType==TRANSMIT) /* interrupt caused by transmit message object */
+        if(Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[MSG_Number_INT].HardwareObjectType==TRANSMIT) /* interrupt caused by transmit message object */
         {
             Transmit_Count++; /* increment the transmit count */
         }
-        else if(Can_Configuration.Controller[1].HOH[MSG_Number_INT].HardwareObjectType==RECIEVE) /* interrupt caused by receive message object */
+        else if(Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[MSG_Number_INT].HardwareObjectType==RECIEVE) /* interrupt caused by receive message object */
         {
             Recieve_Count++; /* increment the receive count */
         }

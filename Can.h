@@ -220,6 +220,13 @@ typedef enum
     Confirmed,
     Unconfirmed
 }Confirmation_Check;
+
+typedef struct
+{
+ Confirmation_Check Check;
+ uint8 mailbox;
+} Message_Confirmation;
+
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
