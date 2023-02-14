@@ -105,10 +105,10 @@
 #define CAN_WRITE_SID                           (uint8)0x06
 
 /* Service ID for Can Main function Write API*/
-#define CAN_MAINFUCNTION_WRITE_SID              (uint8)0x01
+#define CAN_MAINFUNCTION_WRITE_SID              (uint8)0x01
 
 /* Service ID for Can Main function Read API*/
-#define CAN_MAINFUCNTION_READ_SID               (uint8)0x08
+#define CAN_MAINFUNCTION_READ_SID               (uint8)0x08
 
 /* Service ID for Can Main function Mode API*/
 #define CAN_MAINFUCNTION_MODE_SID               (uint8)0x0c

@@ -1251,7 +1251,7 @@ void Can_MainFunction_Write(void)
 
     if(Can_Status == CAN_UNINIT)
     {
-        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_WRITE_SID, CAN_E_UNINIT);
+        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_WRITE_SID, CAN_E_UNINIT);
     }
     else
     {
@@ -1273,7 +1273,7 @@ void Can_MainFunction_Write(void)
     uint8 HO_Index=ZERO;
     uint8 Object_Index = ZERO;
 
-    for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
+    for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ ) //???? HOH nums?
     {
         if(TRANSMIT == Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
         {
@@ -1287,7 +1287,7 @@ void Can_MainFunction_Write(void)
                 for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
                 {
                     /*Check if this message object is used but never released*/
-                    if(Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] == Unconfirmed)
+                    if(Object_Check[CAN0_CONTROLLER_ID][HO_Index][Object_Index].Check == Unconfirmed)
                     {
                         REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET) = HO_Index & SIX_BIT_MASK;
                         while (BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
@@ -1301,7 +1301,7 @@ void Can_MainFunction_Write(void)
                         if(BIT_IS_CLEAR(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1MCTL_OFFSET),TXRQST_BIT))
                         {
                             /*Switch the message object state back to free*/
-                            Message_Confirmation[CAN0_CONTROLLER_ID][HO_Index] = Confirmed;
+                            Object_Check[CAN0_CONTROLLER_ID][HO_Index][Object_Index].Check = Confirmed;
                             /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
                                     successful transmission. It shall either called by the TX-interrupt service routine of
                                     the corresponding HW resource or inside the Can_MainFunction_Write in case of
@@ -1466,7 +1466,7 @@ void Can_MainFunction_Read(void)
      */
     if(Can_Status == CAN_UNINIT)
     {
-        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_READ_SID, CAN_E_UNINIT) ;
+        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_READ_SID, CAN_E_UNINIT) ;
     }
     else
     {
