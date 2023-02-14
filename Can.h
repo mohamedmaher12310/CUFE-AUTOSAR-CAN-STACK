@@ -402,6 +402,8 @@ extern uint8 Can_MessageReceive(uint32 Controller_Base_Address,Can_HwHandleType 
 /* Extern PB structures to be used by Can and other modules */
 extern const Can_ConfigType Can_Configuration;
 
+extern Message_Confirmation Object_Check[CAN_CONTROLLERS_NUMBER][CAN_HARDWARE_OBJECTS_NUMBER][MAX_HWOBJECT_COUNT];
+
 /* interrupt variables */
 extern volatile boolean MSG_Object_INT_Flag ;
 extern volatile uint8 MSG_Number_INT ;

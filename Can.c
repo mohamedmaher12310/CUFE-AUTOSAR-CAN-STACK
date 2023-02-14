@@ -116,6 +116,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller);
  *-Once a message is requested the message object is set used(unconfirmed) until checked on set back to free(confirmed)
  *and passed to IF*/
 Message_Confirmation Object_Check[CAN_CONTROLLERS_NUMBER][CAN_HARDWARE_OBJECTS_NUMBER][MAX_HWOBJECT_COUNT];
+
 STATIC uint8 Interrupts_Enable_Disable_Counter = 0;
 STATIC uint8 Interrupts_Disable_Flag = 0;
 
