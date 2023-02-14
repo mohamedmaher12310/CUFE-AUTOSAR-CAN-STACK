@@ -36,7 +36,7 @@ void CAN0_Handler(void)
     {
         MSG_Number_INT = status; /* store the message number that caused the interrupt in a variable */
         uint8 HOH=ZERO,iter=Can_Configuration.Controller[0].HOH[HOH].CanHardwareObjectCount;
-        for ( ; MSG_Number_INT > iter; )
+        while( MSG_Number_INT > iter )
         {
             HOH++;
             iter+=Can_Configuration.Controller[0].HOH[HOH].CanHardwareObjectCount;
