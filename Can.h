@@ -177,43 +177,60 @@ typedef struct Can_BaudRate
     uint8 PhaseSeg1;
     uint8 PhaseSeg2;
     uint8 SyncJumpWidth;
-} Can_BaudRate;
+} CanControllerBaudrateConfig;
 
 /*Hardware Filter Configuration Structure*/
 typedef struct Can_HardwareFilterConfig
 {
-    uint32 Filter;
-    uint32 Mask;
-} Can_HardwareFilterConfig ;
-
-/*Hardware Object Configuration Structure*/
-typedef struct Can_HardwareObject
-{
-    CanHandleType HandleType;
-#if (MIXED == CanConf_CAN0_RX_PROCESSING) || (MIXED == CanConf_CAN0_TX_PROCESSING)
-    uint8 UsePolling;
-#endif
-    uint32 CanHardwareObjectCount;
-    CanIdType IDType;
-    uint32 ID;
-    CanObjectType HardwareObjectType;
-    uint32 Reference;
-    Can_HardwareFilterConfig FilterConfig;
-} Can_HardwareObject;
+    uint32 CanHwFilterCode;
+    uint32 CanHwFilterMask;
+} CanHwFilter ;
 
 /*Controller Configuration Structure*/
-typedef struct Can_Controller
+typedef struct CanController
 {
-    Can_BaudRate BaudRate;
-    Can_HardwareObject HOH[CAN_HARDWARE_OBJECTS_NUMBER];
-} Can_Controller;
+    CanControllerBaudrateConfig CanControllerBaudrateConfig;
+} CanController;
+
+/*Hardware Object Configuration Structure*/
+typedef struct CanHardwareObject
+{
+    CanHandleType CanHandleType;
+    uint32 CanHardwareObjectCount;
+    CanIdType CanIdType;
+    uint32 CanObjectId;
+    CanObjectType CanObjectType;
+    CanController* CanControllerRef;
+    CanHwFilter CanHwFilter;
+} CanHardwareObject;
+
+
 
 /* Typedef for external data structure containing the overall initialization
 data for the CAN driver and SFR settings affecting all controllers.*/
+typedef struct CanConfigSet
+{
+    CanController CanController[CAN_CONTROLLERS_NUMBER];
+    CanHardwareObject CanHardwareObject[CAN_HOH_NUMBER];
+} CanConfigSet;
+
+typedef struct CanMainFunctionRWPeriods
+{
+    float32 CanMainFunctionPeriod;
+} CanMainFunctionRWPeriods;
+
+typedef struct CanGeneral
+{
+    CanMainFunctionRWPeriods CanMainFunctionRWPeriods;
+} CanGeneral;
+
+
 typedef struct Can_ConfigType
 {
-    Can_Controller Controller[CAN_CONTROLLERS_NUMBER];
-} Can_ConfigType;
+    CanGeneral CanGeneral;
+    CanConfigSet CanConfigSet;
+
+}Can_ConfigType;
 
 typedef enum
 {
@@ -400,9 +417,9 @@ extern uint8 Can_MessageReceive(uint32 Controller_Base_Address,Can_HwHandleType 
  *******************************************************************************/
 
 /* Extern PB structures to be used by Can and other modules */
-extern const Can_ConfigType Can_Configuration;
+extern Can_ConfigType Can_Configuration;
 
-extern Message_Confirmation Object_Check[CAN_CONTROLLERS_NUMBER][CAN_HARDWARE_OBJECTS_NUMBER][MAX_HWOBJECT_COUNT];
+extern Message_Confirmation Object_Check[CAN_CONTROLLERS_NUMBER][CAN_HOH_NUMBER][MAX_HWOBJECT_COUNT];
 
 /* interrupt variables */
 extern volatile boolean MSG_Object_INT_Flag ;
