@@ -28,4 +28,5 @@
 #define CANIF_CFG_AR_RELEASE_PATCH_VERSION    (1U)
 
 
+
 #endif /* CANIF_CFG_H_ */

@@ -423,7 +423,7 @@ extern Message_Confirmation Object_Check[CAN_CONTROLLERS_NUMBER][CAN_HOH_NUMBER]
 
 /* interrupt variables */
 extern volatile boolean MSG_Object_INT_Flag ;
-extern volatile uint8 MSG_Number_INT ;
+extern volatile uint8 MSG_Number_INT[32] ;
 extern volatile boolean Error_Flag ;
 extern volatile uint8 Error_Status ;
 extern volatile uint32 Recieve_Count ;

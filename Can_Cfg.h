@@ -241,10 +241,10 @@ Description: Number of hardware objects used to implement one HOH. In case of a
              hardware objects used for multiplexed transmission or for a hardware FIFO
              used by a FullCAN HTH.
  */
-#define MAX_HWOBJECT_COUNT                            (uint8)3
+#define MAX_HWOBJECT_COUNT                            (uint8)1
 
 
-#define CAN_HOH_COUNT_0             (uint32)3
+#define CAN_HOH_COUNT_0             (uint32)1
 #define CAN_HOH_COUNT_1             (uint32)1
 #define CAN_HOH_COUNT_2             (uint32)1
 #define CAN_HOH_COUNT_3             (uint32)1
@@ -289,7 +289,7 @@ Description: Specifies if the HardwareObject is used as Transmit or as Receive o
  */
 #define CAN_HOH_TYPE_0                           (CanObjectType)RECIEVE
 #define CAN_HOH_TYPE_1                           (CanObjectType)TRANSMIT
-#define CAN_HOH_TYPE_2                           (CanObjectType)TRANSMIT
+#define CAN_HOH_TYPE_2                           (CanObjectType)RECIEVE
 #define CAN_HOH_TYPE_3                           (CanObjectType)TRANSMIT
 #define CAN_HOH_TYPE_4                           (CanObjectType)TRANSMIT
 
@@ -315,7 +315,7 @@ Description: Specifies (together with the filter mask) the identifiers range tha
  */
 #define CAN_HW_FILTER_CODE_0                           0b00000000010
 #define CAN_HW_FILTER_CODE_1                           0b00000000010
-#define CAN_HW_FILTER_CODE_2                           0b00000000000
+#define CAN_HW_FILTER_CODE_2                           0b00000000011
 #define CAN_HW_FILTER_CODE_3                           0b00000000000
 #define CAN_HW_FILTER_CODE_4                           0b00000000000
 
@@ -331,7 +331,7 @@ Description: Describes a mask for hardware-based filtering of CAN identifiers. T
  */
 #define CAN_HW_FILTER_MASK_0                           0b11111111111
 #define CAN_HW_FILTER_MASK_1                           0b11111111111
-#define CAN_HW_FILTER_MASK_2                           0b00000000000
+#define CAN_HW_FILTER_MASK_2                           0b11111111111
 #define CAN_HW_FILTER_MASK_3                           0b00000000000
 #define CAN_HW_FILTER_MASK_4                           0b00000000000
 

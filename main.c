@@ -65,7 +65,7 @@ int main(void)
     SDU_Ptr = Tx_Message_Data_Buffer;
     Can_PduType Can_Message_Tx;
     Can_PduType Can_Message_Rx;
-    Can_Message_Tx.id=2;
+
     Can_Message_Tx.length= EIGHT_BYTES;
     Can_Message_Tx.swPduHandle = ZERO;
     Can_Message_Tx.sdu = SDU_Ptr;
@@ -97,6 +97,24 @@ int main(void)
             {
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
+            Can_Message_Tx.id=2;
+            Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
+            for ( i=0;i<8;i++)
+            {
+                RecievedString[i] = '\0';
+                Tx_Message_Data_Buffer[i] = '\0';
+            }
+        }
+        else if (RecievedChar == '2')
+        {
+            UART1_SendString("Please enter the message then press enter: \n");
+            RecievedString= UART1_RecieveString();
+            unsigned char i;
+            for ( i=0;i<8;i++)
+            {
+                Tx_Message_Data_Buffer[i] = RecievedString[i];
+            }
+            Can_Message_Tx.id=3;
             Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
             {
@@ -113,11 +131,48 @@ int main(void)
             }
             while (Recieve_Count != 0)
             {
-                if(MSG_Number_INT == 1) /*check RX interrupt has occured from Computer (1)*/
+                if (MSG_Number_INT[0] == 1)
                 {
-                    UART1_SendString("\nYou Recieved Message from Computer (2):\n");
+                    MSG_Number_INT[0] = 0;
+                    UART1_SendString("\nYou Recieved Message from Mailbox (1):\n");
                     Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_BASE, CAN_HOH_ID_0, &Can_Message_Rx);
+                    Can_MessageReceive(CAN0_BASE, 1, &Can_Message_Rx);
+                    Recieve_Count--;
+                    unsigned char RecievedCount=0;
+                    for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
+                    {
+                        UARTCharPut(0x4000D000, Rx_Message_Data_Buffer[RecievedCount]);
+                    }
+                    unsigned char i=0;
+                    for ( i=0;i<8;i++)
+                    {
+                        Rx_Message_Data_Buffer[i] = '\0';
+                    }
+                }
+                if (MSG_Number_INT[1] == 2)
+                {
+                    MSG_Number_INT[1] = 0;
+                    UART1_SendString("\nYou Recieved Message from Mailbox (2):\n");
+                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
+                    Can_MessageReceive(CAN0_BASE, 2, &Can_Message_Rx);
+                    Recieve_Count--;
+                    unsigned char RecievedCount=0;
+                    for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
+                    {
+                        UARTCharPut(0x4000D000, Rx_Message_Data_Buffer[RecievedCount]);
+                    }
+                    unsigned char i=0;
+                    for ( i=0;i<8;i++)
+                    {
+                        Rx_Message_Data_Buffer[i] = '\0';
+                    }
+                }
+                if (MSG_Number_INT[2] == 3)
+                {
+                    MSG_Number_INT[2] = 0;
+                    UART1_SendString("\nYou Recieved Message from Mailbox (3):\n");
+                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
+                    Can_MessageReceive(CAN0_BASE, 3, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
