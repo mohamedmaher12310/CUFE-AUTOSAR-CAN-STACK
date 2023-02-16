@@ -12,6 +12,8 @@
 #ifndef CANIF_CFG_H_
 #define CANIF_CFG_H_
 
+#include "Can.h"
+
 /*
  * Module version
  */
@@ -69,6 +71,22 @@ Description:Enables and disables the API for reading the notification status of
             False: Disabled
  *****************/
 #define CanIfPublicReadRxPduNotifyStatusApi     (STD_OFF)
+/**************************
+Name: CanIfHrhIdSymRef
+Parent Container: CanIfHrhCfg
+Description:The parameter refers to a particular HRH object in the CanDrv
+            configuration (see CanHardwareObject ECUC_Can_00324).
+            CanIf receives the following information of the CanDrv module by
+            this reference:
+            • CanHandleType (see ECUC_Can_00323)
+            • CanObjectId (see ECUC_Can_00326)
+
+ *****************/
+typedef struct CanIfHrhCfg
+{
+    CanHardwareObject * CanIfHrhIdSymRef;
+}CanIfHrhCfg;
+
 /**************************
 Container Name: CanIfRxPduCfg
 Description:This container contains the configuration (parameters) of each receive
@@ -398,42 +416,6 @@ can contain one or more HRHs.
 #define CanIfHrhCanCtrlIdRef_29      (CanIfCtrlCfg)CanIfCtrlId_0
 #define CanIfHrhCanCtrlIdRef_30      (CanIfCtrlCfg)CanIfCtrlId_0
 #define CanIfHrhCanCtrlIdRef_31      (CanIfCtrlCfg)CanIfCtrlId_0
-/**************************
-Name: CanIfHrhIdSymRef
-Parent Container: CanIfHrhCfg
-Description:The parameter refers to a particular HRH object in the CanDrv
-            configuration (see CanHardwareObject ECUC_Can_00324).
-            CanIf receives the following information of the CanDrv module by
-            this reference:
-            • CanHandleType (see ECUC_Can_00323)
-            • CanObjectId (see ECUC_Can_00326)
-
- *****************/
-typedef struct CanIfHrhCfg
-{
-    Can_HardwareObject* CanIfHrhIdSymRef;
-}CanIfHrhCfg;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif /* CANIF_CFG_H_ */
