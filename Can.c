@@ -475,6 +475,13 @@ void Can_Init(const Can_ConfigType* Config)
         REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET)=ZERO;
         REG_VAL(CAN0_BASE,CAN_IF1MCTL_OFFSET)=ZERO;
 
+        /*
+         * Set CLRINTPND to clear the INTPND bit in the CANIFnMCTL register
+         * Set NEWDAT to clear the NEWDAT bit in the CANNWDAn register
+         */
+        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),CLRINTPND_BIT);
+        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),NEWDAT_BIT);
+
         /* Loop through to program all configured HOH */
         uint8 iter;
         uint8 Object_Count_iter=ZERO;
@@ -488,28 +495,6 @@ void Can_Init(const Can_ConfigType* Config)
                 Object_Count_iter++;
                 Object_Check[CAN0_CONTROLLER_ID][iter][Check_iter].mailbox = Object_Count_iter;
             }
-            /* Wait for busy bit to clear */
-            while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
-            {
-                /*Do Nothing*/
-            }
-            /*  Initiate programming the message object */
-            uint8 iter2;
-            for (iter2 = ZERO ; iter2 <= Config->CanConfigSet.CanHardwareObject[iter].CanHardwareObjectCount -ONE ; iter2 ++)
-            {
-                REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][iter][iter2].mailbox & SIX_BIT_MASK;
-            }
-        }
-        /*
-         * Set CLRINTPND to clear the INTPND bit in the CANIFnMCTL register
-         * Set NEWDAT to clear the NEWDAT bit in the CANNWDAn register
-         */
-        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),CLRINTPND_BIT);
-        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),NEWDAT_BIT);
-
-        /* Loop through to program all configured HOH */
-        for(iter = ZERO; iter < CAN_HOH_NUMBER; iter++)
-        {
             /* Wait for busy bit to clear */
             while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
             {
@@ -1288,12 +1273,12 @@ void Can_MainFunction_Write(void)
              */
             if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID])
             {
-                for(Mailbox_Index = ZERO;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
+                for(Mailbox_Index = ZERO;Mailbox_Index <= Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount -ONE; Mailbox_Index++)
                 {
                     /*Check if this message object is used but never released*/
                     if(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check == Unconfirmed)
                     {
-                        REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET) = HOH_Index & SIX_BIT_MASK;
+                        REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].mailbox & SIX_BIT_MASK;
                         while (BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
                         {
                             /* Do nothing ,wait for busy bit to clear */
@@ -1302,8 +1287,9 @@ void Can_MainFunction_Write(void)
                         /*If it is used:
                          * Check if it handled or not by checking on TRXQST bit
                          * If it is cleared,it means that a transmission is handled*/
-                        if(BIT_IS_CLEAR(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1MCTL_OFFSET),TXRQST_BIT))
+                        if(BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),TXOK_BIT))
                         {
+                            CLEAR_BIT(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),TXOK_BIT);
                             /*Switch the message object state back to free*/
                             Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
                             /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a

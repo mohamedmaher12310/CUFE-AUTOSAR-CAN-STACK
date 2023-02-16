@@ -59,5 +59,6 @@ void SYSTICK_VOIDInit (void);
 uint32 GetCounterValue(void);
 uint32 CPUcpsid(void);
 uint32 CPUcpsie(void);
+
 #endif /* OS_H_ */
 
