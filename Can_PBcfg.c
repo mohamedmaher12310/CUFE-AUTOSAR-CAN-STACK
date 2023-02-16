@@ -40,7 +40,7 @@
 #endif
 
 /* PB structure used with Can_Init API */
- Can_ConfigType Can_Configuration = {
+Can_ConfigType Can_Configuration = {
                                       .CanGeneral =
                                       {
                                            .CanMainFunctionRWPeriods =
@@ -54,6 +54,7 @@
                                            .CanController =
                                            {
                                              {
+                                                .CanControllerId = CAN0_CONTROLLER_ID,
                                                 .CanControllerBaudrateConfig =
                                                 {
                                                  .BaudRate = CanConf_CAN0_CONTROLLER_BAUDRATE,
@@ -65,6 +66,7 @@
                                              },
 
                                             {
+                                                .CanControllerId = CAN1_CONTROLLER_ID,
                                                 .CanControllerBaudrateConfig =
                                                 {
                                                  .BaudRate = CanConf_CAN1_CONTROLLER_BAUDRATE,

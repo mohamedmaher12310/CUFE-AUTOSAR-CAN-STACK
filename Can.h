@@ -189,6 +189,7 @@ typedef struct Can_HardwareFilterConfig
 /*Controller Configuration Structure*/
 typedef struct CanController
 {
+    uint8 CanControllerId;
     CanControllerBaudrateConfig CanControllerBaudrateConfig;
 } CanController;
 
@@ -229,7 +230,6 @@ typedef struct Can_ConfigType
 {
     CanGeneral CanGeneral;
     CanConfigSet CanConfigSet;
-
 }Can_ConfigType;
 
 typedef enum
