@@ -97,7 +97,7 @@ int main(void)
             {
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
-            Can_Write(CAN0_CONTROLLER_HW_OBJECT_ID_1,&Can_Message_Tx);
+            Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
             {
                 RecievedString[i] = '\0';
@@ -117,7 +117,7 @@ int main(void)
                 {
                     UART1_SendString("\nYou Recieved Message from Computer (2):\n");
                     Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_BASE, CAN0_CONTROLLER_HW_OBJECT_ID_0, &Can_Message_Rx);
+                    Can_MessageReceive(CAN0_BASE, CAN_HOH_ID_0, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
