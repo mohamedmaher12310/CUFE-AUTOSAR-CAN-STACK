@@ -13,6 +13,7 @@
 #ifndef COMMSTACK_TYPES_H_
 #define COMMSTACK_TYPES_H_
 
+#include "Std_Types.h"
 
 /*******************************************************************************
  *                              Module Data Types                              *

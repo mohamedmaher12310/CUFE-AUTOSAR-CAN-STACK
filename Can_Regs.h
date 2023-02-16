@@ -113,6 +113,8 @@
 #define INIT_BIT    (0U)
 #define CCE_BIT     (6U)
 
+#define TXOK_BIT    (3U)
+
 #define BUSY_BIT        (15U)
 #define WRNRD_BIT       (7U)
 #define MASK_BIT        (6U)
