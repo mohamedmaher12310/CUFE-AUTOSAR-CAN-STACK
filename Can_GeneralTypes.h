@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module: Can General Types
+ * Module: Can
  *
  * File Name: Can_GeneralTypes.h
  *
