@@ -33,5 +33,4 @@ typedef struct PduInfoType
     PduLengthType SduLength; /*Length of the SDU in bytes*/
 } PduInfoType;
 
-
 #endif /* COMMSTACK_TYPES_H_ */

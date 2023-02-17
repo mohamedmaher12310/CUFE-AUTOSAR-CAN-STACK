@@ -135,7 +135,7 @@ gaps
 /*
  * Enables / disables API Can_MainFunction_Read() for handling PDU reception events in polling mode
  */
-#define CanConf_CAN0_RX_PROCESSING         INTERRUPT
+#define CanConf_CAN0_RX_PROCESSING         POLLING
 #define CanConf_CAN1_RX_PROCESSING         INTERRUPT
 
 /*
@@ -350,6 +350,10 @@ Description: This parameter describes the period for cyclic call to
  */
 
 #define CAN_MAIN_FUNCTION_PERIOD            (float32)100
+
+
+#define CanIfTxPduTriggerTransmit             STD_ON
+
 
 #endif /* CAN_CFG_H_ */
 
