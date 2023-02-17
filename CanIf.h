@@ -43,15 +43,15 @@
 #include "CanIf_Cfg.h"
 /* AUTOSAR Version checking between CanIf_Cfg.h and CanIf.h files */
 #if ((CANIF_CFG_AR_RELEASE_MAJOR_VERSION != CANIF_AR_RELEASE_MAJOR_VERSION)\
- ||  (CANIF_CFG_AR_RELEASE_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
- ||  (CANIF_CFG_AR_RELEASE_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
+        ||  (CANIF_CFG_AR_RELEASE_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
+        ||  (CANIF_CFG_AR_RELEASE_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
 #error "The AR version of CanIf_Cfg.h does not match the expected version"
 #endif
 
 /* Software Version checking between CanIf_Cfg.h and CanIf.h files */
 #if ((CANIF_CFG_SW_MAJOR_VERSION != CANIF_SW_MAJOR_VERSION)\
- ||  (CANIF_CFG_SW_MINOR_VERSION != CANIF_SW_MINOR_VERSION)\
- ||  (CANIF_CFG_SW_PATCH_VERSION != CANIF_SW_PATCH_VERSION))
+        ||  (CANIF_CFG_SW_MINOR_VERSION != CANIF_SW_MINOR_VERSION)\
+        ||  (CANIF_CFG_SW_PATCH_VERSION != CANIF_SW_PATCH_VERSION))
 #error "The SW version of CanIf_Cfg.h does not match the expected version"
 #endif
 
@@ -62,15 +62,15 @@
 #include "Can.h"
 /* AUTOSAR Version checking between CanIf.h and Can.h files */
 #if ((CANIF_AR_RELEASE_MAJOR_VERSION != CAN_AR_RELEASE_MAJOR_VERSION)\
- ||  (CANIF_AR_RELEASE_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
- ||  (CANIF_AR_RELEASE_PATCH_VERSION != CAN_AR_RELEASE_PATCH_VERSION))
+        ||  (CANIF_AR_RELEASE_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
+        ||  (CANIF_AR_RELEASE_PATCH_VERSION != CAN_AR_RELEASE_PATCH_VERSION))
 #error "The AR version of Can.h does not match the expected version"
 #endif
 
 /* Software Version checking between CanIf.h and Can.h files */
 #if ((CANIF_SW_MAJOR_VERSION != CAN_SW_MAJOR_VERSION)\
-||   (CANIF_SW_MINOR_VERSION != CAN_SW_MINOR_VERSION)\
-||   (CANIF_SW_PATCH_VERSION != CAN_SW_PATCH_VERSION))
+        ||   (CANIF_SW_MINOR_VERSION != CAN_SW_MINOR_VERSION)\
+        ||   (CANIF_SW_PATCH_VERSION != CAN_SW_PATCH_VERSION))
 #error "The SW version of Can.h does not match the expected version"
 #endif
 
@@ -213,11 +213,11 @@ typedef struct CanIfHrhRangeCfg
      *CanIfHrhRangeRxPduRangeCanIdType.*/
     uint32 CanIfHrhRangeBaseId;
 
-     /* Used as mask value in combination with CanIfHrhRangeBaseId for a
-      *masked ID range in which all CAN Ids shall pass the software filtering.
-      *The size of this parameter is limited by
-      *CanIfHrhRangeRxPduRangeCanIdType.
-      * */
+    /* Used as mask value in combination with CanIfHrhRangeBaseId for a
+     *masked ID range in which all CAN Ids shall pass the software filtering.
+     *The size of this parameter is limited by
+     *CanIfHrhRangeRxPduRangeCanIdType.
+     * */
     uint32 CanIfHrhRangeMask;
     /*
      * Lower CAN Identifier of a receive CAN L-PDU for identifier range
@@ -263,11 +263,11 @@ Description:This container contains the configuration (parameters) of each recei
 typedef struct  CanIfRxPduCfg
 {
     /**CAN Identifier of Receive CAN L-PDUs used by the CAN Interface.
-      *  Exa: Software Filtering. This parameter is used if exactly one Can
-      *  Identifier is assigned to the Pdu. If a range is assigned then the
-      *  CanIfRxPduCanIdRange parameter shall be used.
-      *  Range: 11 Bit For Standard CAN Identifier ... 29 Bit For Extended CAN
-      *  identifier*/
+     *  Exa: Software Filtering. This parameter is used if exactly one Can
+     *  Identifier is assigned to the Pdu. If a range is assigned then the
+     *  CanIfRxPduCanIdRange parameter shall be used.
+     *  Range: 11 Bit For Standard CAN Identifier ... 29 Bit For Extended CAN
+     *  identifier*/
     uint32 CanIfRxPduCanId;
     /*Identifier mask which denotes relevant bits in the CAN Identifier. This
 parameter defines a CAN Identifier range in an alternative way to
@@ -318,6 +318,18 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
 #if(STD_OFF == CANIF_CANPDUID_READDATA_API)
     boolean CanIfRxPduReadData;
 #endif
+
+    /**************************
+    Name: CanIfRxPduCanIdMask
+    Parent Container CanIfTxPduCfg
+    Description:Identifier mask which denotes relevant bits in the CAN Identifier. This
+                parameter defines a CAN Identifier range in an alternative way to
+                CanIfRxPduCanIdRange. It identifies the bits of the configured CAN
+                Identifier that must match the received CAN Identifier. Range: 11 bits
+                for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
+
+     ****************/
+    uint32 CanIfRxPduCanIdMask ;
 
 }CanIfRxPduCfg;
 /**************************

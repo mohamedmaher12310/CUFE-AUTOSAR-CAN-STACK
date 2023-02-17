@@ -103,27 +103,6 @@ Description:Enables and disables the API for reading the notification status of
 
 #define CanIfRxPduUserRxIndicationName      (CanIfRxPduUserRxIndicationUL)PDUR
 
-
-/**************************
-Name: CanIfRxPduCanIdMask
-Parent Container CanIfTxPduCfg
-Description:Identifier mask which denotes relevant bits in the CAN Identifier. This
-            parameter defines a CAN Identifier range in an alternative way to
-            CanIfRxPduCanIdRange. It identifies the bits of the configured CAN
-            Identifier that must match the received CAN Identifier. Range: 11 bits
-            for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
-
- ****************/
-#define CanIfRxPduCanIdMask_0    0b11111111111
-#define CanIfRxPduCanIdMask_1    0b11111111111
-#define CanIfRxPduCanIdMask_2    0b11111111111
-#define CanIfRxPduCanIdMask_3    0b11111111111
-#define CanIfRxPduCanIdMask_4    0b11111111111
-#define CanIfRxPduCanIdMask_5    0b11111111111
-#define CanIfRxPduCanIdMask_6    0b11111111111
-#define CanIfRxPduCanIdMask_7    0b11111111111
-#define CanIfRxPduCanIdMask_8    0b11111111111
-#define CanIfRxPduCanIdMask_9    0b11111111111
 /**************************
 Name: CanIfHrhSoftwareFilter
 Parent Container: CanIfHrhCfg
@@ -177,7 +156,7 @@ Description:Identifier mask which denotes relevant bits in the CAN Identifier. T
 #define CanIfRxPduCanId_7      (CanIfRxPduCanIdType)STANDARD_CAN
 #define CanIfRxPduCanId_8      (CanIfRxPduCanIdType)STANDARD_CAN
 #define CanIfRxPduCanId_9      (CanIfRxPduCanIdType)STANDARD_CAN
-*/
+ */
 
 
 /**************************
@@ -201,7 +180,7 @@ Description:Data length of the received CAN L-PDUs used by the CAN Interface.
 #define CanIfRxPduDataLength_7             (uint8)8
 #define CanIfRxPduDataLength_8             (uint8)8
 #define CanIfRxPduDataLength_9             (uint8)8
-*/
+ */
 
 /**************************
 Name: CanIfRxPduReadData
@@ -227,7 +206,7 @@ Description:Enables and disables the Rx buffering for reading of received L-SDU
 
 #endif
 
-*/
+ */
 
 
 
@@ -254,7 +233,7 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
 #define CanIfRxPduReadNotifyStatus_9    (STD_OFF)
 
 #endif
-*/
+ */
 
 /**************************
 Name: CanIfRxPduRef
@@ -274,7 +253,30 @@ Description:Reference to the "global" Pdu structure to allow harmonization of
 #define CanIfRxPduRef_7            (Pdu)
 #define CanIfRxPduRef_8            (Pdu)
 #define CanIfRxPduRef_9            (Pdu)
-*/
+ */
 
+
+/**************************
+Name: CanIfRxPduCanIdMask
+Parent Container CanIfTxPduCfg
+Description:Identifier mask which denotes relevant bits in the CAN Identifier. This
+            parameter defines a CAN Identifier range in an alternative way to
+            CanIfRxPduCanIdRange. It identifies the bits of the configured CAN
+            Identifier that must match the received CAN Identifier. Range: 11 bits
+            for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
+
+ ****************/
+/*
+#define CanIfRxPduCanIdMask_0    0b11111111111
+#define CanIfRxPduCanIdMask_1    0b11111111111
+#define CanIfRxPduCanIdMask_2    0b11111111111
+#define CanIfRxPduCanIdMask_3    0b11111111111
+#define CanIfRxPduCanIdMask_4    0b11111111111
+#define CanIfRxPduCanIdMask_5    0b11111111111
+#define CanIfRxPduCanIdMask_6    0b11111111111
+#define CanIfRxPduCanIdMask_7    0b11111111111
+#define CanIfRxPduCanIdMask_8    0b11111111111
+#define CanIfRxPduCanIdMask_9    0b11111111111
+ */
 
 #endif /* CANIF_CFG_H_ */
