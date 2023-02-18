@@ -6,7 +6,7 @@
  *
  * Description: Header file for TM4C123GH6PM Microcontroller - Can Driver Registers
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 #ifndef CAN_REGS_H_
 #define CAN_REGS_H_
@@ -113,6 +113,8 @@
 #define INIT_BIT    (0U)
 #define CCE_BIT     (6U)
 
+#define TXOK_BIT    (3U)
+
 #define BUSY_BIT        (15U)
 #define WRNRD_BIT       (7U)
 #define MASK_BIT        (6U)
@@ -157,6 +159,7 @@
 #define CAN_STS_RXOK            0x00000010  // Received a Message Successfully
 #define CAN_STS_TXOK            0x00000008  // Transmitted a Message
                                             // Successfully
+#define CAN_STS_TXOK_BIT_NUM    3
 #define CAN_STS_LEC_M           0x00000007  // Last Error Code
 #define CAN_STS_LEC_NONE        0x00000000  // No Error
 #define CAN_STS_LEC_STUFF       0x00000001  // Stuff Error

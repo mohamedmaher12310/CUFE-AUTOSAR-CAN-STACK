@@ -6,7 +6,7 @@
  *
  * Description: Pre-Compile Configuration Header file for TM4C123GH6PM Microcontroller - Port Driver
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 #ifndef PORT_CFG_H
@@ -177,7 +177,7 @@
 #define PortConf_PA6_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
 #define PortConf_PA7_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
 #define PortConf_PB0_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
-#define PortConf_PB1_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
+#define PortConf_PB1_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_OUT
 #define PortConf_PB2_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
 #define PortConf_PB3_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
 #define PortConf_PB4_PIN_DIRECTION         (Port_PinDirectionType)PORT_PIN_IN
@@ -220,8 +220,8 @@
 #define PortConf_PA5_PIN_MODE         (Port_PinMode)GPIO
 #define PortConf_PA6_PIN_MODE         (Port_PinMode)GPIO
 #define PortConf_PA7_PIN_MODE         (Port_PinMode)GPIO
-#define PortConf_PB0_PIN_MODE         (Port_PinMode)GPIO
-#define PortConf_PB1_PIN_MODE         (Port_PinMode)GPIO
+#define PortConf_PB0_PIN_MODE         (Port_PinMode)UART
+#define PortConf_PB1_PIN_MODE         (Port_PinMode)UART
 #define PortConf_PB2_PIN_MODE         (Port_PinMode)GPIO
 #define PortConf_PB3_PIN_MODE         (Port_PinMode)GPIO
 #define PortConf_PB4_PIN_MODE         (Port_PinMode)CAN
@@ -266,7 +266,7 @@
 #define PortConf_PA6_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP
 #define PortConf_PA7_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP
 #define PortConf_PB0_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP
-#define PortConf_PB1_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP
+#define PortConf_PB1_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)OFF
 #define PortConf_PB2_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP
 #define PortConf_PB3_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP
 #define PortConf_PB4_PIN_INTERNAL_RESISTOR         (Port_InternalResistorType)PULL_UP

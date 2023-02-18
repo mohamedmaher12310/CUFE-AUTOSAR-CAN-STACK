@@ -1,12 +1,12 @@
 /******************************************************************************
  *
- * Module: Can General Types
+ * Module: Can
  *
  * File Name: Can_GeneralTypes.h
  *
  * Description: General Can type definitions
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  *
  *******************************************************************************/
 

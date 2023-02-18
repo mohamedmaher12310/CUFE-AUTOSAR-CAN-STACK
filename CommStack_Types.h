@@ -6,13 +6,14 @@
  *
  * Description: General Communication Stack type definitions
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  *
  *******************************************************************************/
 
 #ifndef COMMSTACK_TYPES_H_
 #define COMMSTACK_TYPES_H_
 
+#include "Std_Types.h"
 
 /*******************************************************************************
  *                              Module Data Types                              *
@@ -31,6 +32,5 @@ typedef struct PduInfoType
     uint8* MetaDataPtr; /*Pointer to the meta data*/
     PduLengthType SduLength; /*Length of the SDU in bytes*/
 } PduInfoType;
-
 
 #endif /* COMMSTACK_TYPES_H_ */

@@ -6,7 +6,7 @@
  *
  * Description:  Det stores the development errors reported by other modules.
  *
- * Author: Mohamed Tarek
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 #ifndef DET_H

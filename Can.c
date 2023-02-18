@@ -6,83 +6,83 @@
  *
  * Description: Source file for TM4C123GH6PM Microcontroller - Can Driver.
  *
- * Author: Omar Khedr
+ * Author: CUFE 2023 Team
  ******************************************************************************/
 
 /*Include the module header file*/
 #include "Can.h"
-
-/*
- *  Enable Exceptions ... This Macro enable IRQ interrupts, Programmble Systems Exceptions and Faults by clearing the I-bit in the PRIMASK.
- */
-//#define Enable_Exceptions()    __asm("CPSIE I")
-
-/*
- *  Disable Exceptions ... This Macro disable IRQ interrupts, Programmble Systems Exceptions and Faults by clearing the I-bit in the PRIMASK.
- */
-//#define Disable_Exceptions()   __asm("CPSID I")
-
-
-
+#include "Det.h"
+#include "Det.h"
 uint32 CPUcpsie(void)
 {
-    //
-    // Read PRIMASK and enable interrupts.
-    //
+    /*
+     * Read PRIMASK and enable interrupts.
+     */
     __asm("    mrs     r0, PRIMASK\n"
-          "    cpsie   i\n"
-          "    bx      lr\n");
+            "    cpsie   i\n"
+            "    bx      lr\n");
 
-    //
-    // The following keeps the compiler happy, because it wants to see a
-    // return value from this function.  It will generate code to return
-    // a zero.  However, the real return is the "bx lr" above, so the
-    // return(0) is never executed and the function returns with the value
-    // you expect in R0.
-    //
+    /*
+     * The following keeps the compiler happy, because it wants to see a
+     * return value from this function.  It will generate code to return
+     * a zero.  However, the real return is the "bx lr" above, so the
+     * return(0) is never executed and the function returns with the value
+     * you expect in R0.
+     */
     return(0);
 }
 
 uint32 CPUcpsid(void)
 {
-    //
-    // Read PRIMASK and disable interrupts.
-    //
+    /*
+     *  Read PRIMASK and disable interrupts.
+     */
     __asm("    mrs     r0, PRIMASK\n"
-          "    cpsid   i\n"
-          "    bx      lr\n");
+            "    cpsid   i\n"
+            "    bx      lr\n");
 
-    //
-    // The following keeps the compiler happy, because it wants to see a
-    // return value from this function.  It will generate code to return
-    // a zero.  However, the real return is the "bx lr" above, so the
-    // return(0) is never executed and the function returns with the value
-    // you expect in R0.
-    //
+    /*
+     * The following keeps the compiler happy, because it wants to see a
+     * return value from this function.  It will generate code to return
+     * a zero.  However, the real return is the "bx lr" above, so the
+     * return(0) is never executed and the function returns with the value
+     * you expect in R0.
+     */
     return(0);
 }
 
+typedef struct
+{
+    uint16 ui16CmdMaskReg;
+    uint16 ui16MaskReg0, ui16MaskReg1;
+    uint16 ui16ArbReg0, ui16ArbReg1;
+    uint16 ui16MsgCtrl;
+}register_val;
+
+STATIC register_val registers[64]={0};
+
 uint32 Enable_Exceptions(void)
 {
-    //
-    // Enable processor interrupts.
-    //
+    /*
+     * Enable processor interrupts.
+     */
     return(CPUcpsie());
 }
 
 uint32 Diable_Exceptions (void)
 {
-    //
-    // Enable processor interrupts.
-    //
+    /*
+     * Enable processor interrupts.
+     */
     return(CPUcpsid());
 }
 
 
-/*Including Det module for developmnet error reporting*/
-#if (STD_ON == DIO_DEV_ERROR_DETECT)
 
+/*Including Det module for developmnet error reporting*/
+#if (STD_ON == CAN_DEV_ERROR_DETECT)
 #include "Det.h"
+
 /* AUTOSAR Version checking between Det and port Modules */
 #if ((DET_AR_MAJOR_VERSION != CAN_AR_RELEASE_MAJOR_VERSION)\
         || (DET_AR_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
@@ -112,26 +112,14 @@ STATIC Can_ControllerStateType Can_CurrentState[CAN_CONTROLLERS_NUMBER] = {CAN_C
 STATIC Std_ReturnType Can_Started_State(uint8 Controller);
 /*CAN_CS_STOPPED state*/
 STATIC Std_ReturnType Can_Stopped_State(uint8 Controller);
-/*Recieve message from message object*/
-STATIC uint8 Can_MessageReceive(uint32 Controller_Base_Address,
-                                Can_HwHandleType MessageObj_Num, Can_PduType* Message);
 
+/*-Array of enums to indicate if the message object is free or not
+ *-Once a message is requested the message object is set used(unconfirmed) until checked on set back to free(confirmed)
+ *and passed to IF*/
+Message_Confirmation Object_Check[CAN_CONTROLLERS_NUMBER][CAN_HOH_NUMBER][MAX_HWOBJECT_COUNT];
 
-
-//static uint8 Interrupts_Disable_Count[CAN_CONTROLLERS_NUMBER];
-//static uint8  Interrupts_Enable_Count[CAN_CONTROLLERS_NUMBER];
-
-static uint8 Interrupts_Enable_Disable_Counter = 0;
-static uint8 Interrupts_Disable_Flag = 0;
-
-
-/* interrupt variables */
-extern boolean MSG_Object_INT_Flag ;
-extern uint8 MSG_Number_INT ;
-extern boolean Error_Flag ;
-extern uint8 Error_Status ;
-extern uint32 Recieve_Count ;
-extern uint32 Transmit_Count ;
+STATIC uint8 Interrupts_Enable_Disable_Counter = 0;
+STATIC uint8 Interrupts_Disable_Flag = 0;
 
 
 /************************************************************************************
@@ -448,11 +436,11 @@ void Can_Init(const Can_ConfigType* Config)
         /*Set the CCE Bit in CANCTL*/
         SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),CCE_BIT);
         /* Set the Time Segment 1 */
-        REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN0_CONTROLLER_ID].BaudRate.PropSeg + Config->Controller[0].BaudRate.PhaseSeg1 -ONE)<< EIGHT_BITS) ;
+        REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= ((Config->CanConfigSet.CanController[CAN0_CONTROLLER_ID].CanControllerBaudrateConfig.PropSeg + Config->CanConfigSet.CanController[CAN0_CONTROLLER_ID].CanControllerBaudrateConfig.PhaseSeg1 -ONE)<< EIGHT_BITS) ;
         /* Set the Time Segment 2 */
-        REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN0_CONTROLLER_ID].BaudRate.PhaseSeg2  -ONE)<< TWELVE_BITS) ;
+        REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= ((Config->CanConfigSet.CanController[CAN0_CONTROLLER_ID].CanControllerBaudrateConfig.PhaseSeg2  -ONE)<< TWELVE_BITS) ;
         /* Set the SyncJumpWidth */
-        REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN0_CONTROLLER_ID].BaudRate.SyncJumpWidth  -ONE)<< SIX_BITS) ;
+        REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= ((Config->CanConfigSet.CanController[CAN0_CONTROLLER_ID].CanControllerBaudrateConfig.SyncJumpWidth  -ONE)<< SIX_BITS) ;
         /* Set the BaudRate Prescaler */
         REG_VAL(CAN0_BASE,CAN_BIT_OFFSET)|= (ONE<< ZERO) ;
         REG_VAL(CAN0_BASE,CAN_BRPE_OFFSET)|= (ZERO<< ZERO);
@@ -488,19 +476,6 @@ void Can_Init(const Can_ConfigType* Config)
         REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET)=ZERO;
         REG_VAL(CAN0_BASE,CAN_IF1MCTL_OFFSET)=ZERO;
 
-        /* Loop through to program all 32 message objects */
-        uint8 iter;
-        for(iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
-        {
-            /* Wait for busy bit to clear */
-            while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
-            {
-                /*Do Nothing*/
-            }
-            /*  Initiate programming the message object */
-            REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = iter;
-        }
-
         /*
          * Set CLRINTPND to clear the INTPND bit in the CANIFnMCTL register
          * Set NEWDAT to clear the NEWDAT bit in the CANNWDAn register
@@ -508,184 +483,209 @@ void Can_Init(const Can_ConfigType* Config)
         SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),CLRINTPND_BIT);
         SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),NEWDAT_BIT);
 
-        /* Loop through to program all 32 message objects */
-        for(iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
+        /* Loop through to program all configured HOH */
+        uint8 iter;
+        uint8 Object_Count_iter=ZERO;
+        for(iter = ZERO; iter < CAN_HOH_NUMBER; iter++)
         {
+            /*Setting all the message objects to free*/
+            uint8 Check_iter;
+            for (Check_iter =ZERO; Check_iter<=Config->CanConfigSet.CanHardwareObject[iter].CanHardwareObjectCount - ONE; Check_iter++)
+            {
+                Object_Check[CAN0_CONTROLLER_ID][iter][Check_iter].Check = Confirmed ;
+                Object_Count_iter++;
+                Object_Check[CAN0_CONTROLLER_ID][iter][Check_iter].mailbox = Object_Count_iter;
+            }
             /* Wait for busy bit to clear */
             while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
             {
                 /*Do Nothing*/
             }
             /*  Initiate programming the message object */
-            REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = iter;
+            uint8 iter2;
+            for (iter2 = ZERO ; iter2 <= Config->CanConfigSet.CanHardwareObject[iter].CanHardwareObjectCount -ONE ; iter2 ++)
+            {
+                REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][iter][iter2].mailbox & SIX_BIT_MASK;
+            }
         }
 
         /* Acknowledge any pending status interrupts. */
         REG_VAL(CAN0_BASE,CAN_STS_OFFSET);
         /* Configure the Hardware Message Objects*/
-        for (iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
+        for (iter = ZERO; iter < CAN_HOH_NUMBER; iter++)
         {
-            uint16 ui16CmdMaskReg;
-            uint16 ui16MaskReg0, ui16MaskReg1;
-            uint16 ui16ArbReg0, ui16ArbReg1;
-            uint16 ui16MsgCtrl;
-            uint8 bUseExtendedID;
-            /* Wait for busy bit to clear */
-            while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
+            uint8 iter2;
+            for (iter2 = ZERO ; iter2 <= Config->CanConfigSet.CanHardwareObject[iter].CanHardwareObjectCount -ONE ; iter2 ++)
             {
-                /*Do Nothing*/
-            }
-            /* See if we need to use an extended identifier or not.*/
-            if(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].IDType == ID_EXTENDED)
-            {
-                bUseExtendedID = ONE;
-            }
-            else
-            {
-                bUseExtendedID = ZERO;
-            }
-            /*
-             * This is always a write to the Message object as this call is setting a
-             * message object.  This call always sets all size bits so it sets
-             * both data bits.  The call uses the CONTROL register to set control
-             * bits so this bit needs to be set as well.
-             */
-            SET_BIT(ui16CmdMaskReg,WRNRD_BIT);
-            SET_BIT(ui16CmdMaskReg,CONTROL_BIT);
-            SET_BIT(ui16CmdMaskReg,DATAA_BIT);
-            SET_BIT(ui16CmdMaskReg,DATAB_BIT);
-            /*
-             * Initialize the values to a known state before filling them in based on
-             * the type of message object that is being configured.
-             */
-            ui16ArbReg0 = ZERO;
-            ui16ArbReg1 = ZERO;
-            ui16MsgCtrl = ZERO;
-            ui16MaskReg0 = ZERO;
-            ui16MaskReg1 = ZERO;
-
-            /* Configure Transmit HOH*/
-            if (Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].HardwareObjectType == TRANSMIT)
-            {
+                uint16 ui16CmdMaskReg;
+                uint16 ui16MaskReg0, ui16MaskReg1;
+                uint16 ui16ArbReg0, ui16ArbReg1;
+                uint16 ui16MsgCtrl;
+                uint8 bUseExtendedID;
+                /* Wait for busy bit to clear */
+                while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
+                {
+                    /*Do Nothing*/
+                }
+                /* See if we need to use an extended identifier or not.*/
+                if(Config->CanConfigSet.CanHardwareObject[iter].CanIdType == ID_EXTENDED)
+                {
+                    bUseExtendedID = ONE;
+                }
+                else
+                {
+                    bUseExtendedID = ZERO;
+                }
                 /*
-                 * Set the TXRQST bit and the reset the rest of the register.
+                 * This is always a write to the Message object as this call is setting a
+                 * message object.  This call always sets all size bits so it sets
+                 * both data bits.  The call uses the CONTROL register to set control
+                 * bits so this bit needs to be set as well.
                  */
-                //SET_BIT(ui16MsgCtrl,TXRQST_BIT);
-                SET_BIT(ui16ArbReg1,DIR_BIT);
-            }
-            /* Configure Recieve HOH*/
-            else if (Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].HardwareObjectType == RECIEVE)
-            {
+                SET_BIT(ui16CmdMaskReg,WRNRD_BIT);
+                SET_BIT(ui16CmdMaskReg,CONTROL_BIT);
+                SET_BIT(ui16CmdMaskReg,DATAA_BIT);
+                SET_BIT(ui16CmdMaskReg,DATAB_BIT);
                 /*
-                 * This clears the DIR bit along with everything else.  The TXRQST
-                 * bit was cleared by defaulting ui16MsgCtrl to 0.
-                 */
-                ui16ArbReg1 = ZERO;
-            }
-            /* AUTOSAR doesn't support any other message type*/
-            else
-            {
-                /* Do Nothing*/
-            }
-            /*
-             * Configure the Mask Registers.
-             */
-            if(bUseExtendedID)
-            {
-                /*
-                 * Set the 29 bits of Identifier mask that were requested.
-                 */
-                ui16MaskReg0 =(uint16)(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].FilterConfig.Mask);
-                ui16MaskReg1 =(((uint16)(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].FilterConfig.Mask) >> SIXTEEN) & THIRTEEN_BIT_MASK);
-            }
-            else
-            {
-                /*
-                 * Lower 16 bit are unused so set them to zero.
-                 */
-                ui16MaskReg0 = ZERO;
-                /*
-                 * Put the 11 bit Mask Identifier into the upper bits of the field
-                 * in the register.
-                 */
-                ui16MaskReg1 = (((uint16)(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].FilterConfig.Mask) << TWO) & THIRTEEN_BIT_MASK);
-            }
-            /* Filter on the extended ID bit*/
-            SET_BIT(ui16MaskReg1, MXTD_BIT);
-            /*
-             * Set the UMASK bit to enable using the mask register.
-             */
-            SET_BIT(ui16MsgCtrl,UMASK_BIT);
-            /*
-             * Set the MASK bit so that this gets transferred to the Message
-             * Object.
-             */
-            SET_BIT(ui16CmdMaskReg,MASK_BIT);
-            /*
-             * Set the Arb bit so that this gets transferred to the Message object.
-             */
-            SET_BIT(ui16CmdMaskReg,ARB_BIT);
-            /*
-             * Configure the Arbitration registers.
-             */
-            if(bUseExtendedID)
-            {
-                /*
-                 * Set the 29 bit version of the Identifier for this message object.
-                 */
-                ui16ArbReg0 = (uint16)(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].FilterConfig.Filter);
-                ui16ArbReg1 = (((uint16)(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].FilterConfig.Filter) >> SIXTEEN) & THIRTEEN_BIT_MASK);
-                /*
-                 * Mark the message as valid and set the extended ID bit.
-                 */
-                SET_BIT(ui16ArbReg1,MSGVAL_BIT);
-                SET_BIT(ui16ArbReg1,XTD_BIT);
-            }
-            else
-            {
-                /*
-                 * Set the 11 bit version of the Identifier for this message object.
-                 * The lower 18 bits are set to zero.
+                 * Initialize the values to a known state before filling them in based on
+                 * the type of message object that is being configured.
                  */
                 ui16ArbReg0 = ZERO;
-                ui16ArbReg1 = (((uint16)(Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].FilterConfig.Filter) << TWO) & THIRTEEN_BIT_MASK);
+                ui16ArbReg1 = ZERO;
+                ui16MsgCtrl = ZERO;
+                ui16MaskReg0 = ZERO;
+                ui16MaskReg1 = ZERO;
+
+                /* Configure Transmit HOH*/
+                if (Config->CanConfigSet.CanHardwareObject[iter].CanObjectType == TRANSMIT)
+                {
+                    /*
+                     * Set the TXRQST bit and the reset the rest of the register.
+                     */
+                    SET_BIT(ui16ArbReg1,DIR_BIT);
+                }
+                /* Configure Recieve HOH*/
+                else if (Config->CanConfigSet.CanHardwareObject[iter].CanObjectType == RECIEVE)
+                {
+                    /*
+                     * This clears the DIR bit along with everything else.  The TXRQST
+                     * bit was cleared by defaulting ui16MsgCtrl to 0.
+                     */
+                    ui16ArbReg1 = ZERO;
+                }
+                /* AUTOSAR doesn't support any other message type*/
+                else
+                {
+                    /* Do Nothing*/
+                }
                 /*
-                 * Mark the message as valid.
+                 * Configure the Mask Registers.
                  */
-                SET_BIT(ui16ArbReg1,MSGVAL_BIT);
-            }
-            /*If the Hoh Polling Processing is enabled*/
-#if (MIXED == CanConf_CAN0_RX_PROCESSING) || (MIXED == CanConf_CAN0_TX_PROCESSING)
+                if(bUseExtendedID)
+                {
+                    /*
+                     * Set the 29 bits of Identifier mask that were requested.
+                     */
+                    ui16MaskReg0 =(uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterMask);
+                    ui16MaskReg1 =(((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterMask) >> SIXTEEN) & THIRTEEN_BIT_MASK);
+                }
+                else
+                {
+                    /*
+                     * Lower 16 bit are unused so set them to zero.
+                     */
+                    ui16MaskReg0 = ZERO;
+                    /*
+                     * Put the 11 bit Mask Identifier into the upper bits of the field
+                     * in the register.
+                     */
+                    ui16MaskReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterMask) << TWO) & THIRTEEN_BIT_MASK);
+                }
+                /* Filter on the extended ID bit*/
+                SET_BIT(ui16MaskReg1, MXTD_BIT);
+                /*
+                 * Set the UMASK bit to enable using the mask register.
+                 */
+                SET_BIT(ui16MsgCtrl,UMASK_BIT);
+                /*
+                 * Set the MASK bit so that this gets transferred to the Message
+                 * Object.
+                 */
+                SET_BIT(ui16CmdMaskReg,MASK_BIT);
+                /*
+                 * Set the Arb bit so that this gets transferred to the Message object.
+                 */
+                SET_BIT(ui16CmdMaskReg,ARB_BIT);
+                /*
+                 * Configure the Arbitration registers.
+                 */
+                if(bUseExtendedID)
+                {
+                    /*
+                     * Set the 29 bit version of the Identifier for this message object.
+                     */
+                    ui16ArbReg0 = (uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterCode);
+                    ui16ArbReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterCode) >> SIXTEEN) & THIRTEEN_BIT_MASK);
+                    /*
+                     * Mark the message as valid and set the extended ID bit.
+                     */
+                    SET_BIT(ui16ArbReg1,MSGVAL_BIT);
+                    SET_BIT(ui16ArbReg1,XTD_BIT);
+                }
+                else
+                {
+                    /*
+                     * Set the 11 bit version of the Identifier for this message object.
+                     * The lower 18 bits are set to zero.
+                     */
+                    ui16ArbReg0 = ZERO;
+                    ui16ArbReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterCode) << TWO) & THIRTEEN_BIT_MASK);
+                    /*
+                     * Mark the message as valid.
+                     */
+                    SET_BIT(ui16ArbReg1,MSGVAL_BIT);
+                }
+                /*If the Hoh Interrupt Processing is enabled*/
+                if (Config->CanConfigSet.CanHardwareObject[iter].CanObjectType == RECIEVE)
+                {
+                    SET_BIT(ui16MsgCtrl,RXIE_BIT);
+                }
+                else
+                {
+                    /* Do Nothing*/
+                }
 
-            /* Can Main Function shall Write or Read*/
+                /*
+                 * Write out the registers to program the message object.
+                 */
+                /************** Receiving ***********
+                 * Pushing the value to registers of the receiving message objects according to the configuration*/
+                if (Config->CanConfigSet.CanHardwareObject[iter].CanObjectType == RECIEVE)
+                {
 
-#else /*Interrupts Processing*/
-            if (Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].HardwareObjectType == TRANSMIT)
-            {
-                SET_BIT(ui16MsgCtrl,TXIE_BIT);
+                    REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET) = ui16CmdMaskReg;
+                    REG_VAL(CAN0_BASE, CAN_IF1MSK1_OFFSET) = ui16MaskReg0;
+                    REG_VAL(CAN0_BASE, CAN_IF1MSK2_OFFSET) = ui16MaskReg1;
+                    REG_VAL(CAN0_BASE, CAN_IF1ARB1_OFFSET) = ui16ArbReg0;
+                    REG_VAL(CAN0_BASE, CAN_IF1ARB2_OFFSET) = ui16ArbReg1;
+                    REG_VAL(CAN0_BASE, CAN_IF1MCTL_OFFSET) = ui16MsgCtrl;
+                }
+                /************  Transmitting********
+                 * Save the value of the registers in a structure to be used later in Can_write for transmitting */
+                else
+                {
+                    registers[iter].ui16ArbReg0 = ui16ArbReg0;
+                    registers[iter].ui16ArbReg1 = ui16ArbReg1;
+                    registers[iter].ui16MaskReg0 = ui16MaskReg0;
+                    registers[iter].ui16MaskReg1 = ui16MaskReg1;
+                    registers[iter].ui16CmdMaskReg = ui16CmdMaskReg;
+                    registers[iter].ui16MsgCtrl = ui16MsgCtrl;
+                }
+                /*
+                 * Transfer the message object to the message object specified by Hoh ID
+                 */
+                REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = ((Object_Check[CAN0_CONTROLLER_ID][iter][iter2]).mailbox & SIX_BIT_MASK);
             }
-            else if (Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].HardwareObjectType == RECIEVE)
-            {
-                SET_BIT(ui16MsgCtrl,RXIE_BIT);
-            }
-            else
-            {
-                /* Do Nothing*/
-            }
-#endif /*Interrupts Processing*/
-            /*
-             * Write out the registers to program the message object.
-             */
-            REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET) = ui16CmdMaskReg;
-            REG_VAL(CAN0_BASE, CAN_IF1MSK1_OFFSET) = ui16MaskReg0;
-            REG_VAL(CAN0_BASE, CAN_IF1MSK2_OFFSET) = ui16MaskReg1;
-            REG_VAL(CAN0_BASE, CAN_IF1ARB1_OFFSET) = ui16ArbReg0;
-            REG_VAL(CAN0_BASE, CAN_IF1ARB2_OFFSET) = ui16ArbReg1;
-            REG_VAL(CAN0_BASE, CAN_IF1MCTL_OFFSET) = ui16MsgCtrl;
-            /*
-             * Transfer the message object to the message object specified by Hoh ID
-             */
-            REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = ((Config->Controller[CAN0_CONTROLLER_ID].HOH[iter].ID) & SIX_BIT_MASK);
         }
         /* Transition of Controller from CS_UNINIT State to CS_STOPPED State*/
         Can_CurrentState[CAN0_CONTROLLER_ID]= CAN_CS_STOPPED;
@@ -693,7 +693,7 @@ void Can_Init(const Can_ConfigType* Config)
 #if (CanConf_CAN1_CONTROLLER_ACTIVATION == STD_ON)
         uint8 delay=ZERO;
         /*Enable Clock to CAN Peripheral*/
-        SET_BIT(SYSCTL_RCGC0_REG,CAN1_BIT);
+        SET_BIT(SYSCTL_RCGC0_REG,CAN_BIT);
         delay =SYSCTL_RCGC0_REG;
         /*Setting CAN Functionality using PORT Driver*/
         /*Set the Init Bit in CANCTL*/
@@ -702,14 +702,14 @@ void Can_Init(const Can_ConfigType* Config)
         /*Set the CCE Bit in CANCTL*/
         SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),CCE_BIT);
         /* Set the Time Segment 1 */
-        REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN1_CONTROLLER_ID].BaudRate.PropSeg + Config->Controller[0].BaudRate.PhaseSeg1 -ONE)<< EIGHT_BITS) ;
+        REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN1_CONTROLLER_ID].BaudRate.PropSeg + Config->Controller[CAN1_CONTROLLER_ID].BaudRate.PhaseSeg1 -ONE)<< EIGHT_BITS) ;
         /* Set the Time Segment 2 */
         REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN1_CONTROLLER_ID].BaudRate.PhaseSeg2  -ONE)<< TWELVE_BITS) ;
         /* Set the SyncJumpWidth */
         REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->Controller[CAN1_CONTROLLER_ID].BaudRate.SyncJumpWidth  -ONE)<< SIX_BITS) ;
         /* Set the BaudRate Prescaler */
         REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= (ONE<< ZERO) ;
-        REG_VAL(CAN1_BASE,CAN_BRPE_OFFSET)|= (ZERO<< ZERO) ;
+        REG_VAL(CAN1_BASE,CAN_BRPE_OFFSET)|= (ZERO<< ZERO);
 
         /*Configure Hardware Message Objects*/
         /*After reset, the CAN controller is left in the disabled state.  However,
@@ -765,6 +765,7 @@ void Can_Init(const Can_ConfigType* Config)
         /* Loop through to program all 32 message objects */
         for(iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
         {
+            Message_Confirmation[CAN1_CONTROLLER_ID][iter-1] = Confirmed;
             /* Wait for busy bit to clear */
             while(BIT_IS_SET(REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
             {
@@ -777,7 +778,7 @@ void Can_Init(const Can_ConfigType* Config)
         /* Acknowledge any pending status interrupts. */
         REG_VAL(CAN1_BASE,CAN_STS_OFFSET);
         /* Configure the Hardware Message Objects*/
-        for (iter = ONE; iter <= CAN_HARDWARE_OBJECTS_NUMBER; iter++)
+        for (iter = ZERO; iter < CAN_HARDWARE_OBJECTS_NUMBER; iter++)
         {
             uint16 ui16CmdMaskReg;
             uint16 ui16MaskReg0, ui16MaskReg1;
@@ -824,7 +825,6 @@ void Can_Init(const Can_ConfigType* Config)
                 /*
                  * Set the TXRQST bit and the reset the rest of the register.
                  */
-                SET_BIT(ui16MsgCtrl,TXRQST_BIT);
                 SET_BIT(ui16ArbReg1,DIR_BIT);
             }
             /* Configure Recieve HOH*/
@@ -864,9 +864,8 @@ void Can_Init(const Can_ConfigType* Config)
                  */
                 ui16MaskReg1 = (((uint16)(Config->Controller[CAN1_CONTROLLER_ID].HOH[iter].FilterConfig.Mask) << TWO) & THIRTEEN_BIT_MASK);
             }
-
-            /* DO I CHECK IF THE USER WANTS TO FILTER ON XTD BIT ??!!*/
-
+            /* Filter on the extended ID bit*/
+            SET_BIT(ui16MaskReg1, MXTD_BIT);
             /*
              * Set the UMASK bit to enable using the mask register.
              */
@@ -910,16 +909,12 @@ void Can_Init(const Can_ConfigType* Config)
                 SET_BIT(ui16ArbReg1,MSGVAL_BIT);
             }
             /*If the Hoh Polling Processing is enabled*/
-#if (MIXED == CanConf_CAN1_RX_PROCESSING) || (MIXED == CanConf_CAN1_TX_PROCESSING)
+#if (MIXED == CanConf_CAN0_RX_PROCESSING) || (MIXED == CanConf_CAN1_TX_PROCESSING)
 
             /* Can Main Function shall Write or Read*/
 
 #else /*Interrupts Processing*/
-            if (Config->Controller[CAN1_CONTROLLER_ID].HOH[iter].HardwareObjectType == TRANSMIT)
-            {
-                SET_BIT(ui16MsgCtrl,TXIE_BIT);
-            }
-            else if (Config->Controller[CAN1_CONTROLLER_ID].HOH[iter].HardwareObjectType == RECIEVE)
+            if (Config->Controller[CAN1_CONTROLLER_ID].HOH[iter].HardwareObjectType == RECIEVE)
             {
                 SET_BIT(ui16MsgCtrl,RXIE_BIT);
             }
@@ -927,16 +922,33 @@ void Can_Init(const Can_ConfigType* Config)
             {
                 /* Do Nothing*/
             }
-#endif
+#endif /*Interrupts Processing*/
             /*
              * Write out the registers to program the message object.
              */
-            REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET) = ui16CmdMaskReg;
-            REG_VAL(CAN1_BASE, CAN_IF1MSK1_OFFSET) = ui16MaskReg0;
-            REG_VAL(CAN1_BASE, CAN_IF1MSK2_OFFSET) = ui16MaskReg1;
-            REG_VAL(CAN1_BASE, CAN_IF1ARB1_OFFSET) = ui16ArbReg0;
-            REG_VAL(CAN1_BASE, CAN_IF1ARB2_OFFSET) = ui16ArbReg1;
-            REG_VAL(CAN1_BASE, CAN_IF1MCTL_OFFSET) = ui16MsgCtrl;
+            /************** Receiving ***********
+             * Pushing the value to registers of the receiving message objects according to the configuration*/
+            if (Config->Controller[CAN1_CONTROLLER_ID].HOH[iter].HardwareObjectType == RECIEVE)
+            {
+
+                REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET) = ui16CmdMaskReg;
+                REG_VAL(CAN1_BASE, CAN_IF1MSK1_OFFSET) = ui16MaskReg0;
+                REG_VAL(CAN1_BASE, CAN_IF1MSK2_OFFSET) = ui16MaskReg1;
+                REG_VAL(CAN1_BASE, CAN_IF1ARB1_OFFSET) = ui16ArbReg0;
+                REG_VAL(CAN1_BASE, CAN_IF1ARB2_OFFSET) = ui16ArbReg1;
+                REG_VAL(CAN1_BASE, CAN_IF1MCTL_OFFSET) = ui16MsgCtrl;
+            }
+            /************  Transmitting********
+             * Save the value of the registers in a structure to be used later in Can_write for transmitting */
+            else
+            {
+                registers[iter].ui16ArbReg0 = ui16ArbReg0;
+                registers[iter].ui16ArbReg1 = ui16ArbReg1;
+                registers[iter].ui16MaskReg0 = ui16MaskReg0;
+                registers[iter].ui16MaskReg1 = ui16MaskReg1;
+                registers[iter].ui16CmdMaskReg = ui16CmdMaskReg;
+                registers[iter].ui16MsgCtrl = ui16MsgCtrl;
+            }
             /*
              * Transfer the message object to the message object specified by Hoh ID
              */
@@ -1090,6 +1102,11 @@ void Can_DeInit(void)
 uint8 Can_MessageReceive(uint32 Controller_Base_Address,
                          Can_HwHandleType MessageObj_Num, Can_PduType* Message)
 {
+    uint16 ui16CmdMaskReg;
+    uint16 ui16MaskReg0, ui16MaskReg1;
+    uint16 ui16ArbReg0, ui16ArbReg1;
+    uint16 ui16MsgCtrl;
+
     uint8 Flag = ZERO ;
     /*
      * Set the bits in the register to set the message object as receive
@@ -1101,55 +1118,64 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
       -Specify whether to transfer the control bits into the interface registers using the CONTROL
       bit
      */
-    REG_VAL(Controller_Base_Address,CAN_IF1CMSK_OFFSET) = 0x0000;
-    REG_VAL(Controller_Base_Address,CAN_IF1CMSK_OFFSET) |=   (CANIF1CMSK_RX_MASK);
+    SET_BIT(ui16CmdMaskReg,ARB_BIT);
+    SET_BIT(ui16CmdMaskReg,DATAA_BIT);
+    SET_BIT(ui16CmdMaskReg,DATAB_BIT);
+    SET_BIT(ui16CmdMaskReg,CONTROL_BIT);
+    SET_BIT(ui16CmdMaskReg,MASK_BIT);
+
 
     /*
      * Push the message object passed to the function to the interface register
      */
-    REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET) =  MessageObj_Num & (CANIF1CRQ_MNUM_MASK);
+    REG_VAL(Controller_Base_Address,CAN_IF1CMSK_OFFSET) =  ui16CmdMaskReg;
+    REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET) =  MessageObj_Num & (SIX_BIT_MASK);
 
-    while (BIT_IS_SET(REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET),CANIF1CRQ_BUSY_BIT) )
+    while (BIT_IS_SET(REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
     {
         /* Do nothing ,wait for busy bit to clear */
     }
 
-    /*- Holding the value of CAN IF1 Arbitration 1 Register
+    /*- Holding the value of CAN IF2 Arbitration 1 Register
      *- The register has the value of ID if extended
      */
-    uint16 CANIF1ARB1_REG = REG_VAL(Controller_Base_Address,CAN_IF1ARB1_OFFSET);
+    ui16ArbReg0 = REG_VAL(Controller_Base_Address,CAN_IF1ARB1_OFFSET);
 
-    /*- Holding the value of CAN IF1 Arbitration 2 Register
+    /*- Holding the value of CAN IF2 Arbitration 2 Register
      *- The register has the value of ID,DIR(13),ExtndedID(14),MSG Valid(15)
      */
-    uint16 CANIF1ARB2_REG = REG_VAL(Controller_Base_Address,CAN_IF1ARB2_OFFSET);
+    ui16ArbReg1 = REG_VAL(Controller_Base_Address,CAN_IF1ARB2_OFFSET);
 
-    /*- Holding the value of CAN IF1 Message Control Register
+    /*- Holding the value of CAN IF2 Message Control Register
      *- The register has the value of length of data(0-3),NewData(15)
      */
-    uint16 CANIF1MCTL_REG = REG_VAL(Controller_Base_Address,CAN_IF1MCTL_OFFSET);
+    ui16MsgCtrl = REG_VAL(Controller_Base_Address,CAN_IF1MCTL_OFFSET);
+
+    ui16MaskReg0 = REG_VAL(Controller_Base_Address, CAN_IF1MSK1_OFFSET);
+
+    ui16MaskReg1 = REG_VAL(Controller_Base_Address, CAN_IF1MSK2_OFFSET);
 
     /*Check if the ID is standard*/
 
-    if( BIT_IS_CLEAR( REG_VAL(Controller_Base_Address,CAN_IF1ARB2_OFFSET),CANIF1ARB2_XTD_BIT) )
+    if( BIT_IS_CLEAR( REG_VAL(Controller_Base_Address,CAN_IF1ARB2_OFFSET),XTD_BIT) )
     {
-        Message->id = ( CANIF1ARB2_REG & CANIF1ARB2_ID_MASK ) >> 2;
+        Message->id = ( ui16ArbReg1 & CANIF1ARB2_ID_MASK ) >> 2;
     }
     else
     {  /*
      *   ID is Extended
      */
-        Message->id = (( CANIF1ARB2_REG & CANIF1ARB2_ID_MASK ) <<16) | CANIF1ARB1_REG ;
+        Message->id = (( ui16ArbReg1 & CANIF1ARB2_ID_MASK ) <<16) | ui16ArbReg0 ;
     }
 
     /*Read the data from the register according to Message length*/
-    if(BIT_IS_SET(CANIF1MCTL_REG,CANIF1MCTL_NEWDATA_BIT) )
+    if(BIT_IS_SET(ui16MsgCtrl,CANIF1MCTL_NEWDATA_BIT) )
     {
         uint32 Data_Index, Data_Value;
         uint32 Data_REG;
         Flag = ONE ;
 
-        Message->length =  (CANIF1MCTL_REG & CANIF1MCTL_DLC_MASK);
+        Message->length =  (ui16MsgCtrl & CANIF1MCTL_DLC_MASK);
 
         Data_REG = (CAN_IF1DA1_OFFSET);
 
@@ -1167,11 +1193,14 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
                 /*Misra*/
             }
         }
-        CLEAR_BIT(REG_VAL(Controller_Base_Address,CAN_IF1MCTL_OFFSET),CANIF1MCTL_NEWDATA_BIT) ;
+        /*
+         * Setting The value of New data bit to indicate new message
+         */
+        REG_VAL(Controller_Base_Address,CAN_IF1CMSK_OFFSET) = 0x00000004;
 
-        REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET) =  MessageObj_Num & (CANIF1CRQ_MNUM_MASK);
+        REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET) =  MessageObj_Num & (SIX_BIT_MASK);
 
-        while (BIT_IS_SET(REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET),CANIF1CRQ_BUSY_BIT) )
+        while (BIT_IS_SET(REG_VAL(Controller_Base_Address,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
         {
             /* Do nothing ,wait for busy bit to clear */
         }
@@ -1183,26 +1212,36 @@ uint8 Can_MessageReceive(uint32 Controller_Base_Address,
     return Flag;
 }
 
-/*
+/***************************************************************************************************************
  * Service name: Can_MainFunction_Write
-   Syntax: void Can_MainFunction_Write(void)
-   Service ID[hex]: 0x01
-   Description: This function performs the polling of TX confirmation when
-   CAN_TX_PROCESSING is set to POLLING.
+ * Syntax: void Can_MainFunction_Write(void)
+ *  Service ID[hex]: 0x01
+ *  Description: This function performs the polling of TX confirmation when
+ *  CAN_TX_PROCESSING is set to POLLING.
  *
- */
-/*Check on the controller state*/
-uint8 CanDriverState = CAN_READY;
-
-#if  (POLLING == CanConf_CAN0_TX_PROCESSING) || (POLLING == CanConf_CAN1_TX_PROCESSING)
+ *************************************************************************************************************/
 void Can_MainFunction_Write(void)
 {
+    /*
+     * [SWS_Can_00178] The Can module may implement the function
+    Can_MainFunction_Write as empty define in case no polling at all is used.(
+     */
+#if  (POLLING == CanConf_CAN0_TX_PROCESSING) || (POLLING == CanConf_CAN1_TX_PROCESSING)
+
+    /*
+     * Check on the errors if the DET is ON
+     */
 
 #if(STD_ON == CAN_DEV_ERROR_DETECT)
 
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    /*
+     * -Check on the state of the driver
+     * -If Driver state in UNINIT ,Function should not be called and error report
+     */
+
+    if(Can_Status == CAN_UNINIT)
     {
-        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_WRITE_SID, CAN_E_UNINIT);
+        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_WRITE_SID, CAN_E_UNINIT);
     }
     else
     {
@@ -1211,9 +1250,190 @@ void Can_MainFunction_Write(void)
 
 #endif
 
-}
+#if (STD_ON == CanConf_CAN0_CONTROLLER_ACTIVATION)
+    /*
+     *The function Can_MainFunction_Write shall perform the
+     *polling of TX confirmation when CanTxProcessing
+     *is set to POLLING or MIXED. In case of MIXED processing only the hardware
+     *objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
+     *(SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
+     * */
+#if  (POLLING == CanConf_CAN0_TX_PROCESSING)
+
+    uint8 HOH_Index=ZERO;
+    uint8 Mailbox_Index = ZERO;
+
+    for(HOH_Index= ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++ )
+    {
+        if(TRANSMIT == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
+        {
+
+            /*
+             * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
+             * Configurations of can controller 0.
+             */
+            if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID])
+            {
+                for(Mailbox_Index = ZERO;Mailbox_Index <= Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount -ONE; Mailbox_Index++)
+                {
+                    /*Check if this message object is used but never released*/
+                    if(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check == Unconfirmed)
+                    {
+                        REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].mailbox & SIX_BIT_MASK;
+                        while (BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
+                        {
+                            /* Do nothing ,wait for busy bit to clear */
+                        }
+
+                        /*If it is used:
+                         * Check if it handled or not by checking on TRXQST bit
+                         * If it is cleared,it means that a transmission is handled*/
+                        if(BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),TXOK_BIT))
+                        {
+                            CLEAR_BIT(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),TXOK_BIT);
+                            /*Switch the message object state back to free*/
+                            Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
+                            /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
+                                    successful transmission. It shall either called by the TX-interrupt service routine of
+                                    the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                    polling mode. (SRS_Can_01051
+                                     CanIf_TxConfirmation();
+                             */
+                        }
+                        else{
+                        /*MISRA : do nothing*/}
+
+                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
+
+                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
+
+                        /*call CanIf_TxConfirmation function*/
+                    }
+
+                    else
+                    {
+                        /*MISRA : do nothing*/
+                    }
+                }
+
+            }
+            else
+            {
+                /*MISRA : do nothing*/
+            }
+
+
+
+
+        }
+        else
+        {
+            /*MISRA : do nothing*/
+        }
+    }
+
+
+
+
+
 
 #endif
+
+#endif
+    /*
+     * Same configuration and checks but controller 1
+     */
+
+
+
+
+
+#if (STD_ON == CanConf_CAN1_CONTROLLER_ACTIVATION)
+    /*
+     *The function Can_MainFunction_Write shall perform the
+     *polling of TX confirmation when CanTxProcessing
+     *is set to POLLING or MIXED. In case of MIXED processing only the hardware
+     *objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
+     *(SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
+     * */
+#if  (POLLING == CanConf_CAN1_TX_PROCESSING)
+
+    uint8 HO_Index=ZERO;
+    uint8 Object_Index = ZERO;
+
+    for(HO_Index= ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++ )
+    {
+        if(TRANSMIT == Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
+        {
+
+            /*
+             * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
+             * Configurations of can controller 0.
+             */
+            if(Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].Reference == CAN1_CONTROLLER_ID)
+            {
+                for(Object_Index = ZERO;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
+                {
+                    /*Check if this message object is used but never released*/
+                    if(Message_Confirmation[CAN1_CONTROLLER_ID][HO_Index] == Unconfirmed)
+                    {
+                        /*If it is used:
+                         * Check if it handled or not by checking on TRXQST bit
+                         * If it is cleared,it means that a transmission is handled*/
+                        if(BIT_IS_CLEAR(REG_VAL(CAN1_BASE_ADDRESS,CAN_IF1MCTL_OFFSET),TXRQST_BIT))
+                        {
+                            /*Switch the message object state back to free*/
+                            Message_Confirmation[CAN1_CONTROLLER_ID][HO_Index] = Confirmed;
+                            /*[SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
+                                                   successful transmission. It shall either called by the TX-interrupt service routine of
+                                                   the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                                   polling mode. (SRS_Can_01051
+                                                    CanIf_TxConfirmation();
+                             */
+                        }
+                        else{
+                        /*MISRA : do nothing*/}
+                    }
+
+                    else
+                    {
+                        /*MISRA : do nothing*/
+                    }
+                }
+
+            }
+            else
+            {
+                /*MISRA : do nothing*/
+            }
+
+
+
+
+        }
+        else
+        {
+            /*MISRA : do nothing*/
+        }
+    }
+
+
+
+
+
+
+#endif
+
+#endif
+
+#endif
+
+}
+
+
+
+
+
 /*********************************************************************************************
  * Service name: Can_MainFunction_Read
  * Syntax: void Can_MainFunction_Read(void)
@@ -1241,9 +1461,9 @@ void Can_MainFunction_Read(void)
      * -Check on the state of the driver
      * -If Driver state in UNINIT ,Function should not be called and error report
      */
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
-        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUCNTION_READ_SID, CAN_E_UNINIT) ;
+        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_READ_SID, CAN_E_UNINIT) ;
     }
     else
     {
@@ -1255,9 +1475,9 @@ void Can_MainFunction_Read(void)
      * Structures used for Receiving message object info
      *
      */
-    volatile  PduInfoType ReceiverPduInfo;
+    PduInfoType ReceiverPduInfo;
     Can_PduType Can_Msg_Received;
-    volatile Can_HwType MSG_Object;
+    Can_HwType MSG_Object;
 
 
 
@@ -1275,27 +1495,27 @@ void Can_MainFunction_Read(void)
      */
 #if (POLLING == CanConf_CAN0_RX_PROCESSING)
 
-    uint8 HO_Index=ZERO;
-    uint8 Object_Index = ZERO;
+    uint8 HOH_Index=ZERO;
+    uint8 Mailbox_Index = ZERO;
 
-    for(HO_Index = ZERO; HO_Index < CAN_HARDWARE_OBJECTS_NUMBER;HO_Index++)
+    for(HOH_Index = ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++)
     {
         /*
          * Check on each Hardware object if it is used as receive object
          */
-        if( RECIEVE == Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].HardwareObjectType)
+        if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
         {
             /*
              * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
              * Configurations of can controller 0.
              */
-            if(Can_Configuration.Controller[0].HOH[HO_Index].Reference == CAN0_CONTROLLER_ID)
+            if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
             {
                 /*how to loop CanHardwareObjectCount*/
-                for(Object_Index = ZERO ;Object_Index < Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
+                for(Mailbox_Index = ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
 
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN0_BASE_ADDRESS,HO_Index,&Can_Msg_Received);
+                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN0_BASE_ADDRESS,Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].mailbox,&Can_Msg_Received);
 
                     /*
                      * Check if the there is a new message in the
@@ -1303,9 +1523,9 @@ void Can_MainFunction_Read(void)
                      */
                     if(ONE == NEW_DATA_UPDATE )
                     {
-                        MSG_Object.CanId =  Can_Msg_Received.swPduHandle ;
-                        MSG_Object.ControllerId = Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].Reference;
-                        MSG_Object.Hoh = Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[HO_Index].ID;
+                        MSG_Object.CanId =  Can_Msg_Received.id ;
+                        MSG_Object.ControllerId = Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef->CanControllerId;
+                        MSG_Object.Hoh = HOH_Index;
                         ReceiverPduInfo.SduDataPtr = Can_Msg_Received.sdu;
                         ReceiverPduInfo.SduLength = Can_Msg_Received.length;
                         /*   On L-PDU reception, the Can module shall call the RX
@@ -1364,7 +1584,7 @@ void Can_MainFunction_Read(void)
                 for(Object_Index = ZERO ;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
 
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN1_BASE_ADDRESS,HO_Index,&Can_Msg_Received);
+                    uint8 NEW_DATA_UPDATE = Can_MessageReceive( CAN1_BASE_ADDRESS, HO_Index, &Can_Msg_Received);
 
                     /*
                      * Check if the there is a new message in the
@@ -1372,7 +1592,7 @@ void Can_MainFunction_Read(void)
                      */
                     if(ONE == NEW_DATA_UPDATE )
                     {
-                        MSG_Object.CanId =  Can_Msg_Received.swPduHandle ;
+                        MSG_Object.CanId =  Can_Msg_Received.id ;
                         MSG_Object.ControllerId = Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].Reference;
                         MSG_Object.Hoh = Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].ID;
                         ReceiverPduInfo.SduDataPtr = Can_Msg_Received.sdu;
@@ -1422,7 +1642,7 @@ Description: This function enables all allowed interrupts.*/
 
 void Can_EnableControllerInterrupts( uint8 Controller )
 {
-   //Enable_Exceptions();
+    //Enable_Exceptions();
     uint32 Exception_val=Enable_Exceptions();
     /*
      * Check on the errors if the DET is ON
@@ -1430,7 +1650,7 @@ void Can_EnableControllerInterrupts( uint8 Controller )
 #if(STD_ON == CAN_DEV_ERROR_DETECT)
 
     /*implementation of the DET*/
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
 
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_ENABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
@@ -1458,7 +1678,7 @@ void Can_EnableControllerInterrupts( uint8 Controller )
             {
                 REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET);
                 /*Enable interrupts*/
-                SET_BIT( REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),General_interrupt);      /*General Can interrupt*/
+                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),General_interrupt);      /*General Can interrupt*/
                 SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),Statues_Interrupt);      /*Statues Interrupt*/
                 SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),Error_Interrupt);      /*Error Interrupt*/
                 SET_BIT(CAN_NVIC_EN1,CAN0_Enable_Interrupts); /*NVIC*/
@@ -1520,7 +1740,7 @@ void Can_DisableControllerInterrupts( uint8 Controller )
 
     /*implementation of the DET*/
 
-    if(CanDriverState == CAN_NOT_INITIALIZED)
+    if(Can_Status == CAN_UNINIT)
     {
 
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DISABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
@@ -1586,31 +1806,21 @@ the interrupts are re-enabled..*/
  *             transmission.
  ************************************************************************************/
 Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
-{    // const Can_HardwareObject *HOH_Object = Can_TxHOH(Hth)
-    uint8 Can_Controller_ID;
-    if (Hth <CAN_HARDWARE_OBJECTS_NUMBER )
-    {
-        Hth = Hth;
-        Can_Controller_ID = ZERO;
-    }
-    else
-    {
-        Hth = Hth-32;
-        Can_Controller_ID = ONE;
-    }
-    /*
-     * SWS_Can_00216] If development error detection for the Can module is enabled:
-        The function Can_Write shall raise the error CAN_E_UNINIT and shall return
-        E_NOT_OK if the driver is not yet initialized.
-     */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+{
+    uint8 Can_Controller_ID = Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanControllerRef->CanControllerId;
 
     /*
-     * [SWS_Can_00216]  If development error detection for the Can module is enabled:
-                         The function Can_Write shall raise the error CAN_E_UNINIT and shall return
-                         E_NOT_OK if the driver is not yet initialized.
+     * SWS_Can_00216] If development error detection for the Can module is enabled:
+     *   The function Can_Write shall raise the error CAN_E_UNINIT and shall return
+     *   E_NOT_OK if the driver is not yet initialized.
      */
-    if(CanDriverState == CAN_UNINIT)
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
+    /*
+     * [SWS_Can_00216]  If development error detection for the Can module is enabled:
+     *                    The function Can_Write shall raise the error CAN_E_UNINIT and shall return
+     *                    E_NOT_OK if the driver is not yet initialized.
+     */
+    if(Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_UNINIT) ;
         return E_NOT_OK;
@@ -1624,9 +1834,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
          The function Can_Write shall raise the error CAN_E_PARAM_HANDLE and shall
          return E_NOT_OK if the parameter Hth is not a configured Hardware Transmit
          Handle. */
-    //    if (Hth < CAN_HARDWARE_OBJECTS_NUMBER )
-
-    if( RECIEVE == Can_Configuration.Controller[Can_Controller_ID].HOH[Hth].HardwareObjectType)
+    if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanObjectType)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_HANDLE);
         return E_NOT_OK;
@@ -1658,32 +1866,264 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
 #endif
     {
 #if (CanConf_CAN0_CONTROLLER_ACTIVATION == STD_ON)
+        /*Full CAN*/
+        if ((FULL == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHandleType) && (Object_Check[Can_Controller_ID][Hth][ZERO].Check == Confirmed))
+        {
+            /*
+             * Initialize the values to a known state before filling them in based on
+             * the type of message object that is being configured.
+             */
+            uint16 ui16MsgCtrl = ZERO;
+
+            /*
+             * Set the TXRQST bit and the reset the rest of the register.
+             */
+            SET_BIT(ui16MsgCtrl, TXRQST_BIT);
+            /*
+             * Set the data length since this is set for all transfers. This is also a
+             * single transfer and not a FIFO transfer so set EOB bit.
+             */
+            ui16MsgCtrl |= (PduInfo->length & FOUR_BIT_MASK);
+            /*
+             * Mark this as the last entry if this is not the last entry in a FIFO.
+             */
+            SET_BIT(ui16MsgCtrl,EOB_BIT);
+            /*
+             * Configure the Arbitration registers.
+             */
+            if(Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanIdType == ID_EXTENDED)
+            {
+                /*
+                 * Set the 29 bit version of the Identifier for this message object.
+                 */
+                registers[Hth].ui16ArbReg0 = (uint16)(PduInfo->id);
+                registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) >> SIXTEEN) & THIRTEEN_BIT_MASK);
+                /*
+                 * Mark the message as valid and set the extended ID bit.
+                 */
+                SET_BIT(registers[Hth].ui16ArbReg1,MSGVAL_BIT);
+                SET_BIT(registers[Hth].ui16ArbReg1,XTD_BIT);
+            }
+            else
+            {
+                /*
+                 * Set the 11 bit version of the Identifier for this message object.
+                 * The lower 18 bits are set to zero.
+                 */
+                registers[Hth].ui16ArbReg0 = ZERO;
+                registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << TWO) & THIRTEEN_BIT_MASK);
+                /*
+                 * Mark the message as valid.
+                 */
+                SET_BIT(registers[Hth].ui16ArbReg1,MSGVAL_BIT);
+            }
+            /*
+             * Write the data out to the CAN Data registers
+             */
+            uint32 Data_Index, Data_Value;
+            uint32 Data_REG;
+            Data_REG = (CAN_IF1DA1_OFFSET);
+            for(Data_Index = ZERO; Data_Index < PduInfo->length ;)
+            {
+                Data_Value =PduInfo->sdu[Data_Index++];
+                if(Data_Index < PduInfo->length)
+                {
+                    (Data_Value) |= PduInfo->sdu[Data_Index++] << EIGHT_BITS;
+                }
+                else
+                {
+                    /*MISRA*/
+                }
+                REG_VAL(CAN0_BASE,Data_REG) = (uint16)Data_Value;
+                Data_REG+=FOUR;
+            }
+
+
+            /*
+             * Enable:
+             *         1) Transmit Interrupts
+             *         2) Use Mask Filter
+             *         3) Set direction of Transmission
+             */
+            SET_BIT(ui16MsgCtrl,TXIE_BIT);
+            SET_BIT(ui16MsgCtrl,UMASK_BIT);
+
+
+            /*
+             * -Write out the registers to program the message object.
+             * -Using the structure used in the INIT for configuring and transmitting
+             *   by pushing the value saved in the registers during the INIT into the interface registers
+             */
+            registers[Hth].ui16MsgCtrl = ui16MsgCtrl | registers[Hth].ui16MsgCtrl;
+            REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET) = registers[Hth].ui16CmdMaskReg;
+            REG_VAL(CAN0_BASE, CAN_IF1MSK1_OFFSET) = registers[Hth].ui16MaskReg0;
+            REG_VAL(CAN0_BASE, CAN_IF1MSK2_OFFSET) = registers[Hth].ui16MaskReg1;
+            REG_VAL(CAN0_BASE, CAN_IF1ARB1_OFFSET) = registers[Hth].ui16ArbReg0;
+            REG_VAL(CAN0_BASE, CAN_IF1ARB2_OFFSET) = registers[Hth].ui16ArbReg1;
+            REG_VAL(CAN0_BASE, CAN_IF1MCTL_OFFSET) = registers[Hth].ui16MsgCtrl;
+            /*
+             * Transfer the message object to the message object specified by Hoh ID
+             */
+            SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
+            REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = ((Object_Check[Can_Controller_ID][Hth][ZERO].mailbox) & SIX_BIT_MASK);
+            /* Wait for busy bit to clear */
+            while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
+            {
+                /*Do Nothing*/
+            }
+            Object_Check[Can_Controller_ID][Hth][ZERO].Check = Unconfirmed;
+            return E_OK;
+        }
+        /*Basic CAN*/
+        else if (BASIC == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHandleType)
+        {
+            uint8 ObjectCount_Iter;
+            for (ObjectCount_Iter = ZERO ; ObjectCount_Iter<=Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHardwareObjectCount - ONE; ObjectCount_Iter++)
+            {
+                if( Confirmed == Object_Check[Can_Controller_ID][Hth][ObjectCount_Iter].Check)
+                {
+                    Object_Check[Can_Controller_ID][Hth][ObjectCount_Iter].Check = Unconfirmed;
+                    /*
+                     * Initialize the values to a known state before filling them in based on
+                     * the type of message object that is being configured.
+                     */
+                    uint16 ui16MsgCtrl = ZERO;
+
+                    /*
+                     * Set the TXRQST bit and the reset the rest of the register.
+                     */
+                    SET_BIT(ui16MsgCtrl, TXRQST_BIT);
+                    /*
+                     * Set the data length since this is set for all transfers. This is also a
+                     * single transfer and not a FIFO transfer so set EOB bit.
+                     */
+                    ui16MsgCtrl |= (PduInfo->length & FOUR_BIT_MASK);
+                    /*
+                     * Mark this as the last entry if this is not the last entry in a FIFO.
+                     */
+                    SET_BIT(ui16MsgCtrl,EOB_BIT);
+                    /*
+                     * Configure the Arbitration registers.
+                     */
+                    if(Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanIdType == ID_EXTENDED)
+                    {
+                        /*
+                         * Set the 29 bit version of the Identifier for this message object.
+                         */
+                        registers[Hth].ui16ArbReg0 = (uint16)(PduInfo->id);
+                        registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) >> SIXTEEN) & THIRTEEN_BIT_MASK);
+                        /*
+                         * Mark the message as valid and set the extended ID bit.
+                         */
+                        SET_BIT(registers[Hth].ui16ArbReg1,MSGVAL_BIT);
+                        SET_BIT(registers[Hth].ui16ArbReg1,XTD_BIT);
+                    }
+                    else
+                    {
+                        /*
+                         * Set the 11 bit version of the Identifier for this message object.
+                         * The lower 18 bits are set to zero.
+                         */
+                        registers[Hth].ui16ArbReg0 = ZERO;
+                        registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << TWO) & THIRTEEN_BIT_MASK);
+                        /*
+                         * Mark the message as valid.
+                         */
+                        SET_BIT(registers[Hth].ui16ArbReg1,MSGVAL_BIT);
+                    }
+                    /*
+                     * Write the data out to the CAN Data registers
+                     */
+                    uint32 Data_Index, Data_Value;
+                    uint32 Data_REG;
+                    Data_REG = (CAN_IF1DA1_OFFSET);
+                    for(Data_Index = ZERO; Data_Index < PduInfo->length ;)
+                    {
+                        Data_Value =PduInfo->sdu[Data_Index++];
+                        if(Data_Index < PduInfo->length)
+                        {
+                            (Data_Value) |= PduInfo->sdu[Data_Index++] << EIGHT_BITS;
+                        }
+                        else
+                        {
+                            /*MISRA*/
+                        }
+                        REG_VAL(CAN0_BASE,Data_REG) = (uint16)Data_Value;
+                        Data_REG+=FOUR;
+                    }
+                    /*
+                     * Enable:
+                     *         1) Transmit Interrupts
+                     *         2) Use Mask Filter
+                     *         3) Set direction of Transmission
+                     */
+                    SET_BIT(ui16MsgCtrl,TXIE_BIT);
+                    SET_BIT(ui16MsgCtrl,UMASK_BIT);
+
+
+                    /*
+                     * -Write out the registers to program the message object.
+                     * -Using the structure used in the INIT for configuring and transmitting
+                     *   by pushing the value saved in the registers during the INIT into the interface registers
+                     */
+                    registers[Hth].ui16MsgCtrl = ui16MsgCtrl | registers[Hth].ui16MsgCtrl;
+                    REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET) = registers[Hth].ui16CmdMaskReg;
+                    REG_VAL(CAN0_BASE, CAN_IF1MSK1_OFFSET) = registers[Hth].ui16MaskReg0;
+                    REG_VAL(CAN0_BASE, CAN_IF1MSK2_OFFSET) = registers[Hth].ui16MaskReg1;
+                    REG_VAL(CAN0_BASE, CAN_IF1ARB1_OFFSET) = registers[Hth].ui16ArbReg0;
+                    REG_VAL(CAN0_BASE, CAN_IF1ARB2_OFFSET) = registers[Hth].ui16ArbReg1;
+                    REG_VAL(CAN0_BASE, CAN_IF1MCTL_OFFSET) = registers[Hth].ui16MsgCtrl;
+                    /*
+                     * Transfer the message object to the message object specified by Hoh ID
+                     */
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
+                    REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = ((Object_Check[Can_Controller_ID][Hth][ObjectCount_Iter].mailbox) & SIX_BIT_MASK);
+                    /* Wait for busy bit to clear */
+                    while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
+                    {
+                        /*Do Nothing*/
+                    }
+                    return E_OK;
+                }
+                else
+                {
+                    /*Do Nothing*/
+                }
+                /*No Free Mailbox*/
+                if (ObjectCount_Iter == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHardwareObjectCount)
+                {
+                    return CAN_BUSY;
+                }
+                else
+                {
+                    /*Do Nothing*/
+                }
+            }
+        }
+        /*No Free Mailbox*/
+        else
+        {
+            return CAN_BUSY;
+        }
+
+#elif (CanConf_CAN1_CONTROLLER_ACTIVATION == STD_ON)
+
         /*
          * Initialize the values to a known state before filling them in based on
          * the type of message object that is being configured.
          */
         uint16 ui16MsgCtrl = ZERO;
         /* Wait for busy bit to clear */
-        while(BIT_IS_SET(REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
+        while(BIT_IS_SET(REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET),BUSY_BIT))
         {
             /*Do Nothing*/
         }
         /*
-                typedef struct Can_PduType
-                {
-                    PduIdType swPduHandle;
-                    uint8 length;
-                    Can_IdType id;
-                    uint8* sdu;
-                }Can_PduType;
-         */
-        /*
          * Set the TXRQST bit and the reset the rest of the register.
          */
         SET_BIT(ui16MsgCtrl, TXRQST_BIT);
-        uint8 iter;
         /* Single transmission*/
-        if (Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[Hth].CanHardwareObjectCount == ONE)
+        if (Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[Hth-ONE].CanHardwareObjectCount == ONE)
         {
             /*
              * Set the data length since this is set for all transfers. This is also a
@@ -1700,7 +2140,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
             uint32 Data_Index, Data_Value;
             uint32 Data_REG;
             Data_REG = (CAN_IF1DA1_OFFSET);
-            for(Data_Index = 0; Data_Index < PduInfo->length ;)
+            for(Data_Index = ZERO; Data_Index < PduInfo->length ;)
             {
                 Data_Value =PduInfo->sdu[Data_Index++];
                 if(Data_Index < PduInfo->length)
@@ -1711,30 +2151,43 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                 {
                     /*Misra*/
                 }
-                REG_VAL(CAN0_BASE,Data_REG) = (uint16)Data_Value;
+                REG_VAL(CAN1_BASE,Data_REG) = (uint16)Data_Value;
                 Data_REG+=4;
             }
         }
-        /* Multiplexed Transmission */
-        //        else
-        //        {
-        //            for (iter = ZERO ; iter< Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[Hth].CanHardwareObjectCount ;iter++ )
-        //            {
-        //
-        //            }
-        //        }
 
+        /*
+         * Enable:
+         *         1) Transmit Interrupts
+         *         2) Use Mask Filter
+         *         3) Set direction of Transmission
+         */
+        SET_BIT(ui16MsgCtrl,TXIE_BIT);
+        SET_BIT(ui16MsgCtrl,UMASK_BIT);
+
+
+        /*
+         * -Write out the registers to program the message object.
+         * -Using the structure used in the INIT for configuring and transmitting
+         *   by pushing the value saved in the registers during the INIT into the interface registers
+         */
+        registers[Hth-ONE].ui16MsgCtrl = ui16MsgCtrl | registers[Hth-ONE].ui16MsgCtrl;
+        REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET) = registers[Hth-ONE].ui16CmdMaskReg;
+        REG_VAL(CAN1_BASE, CAN_IF1MSK1_OFFSET) = registers[Hth-ONE].ui16MaskReg0;
+        REG_VAL(CAN1_BASE, CAN_IF1MSK2_OFFSET) = registers[Hth-ONE].ui16MaskReg1;
+        REG_VAL(CAN1_BASE, CAN_IF1ARB1_OFFSET) = registers[Hth-ONE].ui16ArbReg0;
+        REG_VAL(CAN1_BASE, CAN_IF1ARB2_OFFSET) = registers[Hth-ONE].ui16ArbReg1;
+        REG_VAL(CAN1_BASE, CAN_IF1MCTL_OFFSET) = registers[Hth-ONE].ui16MsgCtrl;
         /*
          * Transfer the message object to the message object specified by Hoh ID
          */
-        REG_VAL(CAN0_BASE, CAN_IF1CRQ_OFFSET) = ((Can_Configuration.Controller[CAN0_CONTROLLER_ID].HOH[Hth].ID) & SIX_BIT_MASK);
-        /*
-         * Write out the registers to program the message object.
-         */
-        REG_VAL(CAN0_BASE, CAN_IF1MCTL_OFFSET) = ui16MsgCtrl;
-#elif (CanConf_CAN1_CONTROLLER_ACTIVATION == STD_ON)
+        SET_BIT(REG_VAL(CAN1_BASE,CAN_IF1ARB2_OFFSET),DIR_BIT);
+        REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET) = ((Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[Hth-ONE].ID) & SIX_BIT_MASK);
 
-#endif /*CanConf_CAN0_CONTROLLER_ACTIVATION*/
+        Message_Confirmation[Can_Controller_ID][Hth] = Unconfirmed;
+        return E_OK;
+#endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
 }
+
 

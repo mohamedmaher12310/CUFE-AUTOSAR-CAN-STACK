@@ -6,7 +6,7 @@
  *
  * Description: Commonly used Macros
  *
- * Author: Mohamed Tarek
+ * Author: CUFE 2023 Team
  *
  *******************************************************************************/
 
