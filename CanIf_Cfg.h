@@ -28,6 +28,15 @@
 #define CANIF_CFG_AR_RELEASE_MAJOR_VERSION    (4U)
 #define CANIF_CFG_AR_RELEASE_MINOR_VERSION    (3U)
 #define CANIF_CFG_AR_RELEASE_PATCH_VERSION    (1U)
+
+/******************************
+  Switches the development error detection and notification on or off.
+   true: detection and notification is enabled.
+   false: detection and notification is disabled.
+
+ ****************************/
+#define CANIF_DEV_ERROR_DETECT                (STD_ON)
+
 /**************************
 Name CanIfPrivateDataLengthCheck [ECUC_CanIf_00617]
 Parent Container CanIfPrivateCfg

@@ -16,7 +16,7 @@
 #define CANIF_VENDOR_ID    (1000U)
 
 /* CanIf Module Id */
-#define CANIF_MODULE_ID    (31U)
+#define CANIF_MODULE_ID    (60U)
 
 
 /*
@@ -87,6 +87,9 @@
 /* Service ID for CanIf Set Controller Mode API*/
 #define CANIF_SET_CONTROLLER_MODE_SID     (uint8)0x03
 
+/* Service ID for CanIf RxIndication API*/
+#define CANIF_RX_INDICATION_SID      (uint8)0x14
+
 /* Service ID for CanIf Transmit API*/
 #define CANIF_TRANSMIT_SID                (uint8)0x49
 
@@ -95,6 +98,8 @@
 
 /* Service ID for CanIf Set Dynamic Tx Id API*/
 #define CANIF_SET_DYNAMIC_TXID_SID        (uint8)0x0c
+
+
 
 /*******************************************************************************
  *                      DET Error Codes                                        *
@@ -123,6 +128,16 @@
 /* DET Code to report that CAN Interface initialization failed*/
 #define CANIF_E_INIT_FAILED                 (uint8)80
 
+
+
+/*******************************************************************************
+ *                     RUN TIME Error Codes                                        *
+ *******************************************************************************/
+/*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
+#define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
+
+#define CANNIF_STANDARD_MAX    0x7FF
+#define CANNIF_EXTENDED_MAX    0x1FFFFFFF
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/

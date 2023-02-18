@@ -33,20 +33,40 @@ Std_ReturnType CanIf_GetPduMode(uint8 ControllerId,CanIf_PduModeType* PduModePtr
  ******************************************************************************/
 void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType *PduInfoPtr)
 {
-    // first check the det errors
-    /*
-     [SWS_CANIF_00417] d If parameter Mailbox->CanId of
-CanIf_RxIndication() has an invalid value, CanIf shall report development
-error code CANIF_E_PARAM_CANID to the Det_ReportError service of the DET
-module, when CanIf_RxIndication() is called.
+
+   /* If parameter Mailbox->Hoh of CanIf_RxIndication() has an invalid value, CanIf shall report development error code*/
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
+   if(Mailbox->Hoh != RECIEVE)
+   {    ///?????/instance id
+       Det_ReportError(CANIF_MODULE_ID, CAN_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_HOH);
+             return E_NOT_OK;
+   }
+   else
+   {
+       /*MISRA : do nothing*/
+   }
+
+  /* If parameter Mailbox->CanId of CanIf_RxIndication() has an invalid value, CanIf shall report development error code CANIF_E_PARAM_CANID to the Det_ReportError service of the DET */
+   if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) )    //???????
+     {    ///?????/instance id
+         Det_ReportError(CANIF_MODULE_ID, CAN_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_CANID);
+               return E_NOT_OK;
+     }
+     else
+     {
+         /*MISRA : do nothing*/
+     }
+
+
+#endif
+
+/*
 
 Note: If CanIf_RxIndication() is called with invalid PduInfoPtr-
 >SduLength, runtime error CANIF_E_INVALID_DATA_LENGTH is reported
 
- If parameter Mailbox->Hoh of CanIf_RxIndication()
-has an invalid value, CanIf shall report development error code
-CANIF_E_PARAM_HOH to the Det_ReportError service of the DET module,
-when CanIf_RxIndication() is called.
+
 
 If parameter PduInfoPtr or Mailbox of
 CanIf_RxIndication() has an invalid value, CanIf shall report development
