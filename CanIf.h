@@ -16,11 +16,7 @@
 #define CANIF_VENDOR_ID    (1000U)
 
 /* CanIf Module Id */
-<<<<<<< HEAD
 #define CANIF_MODULE_ID    (31U)
-=======
-#define CANIF_MODULE_ID    (60U)
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 
 
 /*
@@ -47,25 +43,15 @@
 #include "CanIf_Cfg.h"
 /* AUTOSAR Version checking between CanIf_Cfg.h and CanIf.h files */
 #if ((CANIF_CFG_AR_RELEASE_MAJOR_VERSION != CANIF_AR_RELEASE_MAJOR_VERSION)\
-<<<<<<< HEAD
- ||  (CANIF_CFG_AR_RELEASE_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
- ||  (CANIF_CFG_AR_RELEASE_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
-=======
         ||  (CANIF_CFG_AR_RELEASE_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
         ||  (CANIF_CFG_AR_RELEASE_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 #error "The AR version of CanIf_Cfg.h does not match the expected version"
 #endif
 
 /* Software Version checking between CanIf_Cfg.h and CanIf.h files */
 #if ((CANIF_CFG_SW_MAJOR_VERSION != CANIF_SW_MAJOR_VERSION)\
-<<<<<<< HEAD
- ||  (CANIF_CFG_SW_MINOR_VERSION != CANIF_SW_MINOR_VERSION)\
- ||  (CANIF_CFG_SW_PATCH_VERSION != CANIF_SW_PATCH_VERSION))
-=======
         ||  (CANIF_CFG_SW_MINOR_VERSION != CANIF_SW_MINOR_VERSION)\
         ||  (CANIF_CFG_SW_PATCH_VERSION != CANIF_SW_PATCH_VERSION))
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 #error "The SW version of CanIf_Cfg.h does not match the expected version"
 #endif
 
@@ -76,25 +62,15 @@
 #include "Can.h"
 /* AUTOSAR Version checking between CanIf.h and Can.h files */
 #if ((CANIF_AR_RELEASE_MAJOR_VERSION != CAN_AR_RELEASE_MAJOR_VERSION)\
-<<<<<<< HEAD
- ||  (CANIF_AR_RELEASE_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
- ||  (CANIF_AR_RELEASE_PATCH_VERSION != CAN_AR_RELEASE_PATCH_VERSION))
-=======
         ||  (CANIF_AR_RELEASE_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
         ||  (CANIF_AR_RELEASE_PATCH_VERSION != CAN_AR_RELEASE_PATCH_VERSION))
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 #error "The AR version of Can.h does not match the expected version"
 #endif
 
 /* Software Version checking between CanIf.h and Can.h files */
 #if ((CANIF_SW_MAJOR_VERSION != CAN_SW_MAJOR_VERSION)\
-<<<<<<< HEAD
-||   (CANIF_SW_MINOR_VERSION != CAN_SW_MINOR_VERSION)\
-||   (CANIF_SW_PATCH_VERSION != CAN_SW_PATCH_VERSION))
-=======
         ||   (CANIF_SW_MINOR_VERSION != CAN_SW_MINOR_VERSION)\
         ||   (CANIF_SW_PATCH_VERSION != CAN_SW_PATCH_VERSION))
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 #error "The SW version of Can.h does not match the expected version"
 #endif
 
@@ -111,12 +87,6 @@
 /* Service ID for CanIf Set Controller Mode API*/
 #define CANIF_SET_CONTROLLER_MODE_SID     (uint8)0x03
 
-<<<<<<< HEAD
-=======
-/* Service ID for CanIf RxIndication API*/
-#define CANIF_RX_INDICATION_SID      (uint8)0x14
-
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 /* Service ID for CanIf Transmit API*/
 #define CANIF_TRANSMIT_SID                (uint8)0x49
 
@@ -126,11 +96,6 @@
 /* Service ID for CanIf Set Dynamic Tx Id API*/
 #define CANIF_SET_DYNAMIC_TXID_SID        (uint8)0x0c
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 /*******************************************************************************
  *                      DET Error Codes                                        *
  *******************************************************************************/
@@ -158,19 +123,6 @@
 /* DET Code to report that CAN Interface initialization failed*/
 #define CANIF_E_INIT_FAILED                 (uint8)80
 
-<<<<<<< HEAD
-=======
-
-
-/*******************************************************************************
- *                     RUN TIME Error Codes                                        *
- *******************************************************************************/
-/*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
-#define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
-
-#define CANNIF_STANDARD_MAX    0x7FF
-#define CANNIF_EXTENDED_MAX    0x1FFFFFFF
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/
@@ -194,8 +146,6 @@ typedef enum
     CANIF_NO_NOTIFICATION,
     CANIF_TX_RX_NOTIFICATION
 } CanIf_NotifStatusType;
-<<<<<<< HEAD
-=======
 /***********
  Name: CanIfRxPduCanIdType
  Parent Container: CanIfRxPduCfg
@@ -342,7 +292,7 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
             True: Enabled
             False: Disabled
      ****************/
-#if(STD_OFF == CANIF_READRXPDU_NOTIFY_STATUS_API)
+#if(STD_ON == CANIF_READRXPDU_NOTIFY_STATUS_API)
     boolean CanIfRxPduReadNotifyStatus;
 #endif
 
@@ -379,9 +329,10 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
                 for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
 
      ****************/
-    uint32 CanIfRxPduCanIdMask ;
+//    uint32 CanIfRxPduCanIdMask ;
 
 }CanIfRxPduCfg;
+
 /**************************
 Container Name: CanIfInitHohCfg
 Description:This container contains the references to the configuration setup of
@@ -393,44 +344,6 @@ typedef struct CanIfInitHohCfg
     CanIfHrhCfg CanIfHrh_config;
 
 }CanIfInitHohCfg;
-
-/**************************
-
-Container Name CanIfInitCfg
-Description This container contains the init parameters of the CAN Interface.
-*************************/
-typedef struct{
-
-    /*  Selects the CAN Interface specific configuration setup. This type of the  external data structure shall contain the post build initialization data for
-        the CAN Interface for all underlying CAN Dirvers.
-     */
-    uint32 CanIfInitCfgSet[32]; //
-
-    /* Maximum total size of all Tx buffers. This parameter is needed only in case of post-build loadable implementation using static memory allocation. */
-    uint64 CanIfMaxBufferSize;  //
-
-    /* uint32 CanIfNumberOfCanRxPduIds; Maximum number of Pdus.
-        This parameter is needed only in case of post-build loadable implementation
-        using static memory allocation.*/
-    uint64 CanIfMaxRxPduCfg; //
-
-    /* AUTOSAR 4.3 uint32 CanIfMaxTxPduCfg;
-        Maximum number of Pdus. This parameter is needed only in case of
-        post-build loadable implementation using static memory allocation.*/
-    uint64 CanIfMaxTxPduCfg;  //
-
-      /** This container contains parameters related to each HTH */
-    CanIfInitHohCfg* CanIfHohConfigPtr;  // Conflict between standerd and AVECORE Code
-
-      /* Rx PDU's list */
-    CanIfRxPduCfg*  CanIfRxPduConfigPtr;
-
-    CanIfTxPduCfg* CanIfTxPduConfigPtr;
-
-
-}CanIfInitCfg;
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
-
 /*
  * This type defines a data structure for the post build parameters of the CAN
  *interface for all underlying CAN drivers. At initialization the CanIf gets a
@@ -439,14 +352,6 @@ typedef struct{
  */
 typedef struct
 {
-<<<<<<< HEAD
-=======
-    /* Reference to the list of channel init configurations. */
-       CanIfCtrlCfg* ControllerConfig;
-
-       /* This container contains the init parameters of the CAN Interface. */
-       CanIfInitCfg* InitConfig;
->>>>>>> a49b16a40b61da91ad60d5698dc351845b415c59
 
 } CanIf_ConfigType;
 
