@@ -292,7 +292,7 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
             True: Enabled
             False: Disabled
      ****************/
-#if(STD_OFF == CANIF_READRXPDU_NOTIFY_STATUS_API)
+#if(STD_ON == CANIF_READRXPDU_NOTIFY_STATUS_API)
     boolean CanIfRxPduReadNotifyStatus;
 #endif
 
@@ -329,9 +329,10 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
                 for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
 
      ****************/
-    uint32 CanIfRxPduCanIdMask ;
+//    uint32 CanIfRxPduCanIdMask ;
 
 }CanIfRxPduCfg;
+
 /**************************
 Container Name: CanIfInitHohCfg
 Description:This container contains the references to the configuration setup of
