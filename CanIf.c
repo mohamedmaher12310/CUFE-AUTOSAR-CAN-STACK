@@ -25,23 +25,6 @@
  * Description: This service indicates a successful reception of a received CAN Rx LPDU
  *              to the CanIf after passing all filters and validation checks.
  ************************************************************************************/
-/*included functions*/
-
-
-uint8 CanIf_GetHrhChannel(uint8 Hrh_index)
-    {
-
-    CanIfHrhCfg* CanIfHrhCfg_config;
-
-
-        uint8 channel_num=0;
-
-        CanIfHrhCfg_config = CanIf_ConfigType_Ptr ->InitConfig ->CanIfHohConfigPtr ->CanIfHrh_config ;
-
-
-        return channel_num;
-    }
-
 
 void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
 {

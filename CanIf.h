@@ -216,7 +216,7 @@ typedef struct {
 
 }CanIfCtrlCfg;
 
-typedef struct {
+typedef struct CanIfCtrlDrvCfg{
 
     CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
 /*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
@@ -415,7 +415,7 @@ typedef struct{
  *pointer to a structure of this type to get access to its configuration data, which
  *is necessary for initialization.
  */
-typedef struct
+typedef struct CanIf_ConfigType
 {
     /* Reference to the list of channel init configurations. */
     CanIfCtrlCfg* ControllerConfig;
@@ -427,11 +427,11 @@ typedef struct
      * are aggregated under this container. For each CAN Driver module a
      *seperate instance of this container has to be provided.
      * */
-    CanIfCtrlDrvCfg CanIfCtrlDrvCfg;
+    CanIfCtrlDrvCfg CanIfCtrlDrvCfg_config;
 
 
 
-} CanIf_ConfigType;
+}CanIf_ConfigType;
 
 CanIf_ConfigType * CanIf_ConfigType_Ptr;
 
