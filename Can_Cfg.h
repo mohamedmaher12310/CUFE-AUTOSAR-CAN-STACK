@@ -287,6 +287,10 @@ Name: CanObjectType
 Parent Container: CanHardwareObject
 Description: Specifies if the HardwareObject is used as Transmit or as Receive object
  */
+
+#define HTH_NUMBER                              (uint8)3
+
+
 #define CAN_HOH_TYPE_0                           (CanObjectType)RECIEVE
 #define CAN_HOH_TYPE_1                           (CanObjectType)TRANSMIT
 #define CAN_HOH_TYPE_2                           (CanObjectType)RECIEVE

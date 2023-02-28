@@ -62,6 +62,11 @@
 #endif
 
 
+#define CanIf_BUFFER_NUMBER                (uint8)HTH_NUMBER
+#define Can_DRIVERS_NUMBER                 (uint8)1
+
+#define CanIfMaxTxPduCfg                   (uint8)2
+
 /************************CanIfPrivateCfg Container*******************************/
 /*Selects whether Data Length Check is supported.*/
 #define CanIfPrivateDataLengthCheck         (STD_ON)
@@ -117,11 +122,12 @@
 /*ECU wide unique, symbolic handle for transmit CAN L-SDU.*/
 #define CanIfTxPduId_0          (0U)
 #define CanIfTxPduId_1          (1U)
+/*
 #define CanIfTxPduId_2          (2U)
 #define CanIfTxPduId_3          (3U)
 #define CanIfTxPduId_4          (4U)
 #define CanIfTxPduId_5          (5U)
-
+*/
 
 
 #endif /* CANIF_CFG_H_ */

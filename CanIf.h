@@ -187,7 +187,7 @@ typedef struct
  */
 typedef struct
 {
-    CanIfHthCfg* CanIfHthCfg;
+    CanIfHthCfg CanIfHthCfg[Can_DRIVERS_NUMBER];
 
 } CanIfInitHohCfg;
 
@@ -235,6 +235,20 @@ typedef enum
     UINT8
 } CanIfPublicHandleTypeEnum;
 
+
+/*
+   This container contains the Txbuffer configuration. Multiple buffers with
+    different sizes could be configured. If CanIfBufferSize
+    (ECUC_CanIf_00834) equals 0, the CanIf Tx L-PDU only refers via this
+    CanIfBufferCfg the corresponding CanIfHthCfg. */
+
+typedef struct
+{
+    uint8 CanIfBufferSize;
+    CanIfHthCfg* CanIfBufferHthRef;
+
+}CanIfBufferCfg;
+
 /*
  * This container contains the configuration (parameters) of a transmit
  * CAN L-PDU. It has to be configured as often as a transmit CAN L-PDU
@@ -272,7 +286,12 @@ typedef struct
     /*Defines the type of each transmit CAN L-PDU.*/
     CanIfTxPduType CanIfTxPduType;
 
+    /*Configurable reference to a CanIf buffer configuration*/
+    CanIfBufferCfg* CanIfTxPduBufferRef;
+
 } CanIfTxPduCfg;
+
+
 
 
 /* This container contains the init parameters of the CAN Interface.*/
@@ -285,8 +304,10 @@ typedef struct
     */
     uint8 CanIfInitCfgSet[1];
     /* Sub-Containers */
-    CanIfInitHohCfg* CanIfInitHohCfg;
-    CanIfTxPduCfg* CanIfTxPduCfg;
+    CanIfInitHohCfg CanIfInitHohCfg[Can_DRIVERS_NUMBER];
+    CanIfTxPduCfg CanIfTxPduCfg[CanIfMaxTxPduCfg];
+
+    CanIfBufferCfg CanIfBufferCfg[CanIf_BUFFER_NUMBER];
 
 } CanIfInitCfg;
 
@@ -304,7 +325,7 @@ typedef struct
     CanGeneral* CanIfCtrlDrvNameRef;
 
     /*Sub-Container*/
-    CanIfCtrlCfg CanIfCtrlCfg;
+    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
 
 } CanIfCtrlDrvCfg;
 
