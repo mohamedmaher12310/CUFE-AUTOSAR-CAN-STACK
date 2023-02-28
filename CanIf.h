@@ -123,6 +123,17 @@
 /* DET Code to report that CAN Interface initialization failed*/
 #define CANIF_E_INIT_FAILED                 (uint8)80
 
+
+
+/*******************************************************************************
+ *                     RUN TIME Error Codes                                        *
+ *******************************************************************************/
+/*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
+#define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
+
+#define CANNIF_STANDARD_MAX    0x7FF
+#define CANNIF_EXTENDED_MAX    0x1FFFFFFF
+
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/
@@ -197,7 +208,24 @@ typedef enum
 
 typedef struct {
 
+    uint8 CanIfCtrlId;
+
+    boolean CanIfCtrlWakeupSupport;
+
+    CanController* CanIfCtrlCanCtrlRef;
+
 }CanIfCtrlCfg;
+
+typedef struct {
+
+    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
+/*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
+Vendor ID  */
+    CanGeneral* CanIfCtrlDrvNameRef;
+
+    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
+
+}CanIfCtrlDrvCfg;
 
 typedef struct Pdu{
 
@@ -329,7 +357,7 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
                 for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
 
      ****************/
-//    uint32 CanIfRxPduCanIdMask ;
+    //    uint32 CanIfRxPduCanIdMask ;
 
 }CanIfRxPduCfg;
 
@@ -341,9 +369,46 @@ Description:This container contains the references to the configuration setup of
 typedef struct CanIfInitHohCfg
 {
 
-    CanIfHrhCfg CanIfHrh_config;
+    CanIfHrhCfg* CanIfHrh_config;
 
 }CanIfInitHohCfg;
+
+/**************************
+
+Container Name CanIfInitCfg
+Description This container contains the init parameters of the CAN Interface.
+ *************************/
+typedef struct{
+
+    /*  Selects the CAN Interface specific configuration setup. This type of the  external data structure shall contain the post build initialization data for
+        the CAN Interface for all underlying CAN Dirvers.
+     */
+    uint32 CanIfInitCfgSet[32]; //
+
+    /* Maximum total size of all Tx buffers. This parameter is needed only in case of post-build loadable implementation using static memory allocation. */
+    uint64 CanIfMaxBufferSize;  //
+
+    /* uint32 CanIfNumberOfCanRxPduIds; Maximum number of Pdus.
+        This parameter is needed only in case of post-build loadable implementation
+        using static memory allocation.*/
+    uint64 CanIfMaxRxPduCfg; //
+
+    /* AUTOSAR 4.3 uint32 CanIfMaxTxPduCfg;
+        Maximum number of Pdus. This parameter is needed only in case of
+        post-build loadable implementation using static memory allocation.*/
+    uint64 CanIfMaxTxPduCfg;  //
+
+    /** This container contains parameters related to each HTH */
+    CanIfInitHohCfg* CanIfHohConfigPtr;  // Conflict between standerd and AVECORE Code
+
+    /* Rx PDU's list */
+    CanIfRxPduCfg*  CanIfRxPduConfigPtr;
+
+    CanIfTxPduCfg* CanIfTxPduConfigPtr;
+
+
+}CanIfInitCfg;
+
 /*
  * This type defines a data structure for the post build parameters of the CAN
  *interface for all underlying CAN drivers. At initialization the CanIf gets a
@@ -352,8 +417,23 @@ typedef struct CanIfInitHohCfg
  */
 typedef struct
 {
+    /* Reference to the list of channel init configurations. */
+    CanIfCtrlCfg* ControllerConfig;
+
+    /* This container contains the init parameters of the CAN Interface. */
+    CanIfInitCfg*  InitConfig;
+    /*
+     * Configuration parameters for all the underlying CAN Driver modules
+     * are aggregated under this container. For each CAN Driver module a
+     *seperate instance of this container has to be provided.
+     * */
+    CanIfCtrlDrvCfg CanIfCtrlDrvCfg;
+
+
 
 } CanIf_ConfigType;
+
+CanIf_ConfigType * CanIf_ConfigType_Ptr;
 
 /*******************************************************************************
  *                      Function Prototypes                                    *
@@ -456,6 +536,23 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
  ************************************************************************************/
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
+
+
+
+/************************************************************************************
+ * Service Name: CanIf_RxIndication
+ * Service ID[hex]: 0x14
+ * Sync/Async: Synchronous
+ * Reentrancy:  Reentrant
+ * Parameters (in):
+ *          Mailbox: Identifies the HRH and its corresponding CAN Controller
+ *          PduInfoPtr :Pointer to the received L-PDUParameters (inout): None
+ * Parameters (out): None
+ * Return value:     None
+ * Description: This service indicates a successful reception of a received CAN Rx LPDU
+ *              to the CanIf after passing all filters and validation checks.
+ ************************************************************************************/
+void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr);
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/

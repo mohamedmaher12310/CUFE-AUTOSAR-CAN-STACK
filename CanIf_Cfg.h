@@ -136,6 +136,17 @@ can contain one or more HRHs.
 #define CanIfHrhCanCtrlIdRef_0       (CanIfCtrlCfg)CanIfCtrlId_0
 #define CanIfHrhCanCtrlIdRef_1       (CanIfCtrlCfg)CanIfCtrlId_0
 
+
+///***************************
+//Name: CanIfCtrlWakeupSupport
+//Parent Container CanIfCtrlCfg
+//Description:This parameter defines if a respective controller of the referenced CAN
+//            Driver modules is queriable for wake up events.
+//            True: Enabled False: Disabled
+//************/
+//#define CanIfCtrlWakeupSupport          STD_OFF
+//
+
 /***************************
 Name: CanIfRxPduCanId
 Parent Container : CanIfRxPduCfg
