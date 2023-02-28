@@ -43,15 +43,15 @@
 #include "CanIf_Cfg.h"
 /* AUTOSAR Version checking between CanIf_Cfg.h and CanIf.h files */
 #if ((CANIF_CFG_AR_RELEASE_MAJOR_VERSION != CANIF_AR_RELEASE_MAJOR_VERSION)\
- ||  (CANIF_CFG_AR_RELEASE_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
- ||  (CANIF_CFG_AR_RELEASE_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
+        ||  (CANIF_CFG_AR_RELEASE_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
+        ||  (CANIF_CFG_AR_RELEASE_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
 #error "The AR version of CanIf_Cfg.h does not match the expected version"
 #endif
 
 /* Software Version checking between CanIf_Cfg.h and CanIf.h files */
 #if ((CANIF_CFG_SW_MAJOR_VERSION != CANIF_SW_MAJOR_VERSION)\
- ||  (CANIF_CFG_SW_MINOR_VERSION != CANIF_SW_MINOR_VERSION)\
- ||  (CANIF_CFG_SW_PATCH_VERSION != CANIF_SW_PATCH_VERSION))
+        ||  (CANIF_CFG_SW_MINOR_VERSION != CANIF_SW_MINOR_VERSION)\
+        ||  (CANIF_CFG_SW_PATCH_VERSION != CANIF_SW_PATCH_VERSION))
 #error "The SW version of CanIf_Cfg.h does not match the expected version"
 #endif
 
@@ -62,15 +62,15 @@
 #include "Can.h"
 /* AUTOSAR Version checking between CanIf.h and Can.h files */
 #if ((CANIF_AR_RELEASE_MAJOR_VERSION != CAN_AR_RELEASE_MAJOR_VERSION)\
- ||  (CANIF_AR_RELEASE_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
- ||  (CANIF_AR_RELEASE_PATCH_VERSION != CAN_AR_RELEASE_PATCH_VERSION))
+        ||  (CANIF_AR_RELEASE_MINOR_VERSION != CAN_AR_RELEASE_MINOR_VERSION)\
+        ||  (CANIF_AR_RELEASE_PATCH_VERSION != CAN_AR_RELEASE_PATCH_VERSION))
 #error "The AR version of Can.h does not match the expected version"
 #endif
 
 /* Software Version checking between CanIf.h and Can.h files */
 #if ((CANIF_SW_MAJOR_VERSION != CAN_SW_MAJOR_VERSION)\
-||   (CANIF_SW_MINOR_VERSION != CAN_SW_MINOR_VERSION)\
-||   (CANIF_SW_PATCH_VERSION != CAN_SW_PATCH_VERSION))
+        ||   (CANIF_SW_MINOR_VERSION != CAN_SW_MINOR_VERSION)\
+        ||   (CANIF_SW_PATCH_VERSION != CAN_SW_PATCH_VERSION))
 #error "The SW version of Can.h does not match the expected version"
 #endif
 
@@ -148,6 +148,167 @@ typedef enum
 } CanIf_NotifStatusType;
 
 /*
+ * This container contains the configuration (parameters) of an adressed
+ * CAN controller by an underlying CAN Driver module. This container is
+ * configurable per CAN controller.
+ */
+typedef struct
+{
+    /*
+     * This parameter abstracts from the CAN Driver specific parameter
+     * Controller. Each controller of all connected CAN Driver modules shall
+     * be assigned to one specific ControllerId of the CanIf. Range:
+     * 0..number of configured controllers of all CAN Driver modules
+     */
+    uint8 CanIfCtrlId;
+
+    /*
+     * This parameter references to the logical handle of the underlying CAN
+     * controller from the CAN Driver module to be served by the CAN
+     * Interface module. The following parameters of CanController config
+     * container shall be referenced by this link: CanControllerId,
+     * CanWakeupSourceRef
+     */
+    CanController* CanIfCtrlCanCtrlRef;
+
+} CanIfCtrlCfg;
+
+
+/* This container contains parameters related to each HTH.*/
+typedef struct
+{
+    CanIfCtrlCfg* CanIfHthCanCtrlIdRef;
+    CanHardwareObject* CanIfHthIdSymRef;
+} CanIfHthCfg ;
+
+/*
+ * This container contains the references to the configuration setup of
+ * each underlying CAN Driver.
+ */
+typedef struct
+{
+    CanIfHthCfg* CanIfHthCfg;
+
+} CanIfInitHohCfg;
+
+/*
+ * Selects the desired software filter mechanism for reception only. Each
+ * implemented software filtering method is identified by this enumeration
+ * number.
+ */
+typedef enum
+{
+    BINARY,
+    INDEX,
+    LINEAR,
+    TABLE
+} CanIfPrivateSoftwareFilterType;
+
+/*
+ * Type of CAN Identifier of the transmit CAN L-PDU used by the CAN
+ * Driver module for CAN L-PDU transmission.
+ */
+typedef enum
+{
+    EXTENDED_CAN,
+    EXTENDED_FD_CAN,
+    STANDARD_CAN,
+    STANDARD_FD_CAN
+} CanIfTxPduCanIdType;
+
+/* Defines the type of each transmit CAN L-PDU.*/
+typedef enum
+{
+    DYNAMIC_ID,
+    STATIC_ID
+} CanIfTxPduType;
+
+/*
+ * This parameter is used to configure the Can_HwHandleType. The
+ * Can_HwHandleType represents the hardware object handles of a CAN
+ * hardware unit. For CAN hardware units with more than 255 HW objects
+ * the extended range shall be used (UINT16).
+ */
+typedef enum
+{
+    UINT16,
+    UINT8
+} CanIfPublicHandleTypeEnum;
+
+/*
+ * This container contains the configuration (parameters) of a transmit
+ * CAN L-PDU. It has to be configured as often as a transmit CAN L-PDU
+ * is needed.
+ */
+typedef struct
+{
+    /*
+     * CAN Identifier of transmit CAN L-PDUs used by the CAN Driver for
+     * CAN L-PDU transmission. Range: 11 Bit For Standard CAN Identifier
+     * ... 29 Bit For Extended CAN identifier
+     */
+    uint32 CanIfTxPduCanId;
+
+    /*
+     * Identifier mask which denotes relevant bits in the CAN Identifier. This
+     * parameter may be used to keep parts of the CAN Identifier of dynamic
+     * transmit L-PDUs static. Range: 11 bits for Standard CAN Identifier, 29
+     * bits for Extended CAN Identifier.
+     */
+    uint32 CanIfTxPduCanIdMask;
+
+    /*
+     * Type of CAN Identifier of the transmit CAN L-PDU used by the CAN
+     * Driver module for CAN L-PDU transmission.
+     */
+    CanIfTxPduCanIdType CanIfTxPduCanIdType;
+
+    /*ECU wide unique, symbolic handle for transmit CAN L-SDU.*/
+    uint32 CanIfTxPduId;
+
+    /*Enables/disables truncation of PDUs that exceed the configured size.*/
+    boolean CanIfTxPduTruncation;
+
+    /*Defines the type of each transmit CAN L-PDU.*/
+    CanIfTxPduType CanIfTxPduType;
+
+} CanIfTxPduCfg;
+
+
+/* This container contains the init parameters of the CAN Interface.*/
+typedef struct
+{
+   /*
+    * Selects the CAN Interface specific configuration setup. This type of the
+    * external data structure shall contain the post build initialization data for
+    * the CAN Interface for all underlying CAN Dirvers.
+    */
+    uint8 CanIfInitCfgSet[1];
+    /* Sub-Containers */
+    CanIfInitHohCfg* CanIfInitHohCfg;
+    CanIfTxPduCfg* CanIfTxPduCfg;
+
+} CanIfInitCfg;
+
+/*
+ * Configuration parameters for all the underlying CAN Driver modules
+ * are aggregated under this container. For each CAN Driver module a
+ * seperate instance of this container has to be provided.
+ */
+typedef struct
+{
+    /*Reference to the Init Hoh Configuration*/
+    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
+
+    /*CAN Interface Driver Reference.*/
+    CanGeneral* CanIfCtrlDrvNameRef;
+
+    /*Sub-Container*/
+    CanIfCtrlCfg CanIfCtrlCfg;
+
+} CanIfCtrlDrvCfg;
+
+/*
  * This type defines a data structure for the post build parameters of the CAN
  *interface for all underlying CAN drivers. At initialization the CanIf gets a
  *pointer to a structure of this type to get access to its configuration data, which
@@ -155,8 +316,11 @@ typedef enum
  */
 typedef struct
 {
-
+    /*Sub-Containers*/
+    CanIfCtrlDrvCfg CanIfCtrlDrvCfg ;
+    CanIfInitCfg  CanIfInitCfg;
 } CanIf_ConfigType;
+
 
 /*******************************************************************************
  *                      Function Prototypes                                    *

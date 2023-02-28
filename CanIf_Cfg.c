@@ -9,5 +9,7 @@
  * Author: CUFE 2023 Team
  ******************************************************************************/
 
-/* Include of CanDrv Configuration file*/
-#include "Can_Cfg.h"
+/* Include of CanIf_Cfg Header Filer*/
+#include "CanIf_Cfg.h"
+
+
