@@ -37,21 +37,21 @@ Description:Maximum total size of all Tx buffers. This parameter is needed only 
             case of post-build loadable implementation using static memory
             allocation.
  *****************/
-#define CanIfMaxBufferSize  (uint64)50
+//#define CanIfMaxBufferSize  (uint64)50
 /**************************
 Name: CanIfMaxTxPduCfg
 Parent Container: CanIfInitCfg
 Description:Maximum number of Pdus. This parameter is needed only in case of
             post-build loadable implementation using static memory allocation
  *****************/
-#define CanIfMaxTxPduCfg    (uint64)40
+//#define CanIfMaxTxPduCfg    (uint64)40
 /**************************
 Name: CanIfMaxRxPduCfg
 Parent Container: CanIfInitCfg
 Description:Maximum number of Pdus. This parameter is needed only in case of
             post-build loadable implementation using static memory allocation
  *****************/
-#define CanIfMaxRxPduCfg    (uint64)10
+//#define CanIfMaxRxPduCfg    (uint64)10
 
 /**************************
 Name: CanIfPublicReadRxPduDataApi

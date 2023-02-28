@@ -205,7 +205,6 @@ typedef enum
     STANDARD
 
 }CanIfHrhRangeRxPduRangeCanIdType;
-
 typedef struct {
 
     uint8 CanIfCtrlId;
@@ -215,24 +214,6 @@ typedef struct {
     CanController* CanIfCtrlCanCtrlRef;
 
 }CanIfCtrlCfg;
-
-typedef struct CanIfCtrlDrvCfg{
-
-    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
-/*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
-Vendor ID  */
-    CanGeneral* CanIfCtrlDrvNameRef;
-
-    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
-
-}CanIfCtrlDrvCfg;
-
-typedef struct Pdu{
-
-
-
-
-}Pdu;
 typedef struct CanIfHrhRangeCfg
 {
     /*CAN Identifier used as base value in combination with
@@ -264,6 +245,7 @@ typedef struct CanIfHrhRangeCfg
     CanIfHrhRangeRxPduRangeCanIdType CanIfHrhRangeRxPduRangeCanIdType;
 
 }CanIfHrhRangeCfg;
+
 /**************************
 Container Name: CanIfHrhCfg
 Description:This container contains configuration parameters for each hardware
@@ -280,6 +262,38 @@ typedef struct CanIfHrhCfg
 
     CanIfHrhRangeCfg CanIfHrhRange_config;
 }CanIfHrhCfg;
+/**************************
+Container Name: CanIfInitHohCfg
+Description:This container contains the references to the configuration setup of
+            each underlying CAN Driver.
+ *****************/
+typedef struct CanIfInitHohCfg
+{
+
+    CanIfHrhCfg* CanIfHrh_config;
+
+}CanIfInitHohCfg;
+
+
+
+typedef struct CanIfCtrlDrvCfg{
+
+    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
+/*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
+Vendor ID  */
+    CanGeneral* CanIfCtrlDrvNameRef;
+
+    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
+
+}CanIfCtrlDrvCfg;
+
+typedef struct Pdu{
+
+
+
+
+}Pdu;
+
 /**************************
 Container Name: CanIfRxPduCfg
 Description:This container contains the configuration (parameters) of each receive
@@ -361,17 +375,6 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
 
 }CanIfRxPduCfg;
 
-/**************************
-Container Name: CanIfInitHohCfg
-Description:This container contains the references to the configuration setup of
-            each underlying CAN Driver.
- *****************/
-typedef struct CanIfInitHohCfg
-{
-
-    CanIfHrhCfg* CanIfHrh_config;
-
-}CanIfInitHohCfg;
 
 /**************************
 
@@ -404,7 +407,7 @@ typedef struct{
     /* Rx PDU's list */
     CanIfRxPduCfg*  CanIfRxPduConfigPtr;
 
-    CanIfTxPduCfg* CanIfTxPduConfigPtr;
+//    CanIfTxPduCfg* CanIfTxPduConfigPtr;
 
 
 }CanIfInitCfg;
