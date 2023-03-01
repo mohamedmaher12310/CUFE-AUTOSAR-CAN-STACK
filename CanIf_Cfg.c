@@ -10,12 +10,23 @@
  ******************************************************************************/
 
 /* Include of CanDrv Configuration file*/
-#include "Can_Cfg.h"
 #include "CanIf.h"
 
-
-CanIf_ConfigType CanIf =
+const CanIf_ConfigType CanIf_Configuration =
 {
+
+ .CanIfCtrlDrvCfg =
+ {
+
+ },
+ .ControllerConfig =
+ {
+
+ },
+ .InitConfig =
+ {
+
+ }
 
 
 };

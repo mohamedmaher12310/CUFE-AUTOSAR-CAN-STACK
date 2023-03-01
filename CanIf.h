@@ -430,13 +430,14 @@ typedef struct CanIf_ConfigType
      * are aggregated under this container. For each CAN Driver module a
      *seperate instance of this container has to be provided.
      * */
-    CanIfCtrlDrvCfg CanIfCtrlDrvCfg_config;
+    CanIfCtrlDrvCfg CanIfCtrlDrvCfg;
 
 
 
 }CanIf_ConfigType;
 
-CanIf_ConfigType * CanIf_ConfigType_Ptr;
+
+//CanIf_ConfigType * CanIf_ConfigType_Ptr;
 
 /*******************************************************************************
  *                      Function Prototypes                                    *
@@ -568,9 +569,9 @@ void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
  *******************************************************************************/
 
 
+extern const CanIf_ConfigType CanIf_Configuration ;
 
-
-
+extern CanIfCtrlDrvCfg CanIfCtrlDrvCfg;
 
 
 #endif /* CANIF_H_ */
