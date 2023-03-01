@@ -212,7 +212,7 @@ Description:Enables and disables the API for reading the notification status of
                 the <User_RxIndication> is selectable.
  ****************/
 
-#define CanIfRxPduUserRxIndicationName      (CanIfRxPduUserRxIndicationUL)PDUR
+//#define CanIfRxPduUserRxIndicationName      (CanIfRxPduUserRxIndicationUL)PDUR
 
 /**************************
 Name: CanIfHrhSoftwareFilter

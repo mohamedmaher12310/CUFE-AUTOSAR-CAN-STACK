@@ -36,5 +36,4 @@ void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
 
 
 
-
 }
