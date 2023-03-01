@@ -655,22 +655,7 @@ void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 /* DET Code to report that CAN Interface initialization failed*/
 #define CANIF_E_INIT_FAILED                 (uint8)80
 
-/*******************************************************************************
- *                              Module Data Types                              *
- *******************************************************************************/
 
-/*
- *The PduMode of a channel defines its transmit or receive activity.
- *Communication direction (transmission and/or reception) of the channel can
- *be controlled separately or together by upper layers.
- */
-typedef enum
-{
-    CANIF_OFFLINE,
-    CANIF_TX_OFFLINE,
-    CANIF_TX_OFFLINE_ACTIVE,
-    CANIF_ONLINE
-} CanIf_PduModeType;
 
 /* Return value of CAN L-PDU notification status. */
 typedef enum
@@ -999,7 +984,7 @@ void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
  *                       External Variables                                    *
  *******************************************************************************/
 
-
+extern const CanIf_ConfigType CanIf_Configuration;
 
 
 
