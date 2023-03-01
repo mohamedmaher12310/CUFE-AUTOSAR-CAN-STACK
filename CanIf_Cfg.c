@@ -11,8 +11,6 @@
 
 /* Include of CanIf_Cfg Header Filer*/
 #include "CanIf.h"
-
-
 const CanIf_ConfigType CanIf_Configuration =
                             {
                              .CanIfCtrlDrvCfg =
@@ -45,6 +43,7 @@ const CanIf_ConfigType CanIf_Configuration =
                                               .CanIfBufferHthRef = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[ZERO].CanIfHthCfg[0]
                                              }
                                         },
+
                                     .CanIfInitHohCfg =
                                        {
                                          {
@@ -62,8 +61,22 @@ const CanIf_ConfigType CanIf_Configuration =
                                                        .CanIfHthCanCtrlIdRef = &CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[ZERO],
                                                        .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[4]
                                                       }
-                                              }
+                                              },
+                                            /* RX_TEAM */
+                                             .CanIfHrhCfg =
+                                             {
+                                                     {
+                                                      .CanIfHrhCanCtrlIdRef = &CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[ZERO],
+                                                      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[0] /*How!!!!!!!!!!!!!!!!!!!*/
+                                                     },
+                                                     {
+                                                      .CanIfHrhCanCtrlIdRef = &CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[ZERO],
+                                                      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[2]
+                                                     },
+
+                                             }
                                           }
+                                         /*                            */
                                         },
                                      .CanIfTxPduCfg =
                                          {
@@ -86,5 +99,53 @@ const CanIf_ConfigType CanIf_Configuration =
                                                .CanIfTxPduBufferRef = &CanIf_Configuration.CanIfInitCfg.CanIfBufferCfg[0U]
                                               },
                                          }
+                                    /*****************************TEAM_RX**************************************************/
+                                    .CanIfRxPduCfg =
+                                        {
+                                             {
+                                              .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhconfig[0],
+                                              .CanIfRxPduReadNotifyStatus=FALSE,
+                                              .CanIfRxPduUserRxIndicationName=PDUR,
+                                              .CanIfRxPduCanIdType = STANDARD_CAN,
+                                              .CanIfRxPduId = CanIfRxPduId_0,
+                                              .CanIfRxPduDataLength=8,
+                                              .CanIfRxPduReadData=FALSE,
+                                              .CanIfRxPduCanId = CanIfCtrlId_0,
+                                              .CanIfRxPduCanIdMask =CanIfRxPduCanIdMask_0,
+
+                                             },
+                                             {
+                                              .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhconfig[0],
+                                              .CanIfRxPduReadNotifyStatus=FALSE,
+                                              .CanIfRxPduUserRxIndicationName=PDUR,
+                                              .CanIfRxPduCanIdType = STANDARD_CAN,
+                                              .CanIfRxPduId = CanIfRxPduId_1,
+                                              .CanIfRxPduDataLength=8,
+                                              .CanIfRxPduReadData=FALSE,
+                                              .CanIfRxPduCanId = CanIfCtrlId_1,
+                                              .CanIfRxPduCanIdMask = CanIfRxPduCanIdMask_1,
+                                             },
+
+                                             {
+                                              .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhconfig[1],
+                                              .CanIfRxPduReadNotifyStatus=FALSE,
+                                              .CanIfRxPduUserRxIndicationName=PDUR,
+                                              .CanIfRxPduCanIdType = STANDARD_CAN,
+                                              .CanIfRxPduDataLength=8,
+                                              .CanIfRxPduReadData=FALSE,
+                                              .CanIfRxPduCanId = CanIfCtrlId_2,
+                                              .CanIfRxPduCanIdMask = CanIfRxPduCanIdMask_2,
+                                             },
+
+                                        }
+
+
+
+
                                    },
                             };
+
+
+
+
+

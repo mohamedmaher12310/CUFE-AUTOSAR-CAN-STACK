@@ -86,7 +86,7 @@ Can_ConfigType Can_Configuration = {
                                                 .CanIdType = CAN_HOH_ID_TYPE_0,
                                                 .CanObjectId = CAN_HOH_ID_0,
                                                 .CanObjectType = CAN_HOH_TYPE_0,
-                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN_HOH_REF_0],
+                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID],
                                                 .CanHwFilter =
                                                     {
                                                      .CanHwFilterCode = CAN_HW_FILTER_CODE_0 ,
@@ -100,7 +100,7 @@ Can_ConfigType Can_Configuration = {
                                                 .CanIdType = CAN_HOH_ID_TYPE_1,
                                                 .CanObjectId = CAN_HOH_ID_1,
                                                 .CanObjectType = CAN_HOH_TYPE_1,
-                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN_HOH_REF_1],
+                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID],
                                                 .CanHwFilter =
                                                     {
                                                      .CanHwFilterCode = CAN_HW_FILTER_CODE_1 ,
@@ -114,7 +114,7 @@ Can_ConfigType Can_Configuration = {
                                                 .CanIdType = CAN_HOH_ID_TYPE_2,
                                                 .CanObjectId = CAN_HOH_ID_2,
                                                 .CanObjectType = CAN_HOH_TYPE_2,
-                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN_HOH_REF_2],
+                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID],
                                                 .CanHwFilter =
                                                     {
                                                      .CanHwFilterCode = CAN_HW_FILTER_CODE_2,
@@ -128,7 +128,7 @@ Can_ConfigType Can_Configuration = {
                                                 .CanIdType = CAN_HOH_ID_TYPE_3,
                                                 .CanObjectId = CAN_HOH_ID_3,
                                                 .CanObjectType = CAN_HOH_TYPE_3,
-                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN_HOH_REF_3],
+                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID],
                                                 .CanHwFilter =
                                                     {
                                                      .CanHwFilterCode = CAN_HW_FILTER_CODE_3,
@@ -142,7 +142,7 @@ Can_ConfigType Can_Configuration = {
                                                 .CanIdType = CAN_HOH_ID_TYPE_4,
                                                 .CanObjectId = CAN_HOH_ID_4,
                                                 .CanObjectType = CAN_HOH_TYPE_4,
-                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN_HOH_REF_4],
+                                                .CanControllerRef = &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID],
                                                 .CanHwFilter =
                                                     {
                                                      .CanHwFilterCode = CAN_HW_FILTER_CODE_4 ,
