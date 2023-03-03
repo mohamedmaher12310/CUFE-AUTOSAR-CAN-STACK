@@ -26,6 +26,8 @@
 #define HRH_NUMBER                          3
 #define CanIf_Rx_BUFFER_NUMBER                HRH_NUMBER
 
+#define ECU_NETWORK_NUMBER                  3
+
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/
@@ -275,7 +277,7 @@ typedef struct
     * external data structure shall contain the post build initialization data for
     * the CAN Interface for all underlying CAN Dirvers.
     */
-    uint8 CanIfInitCfgSet[3];/*l 1 daah bata3 eiih*/ /*mahoor : dah index lel ECU elli me7tag 2a3mel
+    uint8 CanIfInitCfgSet[ECU_NETWORK_NUMBER];/*l 1 daah bata3 eiih*/ /*mahoor : dah index lel ECU elli me7tag 2a3mel
                                  set lel configurations bata3tha
                                  fa 2a7na fel network bata3tna me7tageen 3 ECU bas ;) */
     /* Sub-Containers */
