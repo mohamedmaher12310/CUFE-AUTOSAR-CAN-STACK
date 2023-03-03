@@ -266,8 +266,41 @@ typedef struct
 
 } CanIfTxPduCfg;
 
+/*
+ * Configuration parameters for all the underlying CAN Driver modules
+ * are aggregated under this container. For each CAN Driver module a
+ * seperate instance of this container has to be provided.
+ */
+typedef struct
+{
+    /*Reference to the Init Hoh Configuration*/
+    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
 
+    /*Sub-Container*/
+    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
 
+    /*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
+    Vendor ID  */
+        CanGeneral* CanIfCtrlDrvNameRef;
+} CanIfCtrlDrvCfg;
+/*
+ * This type defines a data structure for the post build parameters of the CAN
+ *interface for all underlying CAN drivers. At initialization the CanIf gets a
+ *pointer to a structure of this type to get access to its configuration data, which
+ *is necessary for initialization.
+ */
+typedef struct
+{
+    /*Sub-Containers*/
+    CanIfCtrlDrvCfg CanIfCtrlDrvCfg ;
+    CanIfInitCfg  CanIfInitCfg;/*ana 7ases eno dahhh lazem yatshal we fl file
+                                bata3 CanIf_Cfg.c ha3mel access lel structure bata3ti
+                                 3an taree2  const CanIf_ConfigType *CanIfInitCfgSet[ECU_NETWORK_NUMBER]
+                                 3ashan ana delwa2ti keda 3andi errors fl access
+                                 ba3d ma 3ereft ento l CanIfInitCfgSet pointer to CanIf_ConfigType*/
+    /* Reference to the list of channel init configurations. */
+    CanIfCtrlCfg* ControllerConfig;
+} CanIf_ConfigType;
 
 /* This container contains the init parameters of the CAN Interface.*/
 typedef struct
@@ -277,7 +310,7 @@ typedef struct
     * external data structure shall contain the post build initialization data for
     * the CAN Interface for all underlying CAN Dirvers.
     */
-    uint8 CanIfInitCfgSet[ECU_NETWORK_NUMBER];/*l 1 daah bata3 eiih*/ /*mahoor : dah index lel ECU elli me7tag 2a3mel
+    const CanIf_ConfigType *CanIfInitCfgSet[ECU_NETWORK_NUMBER];/*l 1 daah bata3 eiih*/ /*mahoor : dah index lel ECU elli me7tag 2a3mel
                                  set lel configurations bata3tha
                                  fa 2a7na fel CAN network bata3tna me7tageen 3 ECU bas ;) */
     /* Sub-Containers */
@@ -312,38 +345,10 @@ typedef struct
 
 } CanIfInitCfg;
 
-/*
- * Configuration parameters for all the underlying CAN Driver modules
- * are aggregated under this container. For each CAN Driver module a
- * seperate instance of this container has to be provided.
- */
-typedef struct
-{
-    /*Reference to the Init Hoh Configuration*/
-    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
 
-    /*Sub-Container*/
-    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
 
-    /*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
-    Vendor ID  */
-        CanGeneral* CanIfCtrlDrvNameRef;
-} CanIfCtrlDrvCfg;
 
-/*
- * This type defines a data structure for the post build parameters of the CAN
- *interface for all underlying CAN drivers. At initialization the CanIf gets a
- *pointer to a structure of this type to get access to its configuration data, which
- *is necessary for initialization.
- */
-typedef struct
-{
-    /*Sub-Containers*/
-    CanIfCtrlDrvCfg CanIfCtrlDrvCfg ;
-    CanIfInitCfg  CanIfInitCfg;
-    /* Reference to the list of channel init configurations. */
-    CanIfCtrlCfg* ControllerConfig;
-} CanIf_ConfigType;
+
 
 /**************************
 Name: CanIfRxPduUserRxIndicationUL
