@@ -114,6 +114,8 @@
 #define CanIfPublicTxConfirmPollingSupport  (STD_ON)
 
 
+#define CANIF_READRXPDU_NOTIFY_STATUS_API   (STD_ON)
+
 /************************CanIfTxPduCfg Container*******************************/
 
 
@@ -133,45 +135,10 @@
 
 #define CanIfTxPduType_0       (CanIfTxPduType)DYNAMIC_ID
 #define CanIfTxPduType_1       (CanIfTxPduType)DYNAMIC_ID
-/*
- *
-#define CanIfTxPduId_2          (2U)
-#define CanIfTxPduId_3          (3U)
-#define CanIfTxPduId_4          (4U)
-#define CanIfTxPduId_5          (5U)
-*/
-/**************************
-Name: CanIfMaxBufferSize
-Parent Container: CanIfInitCfg
-Description:Maximum total size of all Tx buffers. This parameter is needed only in
-            case of post-build loadable implementation using static memory
-            allocation.
- *****************/
-//#define CanIfMaxBufferSize  (uint64)50
-/**************************
-Name: CanIfMaxTxPduCfg
-Parent Container: CanIfInitCfg
-Description:Maximum number of Pdus. This parameter is needed only in case of
-            post-build loadable implementation using static memory allocation
- *****************/
-//#define CanIfMaxTxPduCfg    (uint64)40
-/**************************
-Name: CanIfMaxRxPduCfg
-Parent Container: CanIfInitCfg
-Description:Maximum number of Pdus. This parameter is needed only in case of
-            post-build loadable implementation using static memory allocation
- *****************/
-//#define CanIfMaxRxPduCfg    (uint64)10
 
-/**************************
-Name: CanIfPublicReadRxPduDataApi
-Parent Container: CanIfPublicCfg
-Description:Enables / Disables the API CanIf_ReadRxPduData() for reading
-            received L-SDU data.
-            True: Enabled
-            False: Disabled
- *****************/
-#define CanIfPublicReadRxPduDataApi         (STD_OFF)
+/************************CanIfRxPduCfg Container*******************************/
+
+
 /**************************
 Name: CanIfPublicReadRxPduNotifyStatusApi
 Parent Container: CanIfPublicCfg
@@ -198,21 +165,6 @@ Description:Enables and disables the API for reading the notification status of
 #define CanIfRxPduId_7            (uint32)7
 #define CanIfRxPduId_8            (uint32)8
 #define CanIfRxPduId_9            (uint32)9
-
-/***********
- Name: CanIfRxPduUserRxIndicationName
- Parent Container: CanIfRxPduCfg
- Description:   This parameter defines the name of the <User_RxIndication>. This
-                parameter depends on the parameter
-                CANIF_RXPDU_USERRXINDICATION_UL. If
-                CANIF_RXPDU_USERRXINDICATION_UL equals CAN_TP,
-                CAN_NM, PDUR, XCP, CAN_TSYN, J1939NM or J1939TP, the name
-                of the <User_RxIndication> is fixed. If
-                CANIF_RXPDU_USERRXINDICATION_UL equals CDD, the name of
-                the <User_RxIndication> is selectable.
- ****************/
-
-//#define CanIfRxPduUserRxIndicationName      (CanIfRxPduUserRxIndicationUL)PDUR
 
 /**************************
 Name: CanIfHrhSoftwareFilter
@@ -246,5 +198,12 @@ can contain one or more HRHs.
  *****************/
 #define CanIfHrhCanCtrlIdRef_0       (CanIfCtrlCfg)CanIfCtrlId_0
 #define CanIfHrhCanCtrlIdRef_1       (CanIfCtrlCfg)CanIfCtrlId_0
+
+#define CanIfRxPduCanIdMask_0   0x0
+#define CanIfRxPduCanIdMask_1   0x0
+#define CanIfRxPduCanIdMask_2   0x0
+
+#define CanIfRxPduCanId_0       0x0
+#define CanIfRxPduCanId_1       0x1
 
 #endif /* CANIF_CFG_H_ */

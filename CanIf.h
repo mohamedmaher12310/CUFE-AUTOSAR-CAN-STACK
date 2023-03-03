@@ -18,6 +18,8 @@
 /* CanIf Module Id */
 #define CANIF_MODULE_ID    (31U)
 
+/* Can Instance Id */
+#define CANIF_INSTANCE_ID  (0U)
 
 /*
  * Module Version 1.0.0

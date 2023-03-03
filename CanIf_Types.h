@@ -23,7 +23,10 @@
 #define Can_DRIVERS_NUMBER                 (uint8)1
 
 #define CanIfMaxTxPduCfg                   (uint8)2
-#define HRH_NUMBER                          3
+
+/*RX_TEAM*/
+#define CanIfMaxRxPduCfg_value                   (uint8)2
+#define HRH_NUMBER                          (uint8)2
 #define CanIf_Rx_BUFFER_NUMBER                HRH_NUMBER
 
 /*******************************************************************************
@@ -142,7 +145,7 @@ typedef struct CanIfHrhCfg
 
     boolean CanIfHrhSoftwareFilter ;
 
-    CanIfHrhRangeCfg CanIfHrhRange_config;
+    CanIfHrhRangeCfg CanIfHrhRangeCfg;
 }CanIfHrhCfg;
 /*
  * This container contains the references to the configuration setup of
@@ -179,16 +182,24 @@ typedef enum
     STANDARD_CAN,
     STANDARD_FD_CAN
 } CanIfTxPduCanIdType;
+
+/*
+ * Name CanIfRxPduCanIdType [ECUC_CanIf_00596]
+Parent Container CanIfRxPduCfg
+Description CAN Identifier of receive CAN L-PDUs used by the CAN Driver for
+CAN L-PDU reception.
+ *
+ */
 typedef enum
 {
-    EXTENDED_CAN_RX,
-    EXTENDED_FD_CAN_RX,
-    EXTENDED_NO_FD_CAN_RX,
-    STANDARD_CAN_RX,
-    STANDARD_FD_CAN_RX,
-    STANDARD_NO_FD_CAN_RX
+    EXTENDED_CAN_Rx,
+    EXTENDED_FD_CAN_Rx ,
+    EXTENDED_NO_FD_CAN_Rx,
+    STANDARD_CAN_Rx,
+    STANDARD_FD_CAN_Rx,
+    STANDARD_NO_FD_CAN_Rx
 
-}CanIfRxPduCanIdType;
+} CanIfRxPduCanIdType;
 /* Defines the type of each transmit CAN L-PDU.*/
 typedef enum
 {
@@ -263,91 +274,6 @@ typedef struct
     CanIfBufferCfg* CanIfTxPduBufferRef;
 
 } CanIfTxPduCfg;
-
-/*
- * Configuration parameters for all the underlying CAN Driver modules
- * are aggregated under this container. For each CAN Driver module a
- * seperate instance of this container has to be provided.
- */
-typedef struct
-{
-    /*Reference to the Init Hoh Configuration*/
-    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
-
-    /*Sub-Container*/
-    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
-
-    /*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
-    Vendor ID  */
-        CanGeneral* CanIfCtrlDrvNameRef;
-} CanIfCtrlDrvCfg;
-/*
- * This type defines a data structure for the post build parameters of the CAN
- *interface for all underlying CAN drivers. At initialization the CanIf gets a
- *pointer to a structure of this type to get access to its configuration data, which
- *is necessary for initialization.
- */
-typedef struct
-{
-    /*Sub-Containers*/
-    CanIfCtrlDrvCfg CanIfCtrlDrvCfg ;
-    CanIfInitCfg  CanIfInitCfg;/*ana 7ases eno dahhh lazem yatshal we fl file
-                                bata3 CanIf_Cfg.c ha3mel access lel structure bata3ti
-                                 3an taree2  const CanIf_ConfigType *CanIfInitCfgSet[CAN_HOH_NUMBER]
-                                 3ashan ana delwa2ti keda 3andi errors fl access
-                                 ba3d ma 3ereft ento l CanIfInitCfgSet pointer to CanIf_ConfigType*/
-    /* Reference to the list of channel init configurations. */
-    CanIfCtrlCfg* ControllerConfig;
-} CanIf_ConfigType;
-
-/* This container contains the init parameters of the CAN Interface.*/
-typedef struct
-{
-   /*
-    * Selects the CAN Interface specific configuration setup. This type of the
-    * external data structure shall contain the post build initialization data for
-    * the CAN Interface for all underlying CAN Dirvers.
-    */
-    const CanIf_ConfigType *CanIfInitCfgSet[CAN_HOH_NUMBER];/*l 1 daah bata3 eiih*/ /*
-                                     mahoor 2 : dah lel postbuild config lel HOH elli ana ha3melohom
-                                  congif fel can driver elli howa l mapping benhom 1:1*/
-    /* Sub-Containers */
-
-    /*
-     *  This container contains the Txbuffer configuration.
-        Multiple buffers with different sizes could be configured.
-        If CanIfBufferSize (ECUC_CanIf_00834) equals 0, the
-        CanIf Tx L-PDU only refers via this CanIfBufferCfg the
-        corresponding CanIfHthCfg*/
-    CanIfBufferCfg CanIfBufferCfg[CanIf_BUFFER_NUMBER];
-
-    CanIfInitHohCfg CanIfInitHohCfg[Can_DRIVERS_NUMBER];
-
-    CanIfTxPduCfg CanIfTxPduCfg[CanIfMaxTxPduCfg];
-
-    /* Maximum total size of all Tx buffers. This parameter is needed only in case of post-build loadable implementation using static memory allocation. */
-    uint64 CanIfMaxBufferSize;  //
-    /* uint32 CanIfNumberOfCanRxPduIds; Maximum number of Pdus.
-        This parameter is needed only in case of post-build loadable implementation
-        using static memory allocation.*/
-    uint64 CanIfMaxRxPduCfg; //
-
-
-//
-//    /** This container contains parameters related to each HTH */
-//    CanIfInitHohCfg* CanIfHohConfigPtr;  // Conflict between standerd and AVECORE Code
-//
-//    /* Rx PDU's list */
-//    CanIfRxPduCfg*  CanIfRxPduConfigPtr;
-//
-
-} CanIfInitCfg;
-
-
-
-
-
-
 /**************************
 Name: CanIfRxPduUserRxIndicationUL
 Parent Container: CanIfRxPduCfg
@@ -371,7 +297,6 @@ typedef enum
     PDUR,
     XCP
 }CanIfRxPduUserRxIndicationUL;
-
 /**************************
 Container Name: CanIfRxPduCfg
 Description:This container contains the configuration (parameters) of each receive
@@ -389,6 +314,16 @@ typedef struct  CanIfRxPduCfg
      *  Range: 11 Bit For Standard CAN Identifier ... 29 Bit For Extended CAN
      *  identifier*/
     uint32 CanIfRxPduCanId;
+    /**************************
+    Name: CanIfRxPduCanIdMask
+    Parent Container CanIfTxPduCfg
+    Description:Identifier mask which denotes relevant bits in the CAN Identifier. This
+                parameter defines a CAN Identifier range in an alternative way to
+                CanIfRxPduCanIdRange. It identifies the bits of the configured CAN
+                Identifier that must match the received CAN Identifier. Range: 11 bits
+                for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
+
+     ****************/
     /*Identifier mask which denotes relevant bits in the CAN Identifier. This
 parameter defines a CAN Identifier range in an alternative way to
 CanIfRxPduCanIdRange. It identifies the bits of the configured CAN
@@ -416,20 +351,11 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
     boolean CanIfRxPduReadNotifyStatus;
 #endif
 
-    /**************************
-    Name: CanIfRxPduRef
-    Parent Container :CanIfRxPduCfg
-    Description:Reference to the "global" Pdu structure to allow harmonization of
-                handle IDs in the COM-Stack.
-
-     *****************/
-//    Pdu * CanIfRxPduRef;
-
     /*UPPER LAYER USER NAME*/
 
     CanIfRxPduUserRxIndicationUL RxPduUser;
 
-    CanIfRxPduCanIdType IdType;
+    CanIfRxPduCanIdType CanIfRxPduCanIdType;
 
     uint8 CanIfRxPduId;
 
@@ -439,17 +365,86 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
     boolean CanIfRxPduReadData;
 #endif
 
-    /**************************
-    Name: CanIfRxPduCanIdMask
-    Parent Container CanIfTxPduCfg
-    Description:Identifier mask which denotes relevant bits in the CAN Identifier. This
-                parameter defines a CAN Identifier range in an alternative way to
-                CanIfRxPduCanIdRange. It identifies the bits of the configured CAN
-                Identifier that must match the received CAN Identifier. Range: 11 bits
-                for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
 
-     ****************/
-    //    uint32 CanIfRxPduCanIdMask ;
+
+    /*Configurable reference to a CanIf buffer configuration*/
+  CanIfBufferCfg* CanIfRxPduBufferRef;
+  CanIfRxPduUserRxIndicationUL CanIfRxPduUserRxIndicationName;
+
 
 }CanIfRxPduCfg;
+
+/* This container contains the init parameters of the CAN Interface.*/
+typedef struct
+{
+   /*
+    * Selects the CAN Interface specific configuration setup. This type of the
+    * external data structure shall contain the post build initialization data for
+    * the CAN Interface for all underlying CAN Dirvers.
+    */
+     uint8 CanIfInitCfgSet[CAN_HOH_NUMBER];
+    /* Sub-Containers */
+
+    /*
+     *  This container contains the Txbuffer configuration.
+        Multiple buffers with different sizes could be configured.
+        If CanIfBufferSize (ECUC_CanIf_00834) equals 0, the
+        CanIf Tx L-PDU only refers via this CanIfBufferCfg the
+        corresponding CanIfHthCfg*/
+    CanIfBufferCfg CanIfBufferCfg[CanIf_BUFFER_NUMBER];
+
+    CanIfInitHohCfg CanIfInitHohCfg[Can_DRIVERS_NUMBER];
+
+    CanIfTxPduCfg CanIfTxPduCfg[CanIfMaxTxPduCfg];
+
+    /* Maximum total size of all Tx buffers. This parameter is needed only in case of post-build loadable implementation using static memory allocation. */
+    uint64 CanIfMaxBufferSize;  //
+    /* uint32 CanIfNumberOfCanRxPduIds; Maximum number of Pdus.
+        This parameter is needed only in case of post-build loadable implementation
+        using static memory allocation.*/
+    uint64 CanIfMaxRxPduCfg; //
+
+    CanIfRxPduCfg CanIfRxPduCfg[CanIfMaxRxPduCfg_value];
+} CanIfInitCfg;
+
+/*
+ * Configuration parameters for all the underlying CAN Driver modules
+ * are aggregated under this container. For each CAN Driver module a
+ * seperate instance of this container has to be provided.
+ */
+typedef struct
+{
+    /*Reference to the Init Hoh Configuration*/
+    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
+
+    /*Sub-Container*/
+    CanIfCtrlCfg CanIfCtrlCfg[CAN_CONTROLLERS_NUMBER];
+
+    /*howa 2ayeli refrence to can general ro7t 2ashoof l can general mala2etoosh bayadeeni 2ai ma3lomat 3an l x. Driver Name,
+    Vendor ID  */
+        CanGeneral* CanIfCtrlDrvNameRef;
+} CanIfCtrlDrvCfg;
+
+/*
+ * This type defines a data structure for the post build parameters of the CAN
+ *interface for all underlying CAN drivers. At initialization the CanIf gets a
+ *pointer to a structure of this type to get access to its configuration data, which
+ *is necessary for initialization.
+ */
+typedef struct
+{
+    /*Sub-Containers*/
+    CanIfCtrlDrvCfg CanIfCtrlDrvCfg ;
+    CanIfInitCfg  CanIfInitCfg;/*ana 7ases eno dahhh lazem yatshal we fl file
+                                bata3 CanIf_Cfg.c ha3mel access lel structure bata3ti
+                                 3an taree2  const CanIf_ConfigType *CanIfInitCfgSet[CAN_HOH_NUMBER]
+                                 3ashan ana delwa2ti keda 3andi errors fl access
+                                 ba3d ma 3ereft ento l CanIfInitCfgSet pointer to CanIf_ConfigType*/
+    /* Reference to the list of channel init configurations. */
+    CanIfCtrlCfg* ControllerConfig;
+} CanIf_ConfigType;
+
+
+
+
 #endif /* CANIF_TYPES_H_ */
