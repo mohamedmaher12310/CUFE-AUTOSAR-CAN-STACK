@@ -26,8 +26,6 @@
 #define HRH_NUMBER                          3
 #define CanIf_Rx_BUFFER_NUMBER                HRH_NUMBER
 
-#define ECU_NETWORK_NUMBER                  3
-
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/
@@ -295,7 +293,7 @@ typedef struct
     CanIfCtrlDrvCfg CanIfCtrlDrvCfg ;
     CanIfInitCfg  CanIfInitCfg;/*ana 7ases eno dahhh lazem yatshal we fl file
                                 bata3 CanIf_Cfg.c ha3mel access lel structure bata3ti
-                                 3an taree2  const CanIf_ConfigType *CanIfInitCfgSet[ECU_NETWORK_NUMBER]
+                                 3an taree2  const CanIf_ConfigType *CanIfInitCfgSet[CAN_HOH_NUMBER]
                                  3ashan ana delwa2ti keda 3andi errors fl access
                                  ba3d ma 3ereft ento l CanIfInitCfgSet pointer to CanIf_ConfigType*/
     /* Reference to the list of channel init configurations. */
@@ -310,9 +308,9 @@ typedef struct
     * external data structure shall contain the post build initialization data for
     * the CAN Interface for all underlying CAN Dirvers.
     */
-    const CanIf_ConfigType *CanIfInitCfgSet[ECU_NETWORK_NUMBER];/*l 1 daah bata3 eiih*/ /*mahoor : dah index lel ECU elli me7tag 2a3mel
-                                 set lel configurations bata3tha
-                                 fa 2a7na fel CAN network bata3tna me7tageen 3 ECU bas ;) */
+    const CanIf_ConfigType *CanIfInitCfgSet[CAN_HOH_NUMBER];/*l 1 daah bata3 eiih*/ /*
+                                     mahoor 2 : dah lel postbuild config lel HOH elli ana ha3melohom
+                                  congif fel can driver elli howa l mapping benhom 1:1*/
     /* Sub-Containers */
 
     /*
