@@ -96,6 +96,9 @@
 /* Service ID for CanIf Set Dynamic Tx Id API*/
 #define CANIF_SET_DYNAMIC_TXID_SID        (uint8)0x0c
 
+/* Service ID for CanIf RxIndication Id API*/
+#define CanIf_RxIndication_RXID_SID       (uint8)0x14
+
 /*******************************************************************************
  *                      DET Error Codes                                        *
  *******************************************************************************/

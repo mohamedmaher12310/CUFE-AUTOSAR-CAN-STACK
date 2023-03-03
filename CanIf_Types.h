@@ -18,7 +18,7 @@
 #include "Can_GeneralTypes.h"
 /* Include of Can Header file*/
 #include "Can.h"
-
+#define HTH_NUMBER                          3
 #define CanIf_BUFFER_NUMBER                HTH_NUMBER
 #define Can_DRIVERS_NUMBER                 (uint8)1
 
@@ -79,6 +79,17 @@ typedef struct
 
 } CanIfCtrlCfg;
 
+/*
+ * Specifies whether a configured Range of CAN Ids shall only consider
+ *standard CAN Ids or extended CAN Ids.
+ **/
+typedef enum
+{
+    EXTENDED,
+    STANDARD
+
+}CanIfHrhRangeRxPduRangeCanIdType;
+
 
 /* This container contains parameters related to each HTH.*/
 typedef struct
@@ -86,7 +97,53 @@ typedef struct
     CanIfCtrlCfg* CanIfHthCanCtrlIdRef;
     CanHardwareObject* CanIfHthIdSymRef;
 } CanIfHthCfg ;
+typedef struct CanIfHrhRangeCfg
+{
+    /*CAN Identifier used as base value in combination with
+     *CanIfHrhRangeMask for a masked ID range in which all CAN Ids shall
+     *pass the software filtering. The size of this parameter is limited by
+     *CanIfHrhRangeRxPduRangeCanIdType.*/
+    uint32 CanIfHrhRangeBaseId;
 
+    /* Used as mask value in combination with CanIfHrhRangeBaseId for a
+     *masked ID range in which all CAN Ids shall pass the software filtering.
+     *The size of this parameter is limited by
+     *CanIfHrhRangeRxPduRangeCanIdType.
+     * */
+    uint32 CanIfHrhRangeMask;
+    /*
+     * Lower CAN Identifier of a receive CAN L-PDU for identifier range
+     *definition, in which all CAN Ids shall pass the software filtering.
+     * */
+    uint32 CanIfHrhRangeRxPduLowerCanId;
+    /*
+     * Upper CAN Identifier of a receive CAN L-PDU for identifier range
+     *definition, in which all CAN Ids shall pass the software filtering.
+     * */
+    uint32 CanIfHrhRangeRxPduUpperCanId;
+    /*
+     * Specifies whether a configured Range of CAN Ids shall only consider
+     *standard CAN Ids or extended CAN Ids.
+     **/
+    CanIfHrhRangeRxPduRangeCanIdType CanIfHrhRangeRxPduRangeCanIdType;
+
+}CanIfHrhRangeCfg;
+/**************************
+Container Name: CanIfHrhCfg
+Description:This container contains configuration parameters for each hardware
+            receive object (HRH).
+ *****************/
+
+typedef struct CanIfHrhCfg
+{
+    CanIfCtrlCfg* CanIfHrhCanCtrlIdRef;
+
+    CanHardwareObject* CanIfHrhIdSymRef;
+
+    boolean CanIfHrhSoftwareFilter ;
+
+    CanIfHrhRangeCfg CanIfHrhRange_config;
+}CanIfHrhCfg;
 /*
  * This container contains the references to the configuration setup of
  * each underlying CAN Driver.
@@ -122,7 +179,16 @@ typedef enum
     STANDARD_CAN,
     STANDARD_FD_CAN
 } CanIfTxPduCanIdType;
+typedef enum
+{
+    EXTENDED_CAN_RX,
+    EXTENDED_FD_CAN_RX,
+    EXTENDED_NO_FD_CAN_RX,
+    STANDARD_CAN_RX,
+    STANDARD_FD_CAN_RX,
+    STANDARD_NO_FD_CAN_RX
 
+}CanIfRxPduCanIdType;
 /* Defines the type of each transmit CAN L-PDU.*/
 typedef enum
 {
@@ -209,7 +275,9 @@ typedef struct
     * external data structure shall contain the post build initialization data for
     * the CAN Interface for all underlying CAN Dirvers.
     */
-    uint8 CanIfInitCfgSet[1];/*l 1 daah bata3 eiih*/
+    uint8 CanIfInitCfgSet[3];/*l 1 daah bata3 eiih*/ /*mahoor : dah index lel ECU elli me7tag 2a3mel
+                                 set lel configurations bata3tha
+                                 fa 2a7na fel network bata3tna me7tageen 3 ECU bas ;) */
     /* Sub-Containers */
 
     /*
@@ -298,63 +366,7 @@ typedef enum
     PDUR,
     XCP
 }CanIfRxPduUserRxIndicationUL;
-/*
- * Specifies whether a configured Range of CAN Ids shall only consider
- *standard CAN Ids or extended CAN Ids.
- **/
-typedef enum
-{
-    EXTENDED,
-    STANDARD
 
-}CanIfHrhRangeRxPduRangeCanIdType;
-typedef struct CanIfHrhRangeCfg
-{
-    /*CAN Identifier used as base value in combination with
-     *CanIfHrhRangeMask for a masked ID range in which all CAN Ids shall
-     *pass the software filtering. The size of this parameter is limited by
-     *CanIfHrhRangeRxPduRangeCanIdType.*/
-    uint32 CanIfHrhRangeBaseId;
-
-    /* Used as mask value in combination with CanIfHrhRangeBaseId for a
-     *masked ID range in which all CAN Ids shall pass the software filtering.
-     *The size of this parameter is limited by
-     *CanIfHrhRangeRxPduRangeCanIdType.
-     * */
-    uint32 CanIfHrhRangeMask;
-    /*
-     * Lower CAN Identifier of a receive CAN L-PDU for identifier range
-     *definition, in which all CAN Ids shall pass the software filtering.
-     * */
-    uint32 CanIfHrhRangeRxPduLowerCanId;
-    /*
-     * Upper CAN Identifier of a receive CAN L-PDU for identifier range
-     *definition, in which all CAN Ids shall pass the software filtering.
-     * */
-    uint32 CanIfHrhRangeRxPduUpperCanId;
-    /*
-     * Specifies whether a configured Range of CAN Ids shall only consider
-     *standard CAN Ids or extended CAN Ids.
-     **/
-    CanIfHrhRangeRxPduRangeCanIdType CanIfHrhRangeRxPduRangeCanIdType;
-
-}CanIfHrhRangeCfg;
-/**************************
-Container Name: CanIfHrhCfg
-Description:This container contains configuration parameters for each hardware
-            receive object (HRH).
- *****************/
-
-typedef struct CanIfHrhCfg
-{
-    CanIfCtrlCfg* CanIfHrhCanCtrlIdRef;
-
-    CanHardwareObject* CanIfHrhIdSymRef;
-
-    boolean CanIfHrhSoftwareFilter ;
-
-    CanIfHrhRangeCfg CanIfHrhRange_config;
-}CanIfHrhCfg;
 /**************************
 Container Name: CanIfRxPduCfg
 Description:This container contains the configuration (parameters) of each receive
