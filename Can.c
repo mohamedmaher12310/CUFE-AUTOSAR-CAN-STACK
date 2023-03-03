@@ -2191,15 +2191,3 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
 }
 
 
-
-
-
-
-
-
-
-
-
-/* abdelhamid*/ 
-
-
