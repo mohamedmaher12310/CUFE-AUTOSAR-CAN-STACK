@@ -12,160 +12,89 @@
 /*Include the module header file*/
 #include "CanIf.h"
 
+STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
+
+/*
+ * Service name:CanIf_GetTxPDU
+ * Syntax :CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
+ * Parameters(in): PduIdType TxPDU_ID
+ * Return value :Address of CanIfTxPduCfg
+ * Description : Get the CanIfTxPduCfg from the TxPDU ID
+ * */
 
 
 
-
-/******************************************************************************
- *Service name: CanIf_RxIndication
- *Syntax: void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
- *Service ID[hex]: 0x14
- *Sync/Async: Synchronous
- *Reentrancy: Reentrant
- *Parameters (in):  - Mailbox Identifies the HRH and its corresponding CAN Controller
-                    -PduInfoPtr Pointer to the received L-PDU
- *Parameters (inout): None
- *Parameters (out): None
- *Return value: None
- *Description: This service indicates a successful reception of a received CAN Rx LPDU to the CanIf after passing all filters and validation checks
- ******************************************************************************/
-void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPtr)
+CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
 {
-
-    /* If parameter Mailbox->Hoh of CanIf_RxIndication() has an invalid value, CanIf shall report development error code*/
-#if(STD_ON == CanIfDevErrorDetect)
-
-    if(Mailbox->Hoh != RECIEVE)
+    uint8 TxPDU_index;
+    if(TxPDU_ID<CanIfMaxTxPduCfg)
     {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_HOH);
-    }
-    else
-    {
-        /*MISRA : do nothing*/
-    }
-
-    /* If parameter Mailbox->CanId of CanIf_RxIndication() has an invalid value, CanIf shall report development error code CANIF_E_PARAM_CANID to the Det_ReportError service of the DET */
-    if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) )
-    {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_CANID);
-    }
-    else
-    {
-        /*MISRA : do nothing*/
-    }
-
-
-    /*If parameter PduInfoPtr or Mailbox has an invalid value, CanIf shall report development error code CANIF_E_PARAM_POINTER to the Det_ReportError service of the DET module*/
-    if( ( NULL_PTR == Mailbox) || ( NULL_PTR== PduInfoPtr)  )
-    {
-
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_POINTER);
-    }
-    else
-    {
-        /*MISRA : do nothing*/
-    }
-
-
-#endif
-    const CanIfRxPduCfg* RxPDU = NULL_PTR;
-    uint8 RxPDU_index ;
-    RxPDU=&CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
-
-    RxPDU_index = RxPDU->CanIfRxPduId;
-
-    //    uint16 iter;
-    uint8 PDU_PASS=8;
-    if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
-    {
-        /*check of SW filter enable*/
-        if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
+        for(TxPDU_index =0;TxPDU_index<CanIfMaxTxPduCfg;TxPDU_index++ )
         {
-            if( ( (Mailbox->CanId) & (RxPDU->CanIfRxPduCanIdMask) ) == (RxPDU->CanIfRxPduCanIdMask)&(RxPDU->CanIfRxPduCanId) )
+            if(TxPDU_ID == CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index].CanIfTxPduId)
             {
-                PDU_PASS=1;
+                return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index];
             }
             else
             {
-                PDU_PASS=0;
-            }
-        }
-        else
-        {
-
-        }
-        /*after passing sw filter test*/
-        if( 1 == PDU_PASS ){
-#if (CanIfPrivateDataLengthCheck == STD_ON)
-
-            if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
-            {
-                Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
 
             }
-#endif
-            else/*length check is ok call the upper layer*/
-            {
-
-
-                switch(RxPDU->CanIfRxPduUserRxIndicationName)
-                {
-                case PDUR :
-                {
-                    PduInfoType RxPduPDUR;
-                    RxPduPDUR.SduLength = PduInfoPtr->SduLength;
-                    RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
-                    RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                    PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
-
-                    break;
-                }
-                default:
-                    break;
-
-
-                }
-
-            }
-        }
-        else/*PDU_PASS=0*/
-        {
-
-        }
-
-    }
-    else{/*FULL CAN*/
-#if (CanIfPrivateDataLengthCheck == STD_ON)
-
-        if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
-        {
-            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
-
-        }
-#endif
-        else/*length check is ok call the upper layer*/
-        {
-
-
-            switch(RxPDU->CanIfRxPduUserRxIndicationName)
-            {
-            case PDUR :
-            {
-                PduInfoType RxPduPDUR;
-                RxPduPDUR.SduLength = PduInfoPtr->SduLength;
-                RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
-                RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
-
-                break;
-            }
-            default:
-                break;
-
-
-            }
-
         }
     }
+    else
+    {
+        return NULL_PTR;
 
+    }
+
+    return NULL_PTR;
 }
+
+
+/* *Service name: CanIf_Transmit
+ *Syntax: Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
+ *Service ID[hex]: 0x49
+ *Sync/Async: Synchronous
+ *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
+ *Parameters (in): TxPduId Identifier of the PDU to be transmitted
+ *PduInfoPtr Length of and pointer to the PDU data and pointer
+ *to MetaData.
+ *Parameters (inout): None
+ *Parameters (out): None
+ *Return value: Std_ReturnType E_OK: Transmit request has been accepted.
+ *E_NOT_OK: Transmit request has not been accepted.
+ *Description: Requests transmission of a PDU.
+ *
+ * */
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
+{
+    Std_ReturnType Can_Write_Return;
+    Can_PduType Can_PduData;
+    CanIfTxPduCfg* TxPDU =  NULL_PTR;
+
+    /*Get the TxPDU from the TxPduId passed to the function*/
+    TxPDU = CanIf_GetTxPDU(TxPduId);
+
+    /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
+    Can_HwHandleType Hth = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthIdSymRef->CanObjectId;
+
+    /*Assigning the variables passed by the function to the Can_PduType variable to pass it
+     * to the Can_Write */
+    Can_PduData.id = TxPDU->CanIfTxPduCanId;
+    Can_PduData.length = PduInfoPtr->SduLength;
+    Can_PduData.sdu = PduInfoPtr->SduDataPtr;
+    Can_PduData.swPduHandle = TxPduId;
+
+    /*Can_Write(Hth,Can_PduType* PduInfo) */
+    Can_Write_Return = Can_Write(Hth, &Can_PduData);
+    if (Can_Write_Return == CAN_OK)
+    {
+        return E_OK;
+    }
+    else
+    {
+        return E_NOT_OK;
+    }
+}
+
+

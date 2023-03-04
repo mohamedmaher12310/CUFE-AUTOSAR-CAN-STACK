@@ -63,7 +63,7 @@ const CanIf_ConfigType CanIf_Configuration =
      }
     },
     /* RX_TEAM */
-    .CanIfHrh_config =
+    .CanIfHrhCfg =
     {
      {
       .CanIfHrhCanCtrlIdRef = &CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[ZERO],
@@ -123,44 +123,40 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIfTxPduBufferRef = &CanIf_Configuration.CanIfInitCfg.CanIfBufferCfg[0U]
    }
   },
-  /*****************************TEAM_RX**************************************************/
   .CanIfRxPduCfg =
   {
    {
-    .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrh_config[0],
+    .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhCfg[0],
 
-    .CanIfRxPduReadNotifyStatus=FALSE,
+#if(STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+    .CanIf_RxPduReadNotifyStatus=FALSE,
+#endif /*CanIfPublicReadRxPduNotifyStatusApi */
     .CanIfRxPduUserRxIndicationName=PDUR,
     .CanIfRxPduCanIdType = STANDARD_CAN,
     .CanIfRxPduId = CanIfRxPduId_0,
     .CanIfRxPduDataLength=8,
-    .CanIfRxPduReadData=FALSE,
+#if(STD_ON == CanIfPublicReadRxPduDataApi)
+    .CanIf_RxPduReadData=FALSE,
+#endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduCanId = CanIfCtrlId_0,
     .CanIfRxPduCanIdMask =CanIfRxPduCanIdMask_0
 
    },
    {
-    .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrh_config[0],
-    .CanIfRxPduReadNotifyStatus=FALSE,
+    .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhCfg[0],
+#if(STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+    .CanIf_RxPduReadNotifyStatus=FALSE,
+#endif /*CanIfPublicReadRxPduNotifyStatusApi */
     .CanIfRxPduUserRxIndicationName=PDUR,
     .CanIfRxPduCanIdType = STANDARD_CAN,
     .CanIfRxPduId = CanIfRxPduId_1,
     .CanIfRxPduDataLength=8,
-    .CanIfRxPduReadData=FALSE,
+#if(STD_ON == CanIfPublicReadRxPduDataApi)
+    .CanIf_RxPduReadData=FALSE,
+#endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduCanId = CanIfCtrlId_1,
     .CanIfRxPduCanIdMask = CanIfRxPduCanIdMask_1
    },
-
-
   }
-
-
-
-
  },
 };
-
-
-
-
-

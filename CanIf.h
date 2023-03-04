@@ -240,24 +240,6 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
  ************************************************************************************/
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
-
-
-
-/************************************************************************************
- * Service Name: CanIf_RxIndication
- * Service ID[hex]: 0x14
- * Sync/Async: Synchronous
- * Reentrancy:  Reentrant
- * Parameters (in):
- *          Mailbox: Identifies the HRH and its corresponding CAN Controller
- *          PduInfoPtr :Pointer to the received L-PDUParameters (inout): None
- * Parameters (out): None
- * Return value:     None
- * Description: This service indicates a successful reception of a received CAN Rx LPDU
- *              to the CanIf after passing all filters and validation checks.
- ************************************************************************************/
-void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr);
-
 /************************************************************************************
  * Service Name: <User_RxIndication>
  * Sync/Async: Synchronous
