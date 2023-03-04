@@ -352,9 +352,6 @@ Description:Enables and disables receive indication for each receive CAN L-SDU
 #endif
 
     /*UPPER LAYER USER NAME*/
-
-    CanIfRxPduUserRxIndicationUL RxPduUser;
-
     CanIfRxPduCanIdType CanIfRxPduCanIdType;
 
     uint8 CanIfRxPduId;
