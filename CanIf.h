@@ -18,6 +18,8 @@
 /* CanIf Module Id */
 #define CANIF_MODULE_ID    (31U)
 
+/* Can Instance Id */
+#define CANIF_INSTANCE_ID  (0U)
 
 /*
  * Module Version 1.0.0
@@ -96,6 +98,9 @@
 /* Service ID for CanIf Set Dynamic Tx Id API*/
 #define CANIF_SET_DYNAMIC_TXID_SID        (uint8)0x0c
 
+/* Service ID for CanIf RxIndication Id API*/
+#define CanIf_RxIndication_RXID_SID       (uint8)0x14
+
 /*******************************************************************************
  *                      DET Error Codes                                        *
  *******************************************************************************/
@@ -124,6 +129,15 @@
 #define CANIF_E_INIT_FAILED                 (uint8)80
 
 
+
+/*******************************************************************************
+ *                     RUN TIME Error Codes                                        *
+ *******************************************************************************/
+/*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
+#define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
+
+#define CANNIF_STANDARD_MAX    0x400007FF   /*max number for Standard32Bit*/
+#define CANNIF_EXTENDED_MAX    0xDFFFFFFF   /*max number for Extended32Bit*/
 
 /*******************************************************************************
  *                      Function Prototypes                                    *
@@ -226,6 +240,24 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
  ************************************************************************************/
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
+/************************************************************************************
+ * Service Name: <User_RxIndication>
+ * Sync/Async: Synchronous
+ *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
+ * Parameters (in):
+ *          RxPduId: ID of the received PDU.
+ *          PduInfoPtr :Contains the length (SduLength) of the received
+ *                      PDU, a pointer to a buffer (SduDataPtr) containing
+ *                      the PDU, and the MetaData related to this PDU.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value:     None
+ * Description: Indication of a received PDU from a lower layer communication interface
+ *              module
+ ************************************************************************************/
+
+void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
+
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/
@@ -237,10 +269,8 @@ void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
  *                       External Variables                                    *
  *******************************************************************************/
 
-extern const CanIf_ConfigType CanIf_Configuration;
 
-
-
+extern const CanIf_ConfigType CanIf_Configuration ;
 
 
 #endif /* CANIF_H_ */

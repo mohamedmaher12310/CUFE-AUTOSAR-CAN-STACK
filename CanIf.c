@@ -28,42 +28,42 @@ CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
 {
     uint8 TxPDU_index;
     if(TxPDU_ID<CanIfMaxTxPduCfg)
+    {
+        for(TxPDU_index =0;TxPDU_index<CanIfMaxTxPduCfg;TxPDU_index++ )
         {
-            for(TxPDU_index =0;TxPDU_index<CanIfMaxTxPduCfg;TxPDU_index++ )
+            if(TxPDU_ID == CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index].CanIfTxPduId)
             {
-                if(TxPDU_ID == CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index].CanIfTxPduId)
-                {
-                    return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index];
-                }
-                else
-                {
+                return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index];
+            }
+            else
+            {
 
-                }
             }
         }
-        else
-            {
-            return NULL_PTR;
+    }
+    else
+    {
+        return NULL_PTR;
 
-            }
+    }
 
     return NULL_PTR;
-    }
+}
 
 
 /* *Service name: CanIf_Transmit
-   *Syntax: Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
-   *Service ID[hex]: 0x49
-   *Sync/Async: Synchronous
-   *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
-   *Parameters (in): TxPduId Identifier of the PDU to be transmitted
-   *PduInfoPtr Length of and pointer to the PDU data and pointer
-   *to MetaData.
-   *Parameters (inout): None
-   *Parameters (out): None
-   *Return value: Std_ReturnType E_OK: Transmit request has been accepted.
-   *E_NOT_OK: Transmit request has not been accepted.
-   *Description: Requests transmission of a PDU.
+ *Syntax: Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
+ *Service ID[hex]: 0x49
+ *Sync/Async: Synchronous
+ *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
+ *Parameters (in): TxPduId Identifier of the PDU to be transmitted
+ *PduInfoPtr Length of and pointer to the PDU data and pointer
+ *to MetaData.
+ *Parameters (inout): None
+ *Parameters (out): None
+ *Return value: Std_ReturnType E_OK: Transmit request has been accepted.
+ *E_NOT_OK: Transmit request has not been accepted.
+ *Description: Requests transmission of a PDU.
  *
  * */
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
@@ -88,11 +88,13 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
     /*Can_Write(Hth,Can_PduType* PduInfo) */
     Can_Write_Return = Can_Write(Hth, &Can_PduData);
     if (Can_Write_Return == CAN_OK)
-       {
-           return E_OK;
-       }
-    else
-        {
-        return E_NOT_OK;
-        }
+    {
+        return E_OK;
     }
+    else
+    {
+        return E_NOT_OK;
+    }
+}
+
+
