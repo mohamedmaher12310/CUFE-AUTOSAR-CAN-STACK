@@ -135,66 +135,37 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 
     }
     else{/*FULL CAN*/
+#if (CanIfPrivateDataLengthCheck == STD_ON)
 
+        if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
+        {
+            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
+
+        }
+#endif
+        else/*length check is ok call the upper layer*/
+        {
+
+
+            switch(RxPDU->CanIfRxPduUserRxIndicationName)
+            {
+            case PDUR :
+            {
+                PduInfoType RxPduPDUR;
+                RxPduPDUR.SduLength = PduInfoPtr->SduLength;
+                RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
+                RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
+                PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
+
+                break;
+            }
+            default:
+                break;
+
+
+            }
+
+        }
     }
-    //    for (iter = 0; iter < CanIf_ConfigPtr->InitConfig->CanIfMaxRxPduCfg ; iter++)
-    //    {
-    //        if(((&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) == BASIC)
-    //        {
-    //            /* Software filtering */
-    //            if ( ((&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter) ==TRUE)
-    //            {
-    //
-    //                if ((Mailbox->CanId & (&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduCanIdMask ) == ( (&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduCanId & (&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduCanIdMask))
-    //                {
-    //                    /* We found a pdu. so, DLC Check & call higher layers  */
-    //                    PDU_PASS=ONE;
-    //                }
-    //                else
-    //                {
-    //                    /* PDU does not pass sw filter */
-    //                    PDU_PASS=ZERO;
-    //
-    //                }
-    //
-    //            }
-    //        }
-    //
-    //        /*Data Length Check*/
-    //        if( PDU_PASS== ONE)
-    //        {
-    //
-    //            /* CanIf shall accept all received L-PDUs with a Data Length value equal or greater then the configured Data Length value*/
-    //            if (PduInfoPtr->SduLength < (&Cfg_Arr_CanIfRxIndication[RxPduIndex])->CanIfRxPduDataLength)
-    //            {
-    //                /* Call Det_ReportRuntimeError() with error code CANIF_E_INVALID_DATA_LENGTH*/
-    //
-    //                Det_ReportRuntimeError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
-    //
-    //
-    //            }
-    //            // else         /*Call <User_RxIndication>() to upper layers */
-    //
-    //#endif
-    //
-    //            switch(Get_User_RxIndication_Name(RxPduIndex))
-    //            {
-    //            case CAN_NM:
-    //            {
-    //                break;
-    //
-    //            }
-    //
-    //            case PDUR:
-    //            {
-    //
-    //                break;
-    //            }
-    //
-    //
-    //            }
-    //
-    //        }
-    //
-    //    }
+
 }
