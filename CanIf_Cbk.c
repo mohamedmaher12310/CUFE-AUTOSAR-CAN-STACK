@@ -26,6 +26,15 @@
  ******************************************************************************/
 void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPtr)
 {
+    /*needed pointers*/
+    const CanIfRxPduCfg* RxPDU = NULL_PTR;
+    const CanIfHrhRangeCfg* RxPDU_Range = NULL_PTR;
+    const CanIfHrhCfg* HRH_index_Ptr = NULL_PTR;
+    /*needed variables*/
+    uint8 RxPDU_index ;
+    uint8 HRH_index ;
+    uint8 PDU_PASS=8;
+
 
     /* If parameter Mailbox->Hoh of CanIf_RxIndication() has an invalid value, CanIf shall report development error code*/
 #if(STD_ON == CanIfDevErrorDetect)
@@ -39,7 +48,10 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         /*MISRA : do nothing*/
     }
 
-    /* If parameter Mailbox->CanId of CanIf_RxIndication() has an invalid value, CanIf shall report development error code CANIF_E_PARAM_CANID to the Det_ReportError service of the DET */
+    /*If parameter Mailbox->CanId of CanIf_RxIndication() has an invalid value,
+     *CanIf shall report development error code CANIF_E_PARAM_CANID to the Det_ReportError
+     *service of the DET
+     */
     if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) )
     {
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_CANID);
@@ -50,7 +62,10 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     }
 
 
-    /*If parameter PduInfoPtr or Mailbox has an invalid value, CanIf shall report development error code CANIF_E_PARAM_POINTER to the Det_ReportError service of the DET module*/
+    /*If parameter PduInfoPtr or Mailbox has an invalid value,
+     *CanIf shall report development error code CANIF_E_PARAM_POINTER to
+     *the Det_ReportError service of the DET module
+     */
     if( ( NULL_PTR == Mailbox) || ( NULL_PTR== PduInfoPtr)  )
     {
 
@@ -63,20 +78,19 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 
 
 #endif
-    const CanIfRxPduCfg* RxPDU = NULL_PTR;
-    uint8 RxPDU_index ;
-    RxPDU=&CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
 
+    RxPDU=&(CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg);
     RxPDU_index = RxPDU->CanIfRxPduId;
+    HRH_index_Ptr = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
+    HRH_index= (HRH_index_Ptr->CanIfHrhIdSymRef->CanObjectId);
+    RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[Can_DRIVERS_NUMBER].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
 
-    //    uint16 iter;
-    uint8 PDU_PASS=8;
     if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
     {
         /*check of SW filter enable*/
         if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
         {
-            if( ( (Mailbox->CanId) & (RxPDU->CanIfRxPduCanIdMask) ) == (RxPDU->CanIfRxPduCanIdMask)&(RxPDU->CanIfRxPduCanId) )
+            if( ( (Mailbox->CanId) >= (RxPDU_Range->CanIfHrhRangeRxPduLowerCanId) ) && ( (Mailbox->CanId) <= (RxPDU_Range->CanIfHrhRangeRxPduUpperCanId) )  )
             {
                 PDU_PASS=1;
             }
