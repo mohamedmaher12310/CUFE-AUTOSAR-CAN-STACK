@@ -11,8 +11,7 @@
 
 /*Include the module header file*/
 #include "Can.h"
-#include "Det.h"
-#include "Det.h"
+
 uint32 CPUcpsie(void)
 {
     /*
@@ -1302,12 +1301,6 @@ void Can_MainFunction_Write(void)
                         }
                         else{
                         /*MISRA : do nothing*/}
-
-                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
-
-                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
-
-                        /*call CanIf_TxConfirmation function*/
                     }
 
                     else
@@ -2189,6 +2182,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
 #endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
 }
+
 
 
 
