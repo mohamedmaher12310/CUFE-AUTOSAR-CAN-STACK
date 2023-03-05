@@ -76,6 +76,19 @@
 #error "The SW version of Can.h does not match the expected version"
 #endif
 
+/*Including Det module for developmnet error reporting*/
+#if (STD_ON == CanIfDevErrorDetect)
+#include "Det.h"
+
+/* AUTOSAR Version checking between Det and CanIf Modules */
+#if ((DET_AR_MAJOR_VERSION != CANIF_AR_RELEASE_MAJOR_VERSION)\
+        || (DET_AR_MINOR_VERSION != CANIF_AR_RELEASE_MINOR_VERSION)\
+        || (DET_AR_PATCH_VERSION != CANIF_AR_RELEASE_PATCH_VERSION))
+#error "The AR version of Det.h does not match the expected version"
+#endif
+
+#endif
+
 /******************************************************************************
  *                      API Service Id Macros                                 *
  ******************************************************************************/
@@ -240,23 +253,7 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
  ************************************************************************************/
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
-/************************************************************************************
- * Service Name: <User_RxIndication>
- * Sync/Async: Synchronous
- *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
- * Parameters (in):
- *          RxPduId: ID of the received PDU.
- *          PduInfoPtr :Contains the length (SduLength) of the received
- *                      PDU, a pointer to a buffer (SduDataPtr) containing
- *                      the PDU, and the MetaData related to this PDU.
- * Parameters (inout): None
- * Parameters (out): None
- * Return value:     None
- * Description: Indication of a received PDU from a lower layer communication interface
- *              module
- ************************************************************************************/
 
-void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 
 /*******************************************************************************
  *                      Definitions used in Module                             *

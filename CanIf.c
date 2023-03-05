@@ -155,3 +155,4 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
     return Can_SetControllerMode_return;
 
 }
+
