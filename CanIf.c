@@ -98,3 +98,60 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
 }
 
 
+
+/************************************************************************************
+ * Service Name: CanIf_SetControllerMode
+ * Service ID[hex]: 0x03
+ * Sync/Async: Asynchronous
+ * Reentrancy: Reentrant (Not for the same controller)
+ * Parameters (in): ControllerId - Abstracted CanIf ControllerId which is assigned to a
+ *                                 CAN controller, which is requested for mode transition.
+ *                  ControllerMode - Requested mode transition
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: Std_ReturnType - E_OK: Controller mode request has been accepted
+ *                                E_NOT_OK: Controller mode request hasn't been accepted
+ * Description: Function to call the corresponding CAN Driver service for changing of
+                the CAN controller mode.
+ ************************************************************************************/
+Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateType ControllerMode)
+{
+
+#if( CanIfDevErrorDetect == STD_ON  )
+
+    /* Check if the Controller ID is greater than the number of configured controllers*/
+    if (ControllerId >= CAN_CONTROLLERS_NUMBER)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CONTROLLERID );
+        return E_NOT_OK;
+    }
+
+    /* Check If parameter ControllerMode has an invalid value*/
+    if (  (ControllerMode !=CAN_CS_STARTED) || (ControllerMode !=CAN_CS_STOPPED) || (ControllerMode !=CAN_CS_SLEEP) )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CTRLMODE );
+        return E_NOT_OK;
+    }
+
+
+#endif
+
+    Can_ControllerStateType Requested_Mode ;
+    Std_ReturnType Can_SetControllerMode_return ;
+
+    switch (ControllerMode)
+    {
+    case CAN_CS_STOPPED :
+        Requested_Mode =CAN_CS_STOPPED;
+        Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
+        break;
+
+    case CAN_CS_STARTED:
+        Requested_Mode =CAN_CS_STARTED;
+        Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
+        break;
+    }
+
+    return Can_SetControllerMode_return;
+
+}
