@@ -84,28 +84,75 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     HRH_index_Ptr = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
     HRH_index= (HRH_index_Ptr->CanIfHrhIdSymRef->CanObjectId);
     RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[Can_DRIVERS_NUMBER].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
-
-    if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
+    /***************************************before all of this check the channel mode of the  PDU ************************/
+    if( (CANIF_TX_OFFLINE == RxPDU->CanIf_PduModeType) || (CANIF_ONLINE == RxPDU->CanIf_PduModeType) )
     {
-        /*check of SW filter enable*/
-        if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
+
+
+
+        if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
         {
-            if( ( (Mailbox->CanId) >= (RxPDU_Range->CanIfHrhRangeRxPduLowerCanId) ) && ( (Mailbox->CanId) <= (RxPDU_Range->CanIfHrhRangeRxPduUpperCanId) )  )
+            /*check of SW filter enable*/
+            if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
             {
-                PDU_PASS=1;
+                if( ( ((Mailbox->CanId) &(RxPDU->CanIfRxPduCanIdMask)) >= (RxPDU_Range->CanIfHrhRangeRxPduLowerCanId) ) && ( ((Mailbox->CanId)&(RxPDU->CanIfRxPduCanIdMask)) <= (RxPDU_Range->CanIfHrhRangeRxPduUpperCanId) )  )
+                {
+                    PDU_PASS=1;
+                }
+                else
+                {
+                    PDU_PASS=0;
+                }
             }
             else
             {
-                PDU_PASS=0;
+
             }
-        }
-        else
-        {
+            /*after passing sw filter test*/
+            if( 1 == PDU_PASS ){
+#if (CanIfPrivateDataLengthCheck == STD_ON)
+
+                if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
+                {
+                    Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
+
+                }
+#endif
+                else/*length check is ok call the upper layer*/
+                {
+
+
+                    switch(RxPDU->CanIfRxPduUserRxIndicationName)
+                    {
+                    case PDUR :
+                    {
+                        PduInfoType RxPduPDUR;
+                        RxPduPDUR.SduLength = PduInfoPtr->SduLength;
+                        RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
+                        RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
+                        PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
+
+                        break;
+                    }
+                    default:
+                        break;
+
+
+                    }
+
+                }
+            }
+            else/*PDU_PASS=0*/
+            {
+
+            }
 
         }
-        /*after passing sw filter test*/
-        if( 1 == PDU_PASS ){
+        else if( ( (Mailbox->CanId) & (RxPDU->CanIfRxPduCanIdMask) ) == (RxPDU->CanIfRxPduCanIdMask)&(RxPDU->CanIfRxPduCanId) )
+        {               /*FULL CAN*/
 #if (CanIfPrivateDataLengthCheck == STD_ON)
+            //        if(/*check pdu id received*/){
+
 
             if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
             {
@@ -136,45 +183,11 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                 }
 
             }
-        }
-        else/*PDU_PASS=0*/
-        {
-
-        }
-
-    }
-    else{/*FULL CAN*/
-#if (CanIfPrivateDataLengthCheck == STD_ON)
-
-        if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
-        {
-            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
-
-        }
-#endif
-        else/*length check is ok call the upper layer*/
-        {
-
-
-            switch(RxPDU->CanIfRxPduUserRxIndicationName)
-            {
-            case PDUR :
-            {
-                PduInfoType RxPduPDUR;
-                RxPduPDUR.SduLength = PduInfoPtr->SduLength;
-                RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
-                RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
-
-                break;
-            }
-            default:
-                break;
-
-
-            }
 
         }
     }
+    else
+    {
 
+    }
 }
