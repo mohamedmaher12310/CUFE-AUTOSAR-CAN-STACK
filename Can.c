@@ -11,7 +11,6 @@
 
 /*Include the module header file*/
 #include "Can.h"
-
 uint32 CPUcpsie(void)
 {
     /*
@@ -138,12 +137,13 @@ STATIC uint8 Interrupts_Disable_Flag = 0;
 
 Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType Transition)
 {
+    Std_ReturnType Return_Value;
 #if(CAN_DEV_ERROR_DETECT == STD_ON)
     /* Check if the Controller ID is greater than the number of configured controllers*/
     if (Controller >= CAN_CONTROLLERS_NUMBER)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_PARAM_CONTROLLER);
-        return E_NOT_OK;
+        Return_Value = E_NOT_OK;
     }
     else
     {
@@ -153,7 +153,7 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType 
     if (Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_UNINIT);
-        return E_NOT_OK;
+        Return_Value = E_NOT_OK;
     }
     else
     {
@@ -168,31 +168,33 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType 
     case CAN_CS_STARTED:
         if (Can_Started_State(Controller) == E_OK)
         {
-            return E_OK;
+            Return_Value = E_OK;
         }
         else
         {
-            return E_NOT_OK;
+            Return_Value = E_NOT_OK;
         }
         break;
     case CAN_CS_STOPPED:
         if(Can_Stopped_State(Controller) == E_OK)
         {
-            return E_OK;
+            Return_Value = E_OK;
         }
         else
         {
-            return E_NOT_OK;
+            Return_Value = E_NOT_OK;
         }
         break;
     default :
         break;
     }
+    return Return_Value;
 }
 
 /* Started transition function*/
 STATIC Std_ReturnType Can_Started_State(uint8 Controller)
 {
+    Std_ReturnType Return_Value;
     if (Controller == CAN0_CONTROLLER_ID)
     {
 #if(CAN_DEV_ERROR_DETECT == STD_ON)
@@ -202,7 +204,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
         if(Can_CurrentState[CAN0_CONTROLLER_ID] != CAN_CS_STOPPED)
         {
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
-            return E_NOT_OK;
+            Return_Value = E_NOT_OK;
         }
         else
 #endif /*CAN_DEV_ERROR_DETECT*/
@@ -227,14 +229,14 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
             if(BIT_IS_CLEAR(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT))
             {
                 Can_CurrentState[CAN0_CONTROLLER_ID] = CAN_CS_STARTED;
-                return E_OK;
+                Return_Value = E_OK;
             }
             else
             {
                 /* Can_Mainfunction_Mode shall change its state*/
-                return E_OK;
+                Return_Value = E_OK;
             }
-            return E_OK;
+            Return_Value = E_OK;
         }
     }
     else if (Controller == CAN1_CONTROLLER_ID)
@@ -246,7 +248,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
         if(Can_CurrentState[CAN1_CONTROLLER_ID] != CAN_CS_STOPPED)
         {
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
-            return E_NOT_OK;
+            Return_Value = E_NOT_OK;
         }
         else
 #endif /*CAN_DEV_ERROR_DETECT*/
@@ -271,21 +273,23 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
             if(BIT_IS_CLEAR(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),BOFF_BIT))
             {
                 Can_CurrentState[CAN1_CONTROLLER_ID]= CAN_CS_STARTED;
-                return E_OK;
+                Return_Value = E_OK;
             }
             else
             {
                 /* Can_Mainfunction_Mode shall change its state*/
-                return E_OK;
+                Return_Value = E_OK;
             }
-            return E_OK;
+            Return_Value = E_OK;
         }
     }
+    return Return_Value;
 }
 
 /* Stopped transition function*/
 STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
 {
+    Std_ReturnType Return_Value;
     if (Controller == CAN0_CONTROLLER_ID)
     {
 #if(CAN_DEV_ERROR_DETECT == STD_ON)
@@ -295,7 +299,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
         if(Can_CurrentState[CAN0_CONTROLLER_ID] != CAN_CS_STARTED)
         {
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
-            return E_NOT_OK;
+            Return_Value = E_NOT_OK;
         }
         else
 #endif /*CAN_DEV_ERROR_DETECT*/
@@ -321,14 +325,14 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
             {
                 Can_CurrentState[CAN0_CONTROLLER_ID] = CAN_CS_STOPPED;
                 REG_VAL(CAN0_BASE,CAN_STS_OFFSET);
-                return E_OK;
+                Return_Value = E_OK;
             }
             else
             {
                 /* Can_Mainfunction_Mode shall change its state*/
-                return E_OK;
+                Return_Value = E_OK;
             }
-            return E_OK;
+            Return_Value = E_OK;
         }
     }
     else if (Controller == CAN1_CONTROLLER_ID)
@@ -340,7 +344,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
         if(Can_CurrentState[CAN1_CONTROLLER_ID] != CAN_CS_STARTED)
         {
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
-            return E_NOT_OK;
+            Return_Value = E_NOT_OK;
         }
         else
 #endif /*CAN_DEV_ERROR_DETECT*/
@@ -366,16 +370,17 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
             {
                 Can_CurrentState[CAN1_CONTROLLER_ID] = CAN_CS_STOPPED;
                 REG_VAL(CAN1_BASE,CAN_STS_OFFSET);
-                return E_OK;
+                Return_Value = E_OK;
             }
             else
             {
                 /* Can_Mainfunction_Mode shall change its state*/
-                return E_OK;
+                Return_Value = E_OK;
             }
-            return E_OK;
+            Return_Value = E_OK;
         }
     }
+    return Return_Value;
 }
 
 /************************************************************************************
@@ -1301,6 +1306,12 @@ void Can_MainFunction_Write(void)
                         }
                         else{
                         /*MISRA : do nothing*/}
+
+                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
+
+                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
+
+                        /*call CanIf_TxConfirmation function*/
                     }
 
                     else
@@ -1516,6 +1527,8 @@ void Can_MainFunction_Read(void)
                      */
                     if(ONE == NEW_DATA_UPDATE )
                     {
+                        /*Lock Mailbox until Reading of Pdu from Users*/
+                        Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Unconfirmed;
                         MSG_Object.CanId =  Can_Msg_Received.id ;
                         MSG_Object.ControllerId = Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef->CanControllerId;
                         MSG_Object.Hoh = HOH_Index;
@@ -1527,6 +1540,13 @@ void Can_MainFunction_Read(void)
                                     buffer in parameter PduInfoPtr. (SRS_Can_01045)
                          *
                          */
+                        /*Call User (CanIf) to indicate recieved message*/
+                        CanIf_RxIndication(&MSG_Object,&ReceiverPduInfo);
+                        /*
+                         * The hardware object will be immediately released
+                         * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
+                         */
+                        Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
                     }
 
                 }
@@ -1801,7 +1821,7 @@ the interrupts are re-enabled..*/
 Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
 {
     uint8 Can_Controller_ID = Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanControllerRef->CanControllerId;
-
+    Std_ReturnType Return_Value;
     /*
      * SWS_Can_00216] If development error detection for the Can module is enabled:
      *   The function Can_Write shall raise the error CAN_E_UNINIT and shall return
@@ -1816,7 +1836,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     if(Can_Status == CAN_UNINIT)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_UNINIT) ;
-        return E_NOT_OK;
+        Return_Value =  E_NOT_OK;
     }
     else
     {
@@ -1830,7 +1850,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanObjectType)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_HANDLE);
-        return E_NOT_OK;
+        Return_Value = E_NOT_OK;
     }
 
     else
@@ -1844,7 +1864,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     if(NULL_PTR == PduInfo)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_POINTER);
-        return E_NOT_OK;
+        Return_Value = E_NOT_OK;
     }
     else
     {
@@ -1853,7 +1873,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
     if(PduInfo->length > 8U)
     {
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_DATA_LENGTH);
-        return E_NOT_OK;
+        Return_Value = E_NOT_OK;
     }
     else
 #endif
@@ -1965,7 +1985,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                 /*Do Nothing*/
             }
             Object_Check[Can_Controller_ID][Hth][ZERO].Check = Unconfirmed;
-            return E_OK;
+            Return_Value = E_OK;
         }
         /*Basic CAN*/
         else if (BASIC == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHandleType)
@@ -2076,7 +2096,8 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                     {
                         /*Do Nothing*/
                     }
-                    return E_OK;
+                    Return_Value = E_OK;
+                    break;
                 }
                 else
                 {
@@ -2085,7 +2106,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                 /*No Free Mailbox*/
                 if (ObjectCount_Iter == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHardwareObjectCount)
                 {
-                    return CAN_BUSY;
+                    Return_Value = CAN_BUSY;
                 }
                 else
                 {
@@ -2096,8 +2117,9 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
         /*No Free Mailbox*/
         else
         {
-            return CAN_BUSY;
+            Return_Value = CAN_BUSY;
         }
+
 
 #elif (CanConf_CAN1_CONTROLLER_ACTIVATION == STD_ON)
 
@@ -2181,8 +2203,8 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
         return E_OK;
 #endif /*CanConf_CAN1_CONTROLLER_ACTIVATION*/
     }
+    return Return_Value;
 }
-
 
 
 

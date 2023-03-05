@@ -135,7 +135,7 @@ gaps
 /*
  * Enables / disables API Can_MainFunction_Read() for handling PDU reception events in polling mode
  */
-#define CanConf_CAN0_RX_PROCESSING         INTERRUPT
+#define CanConf_CAN0_RX_PROCESSING         POLLING
 #define CanConf_CAN1_RX_PROCESSING         INTERRUPT
 
 /*
@@ -287,10 +287,6 @@ Name: CanObjectType
 Parent Container: CanHardwareObject
 Description: Specifies if the HardwareObject is used as Transmit or as Receive object
  */
-
-#define HTH_NUMBER                              (uint8)3
-
-
 #define CAN_HOH_TYPE_0                           (CanObjectType)RECIEVE
 #define CAN_HOH_TYPE_1                           (CanObjectType)TRANSMIT
 #define CAN_HOH_TYPE_2                           (CanObjectType)RECIEVE
@@ -354,6 +350,10 @@ Description: This parameter describes the period for cyclic call to
  */
 
 #define CAN_MAIN_FUNCTION_PERIOD            (float32)100
+
+
+#define CanIfTxPduTriggerTransmit             STD_ON
+
 
 #endif /* CAN_CFG_H_ */
 

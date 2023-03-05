@@ -11,12 +11,12 @@
 
 /* Include of CanIf_Cfg Header Filer*/
 #include "CanIf.h"
+
 const CanIf_ConfigType CanIf_Configuration =
 {
  .CanIfCtrlDrvCfg =
  {
   .CanIfCtrlDrvInitHohConfigRef = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[ZERO],
-
   .CanIfCtrlCfg =
   {
    {
@@ -62,7 +62,6 @@ const CanIf_ConfigType CanIf_Configuration =
       .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[4]
      }
     },
-    /* RX_TEAM */
     .CanIfHrhCfg =
     {
      {
@@ -91,16 +90,10 @@ const CanIf_ConfigType CanIf_Configuration =
        .CanIfHrhRangeRxPduLowerCanId=0,
        .CanIfHrhRangeRxPduUpperCanId=0x1FFFFFFF,
        .CanIfHrhRangeRxPduRangeCanIdType= STANDARD
-
-
       }
      }
-
-
-
     }
    }
-   /* ----------------------------  */
   },
   .CanIfTxPduCfg =
   {
@@ -132,16 +125,14 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIf_RxPduReadNotifyStatus=FALSE,
 #endif /*CanIfPublicReadRxPduNotifyStatusApi */
     .CanIfRxPduUserRxIndicationName=PDUR,
-    .CanIfRxPduCanIdType = STANDARD_CAN,
+    .CanIfRxPduCanIdType = STANDARD_CAN_Rx,
     .CanIfRxPduId = CanIfRxPduId_0,
     .CanIfRxPduDataLength=8,
 #if(STD_ON == CanIfPublicReadRxPduDataApi)
     .CanIf_RxPduReadData=FALSE,
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduCanId = CanIfCtrlId_0,
-    .CanIfRxPduCanIdMask =CanIfRxPduCanIdMask_0,
-    .CanIf_PduModeType = CANIF_TX_OFFLINE
-
+    .CanIfRxPduCanIdMask =CanIfRxPduCanIdMask_0
    },
    {
     .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhCfg[0],
@@ -149,16 +140,14 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIf_RxPduReadNotifyStatus=FALSE,
 #endif /*CanIfPublicReadRxPduNotifyStatusApi */
     .CanIfRxPduUserRxIndicationName=PDUR,
-    .CanIfRxPduCanIdType = STANDARD_CAN,
+    .CanIfRxPduCanIdType = STANDARD_CAN_Rx,
     .CanIfRxPduId = CanIfRxPduId_1,
     .CanIfRxPduDataLength=8,
 #if(STD_ON == CanIfPublicReadRxPduDataApi)
     .CanIf_RxPduReadData=FALSE,
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduCanId = CanIfCtrlId_1,
-    .CanIfRxPduCanIdMask = CanIfRxPduCanIdMask_1,
-    .CanIf_PduModeType = CANIF_TX_OFFLINE
-
+    .CanIfRxPduCanIdMask = CanIfRxPduCanIdMask_1
    },
   }
  },

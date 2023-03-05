@@ -18,6 +18,7 @@
 #include "Can_GeneralTypes.h"
 /* Include of Can Header file*/
 #include "Can.h"
+
 #define HTH_NUMBER                          3
 #define CanIf_BUFFER_NUMBER                HTH_NUMBER
 #define Can_DRIVERS_NUMBER                 (uint8)1
@@ -217,13 +218,8 @@ typedef enum
  */
 typedef enum
 {
-    EXTENDED_CAN_Rx,
-    EXTENDED_FD_CAN_Rx ,
-    EXTENDED_NO_FD_CAN_Rx,
-    STANDARD_CAN_Rx,
-    STANDARD_FD_CAN_Rx,
-    STANDARD_NO_FD_CAN_Rx
-
+    STANDARD_CAN_Rx=0,
+    EXTENDED_CAN_Rx=2,
 } CanIfRxPduCanIdType;
 
 /* Defines the type of each transmit CAN L-PDU.*/
@@ -405,9 +401,6 @@ typedef struct  CanIfRxPduCfg
     CanIfRxPduUserRxIndicationUL CanIfRxPduUserRxIndicationName;
 
     /*Sub-Containers*/
-
-    /*added variable not in SWS in this container but needed in implementation*/
-    CanIf_PduModeType CanIf_PduModeType;
 
 }CanIfRxPduCfg;
 
