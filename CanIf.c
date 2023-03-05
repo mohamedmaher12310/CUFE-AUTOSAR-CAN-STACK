@@ -12,123 +12,146 @@
 /*Include the module header file*/
 #include "CanIf.h"
 
-/******************************************************************************
- *Service name: CanIf_RxIndication
- *Syntax: void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
- *Service ID[hex]: 0x14
+STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
+
+/*
+ * Service name:CanIf_GetTxPDU
+ * Syntax :CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
+ * Parameters(in): PduIdType TxPDU_ID
+ * Return value :Address of CanIfTxPduCfg
+ * Description : Get the CanIfTxPduCfg from the TxPDU ID
+ * */
+
+
+
+CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
+{
+    uint8 TxPDU_index;
+    if(TxPDU_ID<CanIfMaxTxPduCfg)
+    {
+        for(TxPDU_index =0;TxPDU_index<CanIfMaxTxPduCfg;TxPDU_index++ )
+        {
+            if(TxPDU_ID == CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index].CanIfTxPduId)
+            {
+                return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index];
+            }
+            else
+            {
+
+            }
+        }
+    }
+    else
+    {
+        return NULL_PTR;
+
+    }
+
+    return NULL_PTR;
+}
+
+
+/* *Service name: CanIf_Transmit
+ *Syntax: Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
+ *Service ID[hex]: 0x49
  *Sync/Async: Synchronous
- *Reentrancy: Reentrant
- *Parameters (in):  - Mailbox Identifies the HRH and its corresponding CAN Controller
-                    -PduInfoPtr Pointer to the received L-PDU
+ *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
+ *Parameters (in): TxPduId Identifier of the PDU to be transmitted
+ *PduInfoPtr Length of and pointer to the PDU data and pointer
+ *to MetaData.
  *Parameters (inout): None
  *Parameters (out): None
- *Return value: None
- *Description: This service indicates a successful reception of a received CAN Rx LPDU to the CanIf after passing all filters and validation checks
- ******************************************************************************/
-void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPtr)
+ *Return value: Std_ReturnType E_OK: Transmit request has been accepted.
+ *E_NOT_OK: Transmit request has not been accepted.
+ *Description: Requests transmission of a PDU.
+ *
+ * */
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
+{
+    Std_ReturnType Can_Write_Return;
+    Can_PduType Can_PduData;
+    CanIfTxPduCfg* TxPDU =  NULL_PTR;
+
+    /*Get the TxPDU from the TxPduId passed to the function*/
+    TxPDU = CanIf_GetTxPDU(TxPduId);
+
+    /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
+    Can_HwHandleType Hth = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthIdSymRef->CanObjectId;
+
+    /*Assigning the variables passed by the function to the Can_PduType variable to pass it
+     * to the Can_Write */
+    Can_PduData.id = TxPDU->CanIfTxPduCanId;
+    Can_PduData.length = PduInfoPtr->SduLength;
+    Can_PduData.sdu = PduInfoPtr->SduDataPtr;
+    Can_PduData.swPduHandle = TxPduId;
+
+    /*Can_Write(Hth,Can_PduType* PduInfo) */
+    Can_Write_Return = Can_Write(Hth, &Can_PduData);
+    if (Can_Write_Return == CAN_OK)
+    {
+        return E_OK;
+    }
+    else
+    {
+        return E_NOT_OK;
+    }
+}
+
+
+
+/************************************************************************************
+ * Service Name: CanIf_SetControllerMode
+ * Service ID[hex]: 0x03
+ * Sync/Async: Asynchronous
+ * Reentrancy: Reentrant (Not for the same controller)
+ * Parameters (in): ControllerId - Abstracted CanIf ControllerId which is assigned to a
+ *                                 CAN controller, which is requested for mode transition.
+ *                  ControllerMode - Requested mode transition
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: Std_ReturnType - E_OK: Controller mode request has been accepted
+ *                                E_NOT_OK: Controller mode request hasn't been accepted
+ * Description: Function to call the corresponding CAN Driver service for changing of
+                the CAN controller mode.
+ ************************************************************************************/
+Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateType ControllerMode)
 {
 
-    /* If parameter Mailbox->Hoh of CanIf_RxIndication() has an invalid value, CanIf shall report development error code*/
-#if(STD_ON == CanIfDevErrorDetect)
+#if( CanIfDevErrorDetect == STD_ON  )
 
-    if(Mailbox->Hoh != RECIEVE)
-    {    ///?????/instance id
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_HOH);
-    }
-    else
+    /* Check if the Controller ID is greater than the number of configured controllers*/
+    if (ControllerId >= CAN_CONTROLLERS_NUMBER)
     {
-        /*MISRA : do nothing*/
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CONTROLLERID );
+        return E_NOT_OK;
     }
 
-    /* If parameter Mailbox->CanId of CanIf_RxIndication() has an invalid value, CanIf shall report development error code CANIF_E_PARAM_CANID to the Det_ReportError service of the DET */
-    if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) ) //???????
+    /* Check If parameter ControllerMode has an invalid value*/
+    if (  (ControllerMode !=CAN_CS_STARTED) || (ControllerMode !=CAN_CS_STOPPED) || (ControllerMode !=CAN_CS_SLEEP) )
     {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_CANID);
-    }
-    else
-    {
-        /*MISRA : do nothing*/
-    }
-
-
-    /*If parameter PduInfoPtr or Mailbox has an invalid value, CanIf shall report development error code CANIF_E_PARAM_POINTER to the Det_ReportError service of the DET module*/
-    if( ( NULL_PTR == Mailbox) || ( NULL_PTR== PduInfoPtr)  )
-    {
-
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_POINTER);
-    }
-    else
-    {
-        /*MISRA : do nothing*/
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CTRLMODE );
+        return E_NOT_OK;
     }
 
 
 #endif
 
+    Can_ControllerStateType Requested_Mode ;
+    Std_ReturnType Can_SetControllerMode_return ;
 
-    CanIfRxPduCfg* Cfg_Arr_CanIfRxIndication = CanIf_ConfigPtr->InitConfig->CanIfRxPduConfigPtr;
-    uint16 iter;
-    uint8 PDU_PASS;
-
-    for (iter = 0; iter < CanIf_ConfigPtr->InitConfig->CanIfMaxRxPduCfg ; iter++)
+    switch (ControllerMode)
     {
-        if(((&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) == BASIC)
-        {
-            /* Software filtering */
-            if ( ((&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter) ==TRUE)
-            {
+    case CAN_CS_STOPPED :
+        Requested_Mode =CAN_CS_STOPPED;
+        Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
+        break;
 
-                if ((Mailbox->CanId & (&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduCanIdMask ) == ( (&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduCanId & (&Cfg_Arr_CanIfRxIndication[iter])->CanIfRxPduCanIdMask))
-                {
-                    /* We found a pdu. so, DLC Check & call higher layers  */
-                    PDU_PASS=ONE;
-                }
-                else
-                {
-                    /* PDU does not pass sw filter */
-                    PDU_PASS=ZERO;
-
-                }
-
-            }
-        }
-
-        /*Data Length Check*/
-        if( PDU_PASS== ONE)
-        {
-
-#if (CanIfPrivateDataLengthCheck == STD_ON)
-            /* CanIf shall accept all received L-PDUs with a Data Length value equal or greater then the configured Data Length value*/
-            if (PduInfoPtr->SduLength < (&Cfg_Arr_CanIfRxIndication[RxPduIndex])->CanIfRxPduDataLength)
-            {
-                /* Call Det_ReportRuntimeError() with error code CANIF_E_INVALID_DATA_LENGTH*/
-
-                Det_ReportRuntimeError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
-
-
-            }
-            // else         /*Call <User_RxIndication>() to upper layers */
-
-#endif
-
-            switch(Get_User_RxIndication_Name(RxPduIndex))
-            {
-            case CAN_NM:
-            {
-                break;
-
-            }
-
-            case PDUR:
-            {
-
-                break;
-            }
-
-
-            }
-
-        }
-
+    case CAN_CS_STARTED:
+        Requested_Mode =CAN_CS_STARTED;
+        Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
+        break;
     }
+
+    return Can_SetControllerMode_return;
+
 }

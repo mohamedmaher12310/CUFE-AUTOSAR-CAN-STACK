@@ -98,6 +98,9 @@
 /* Service ID for CanIf Set Dynamic Tx Id API*/
 #define CANIF_SET_DYNAMIC_TXID_SID        (uint8)0x0c
 
+/* Service ID for CanIf RxIndication Id API*/
+#define CanIf_RxIndication_RXID_SID       (uint8)0x14
+
 /*******************************************************************************
  *                      DET Error Codes                                        *
  *******************************************************************************/
@@ -133,7 +136,8 @@
 /*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
 #define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
 
-
+#define CANNIF_STANDARD_MAX    0x400007FF   /*max number for Standard32Bit*/
+#define CANNIF_EXTENDED_MAX    0xDFFFFFFF   /*max number for Extended32Bit*/
 
 /*******************************************************************************
  *                      Function Prototypes                                    *
@@ -236,29 +240,30 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
  ************************************************************************************/
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
-
-
-
 /************************************************************************************
- * Service Name: CanIf_RxIndication
- * Service ID[hex]: 0x14
+ * Service Name: <User_RxIndication>
  * Sync/Async: Synchronous
- * Reentrancy:  Reentrant
+ *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
  * Parameters (in):
- *          Mailbox: Identifies the HRH and its corresponding CAN Controller
- *          PduInfoPtr :Pointer to the received L-PDUParameters (inout): None
+ *          RxPduId: ID of the received PDU.
+ *          PduInfoPtr :Contains the length (SduLength) of the received
+ *                      PDU, a pointer to a buffer (SduDataPtr) containing
+ *                      the PDU, and the MetaData related to this PDU.
+ * Parameters (inout): None
  * Parameters (out): None
  * Return value:     None
- * Description: This service indicates a successful reception of a received CAN Rx LPDU
- *              to the CanIf after passing all filters and validation checks.
+ * Description: Indication of a received PDU from a lower layer communication interface
+ *              module
  ************************************************************************************/
-void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr);
+
+void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
+
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/
-#define CANNIF_STANDARD_MAX    0x7FF
-#define CANNIF_EXTENDED_MAX    0x1FFFFFFF
-#define Max_SDU_LENGTH         0x08
+
+
+
 
 /*******************************************************************************
  *                       External Variables                                    *
