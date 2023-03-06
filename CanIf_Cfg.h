@@ -137,6 +137,9 @@
 #define CanIfTxPduType_0       (CanIfTxPduType)DYNAMIC_ID
 #define CanIfTxPduType_1       (CanIfTxPduType)DYNAMIC_ID
 
+#define CanIfTxPduUserTxConfirmationUL_0       (CanIfUser)PDUR
+#define CanIfTxPduUserTxConfirmationUL_1       (CanIfUser)PDUR
+
 /************************CanIfRxPduCfg Container*******************************/
 
 /*

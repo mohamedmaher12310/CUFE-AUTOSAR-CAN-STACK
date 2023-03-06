@@ -105,6 +105,9 @@
 /* Service ID for CanIf Transmit API*/
 #define CANIF_TRANSMIT_SID                (uint8)0x49
 
+/* Service ID for CanIf Tx Id Confirmation API*/
+#define CANIF_TX_CONFIRMATION_TXID_SID               (uint8)0x13
+
 /* Service ID for CanIf Set PDU Mode API*/
 #define CANIF_SET_PDU_MODE_SID            (uint8)0x09
 
@@ -266,7 +269,7 @@ void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
  *                       External Variables                                    *
  *******************************************************************************/
 
-
+extern CanIf_State CanIfCurrent_State ;
 extern const CanIf_ConfigType CanIf_Configuration ;
 
 

@@ -39,6 +39,12 @@
  *                              Module Data Types                              *
  *******************************************************************************/
 
+/* The State of the CanIf module  */
+typedef enum
+{
+    CANIF_UNINIT,
+    CANIF_READY
+} CanIf_State;
 /*
  *The PduMode of a channel defines its transmit or receive activity.
  *Communication direction (transmission and/or reception) of the channel can
@@ -256,6 +262,36 @@ typedef struct
 } CanIfBufferCfg;
 
 /*
+ * This parameter defines the upper layer (UL) module to which the
+ * confirmation of the successfully transmitted CANTXPDUID has to be
+ * routed via the <User_TxConfirmation>. This <User_TxConfirmation>
+ * has to be invoked when the confirmation of the configured
+ * CANTXPDUID will be received by a Tx confirmation event from the
+ * CAN Driver module. If no upper layer (UL) module is configured, no
+ * <User_TxConfirmation> has to be called in case of a Tx confirmation
+ * event of the CANTXPDUID from the CAN Driver module.
+ * It also defines the upper layer (UL) module to which the
+ * indication of the successfully received CANRXPDUID has to be routed
+ * via <User_RxIndication>. This <User_RxIndication> has to be invoked
+ * when the indication of the configured CANRXPDUID will be received
+ * by an Rx indication event from the CAN Driver module. If no upper
+ * layer (UL) module is configured, no <User_RxIndication> has to be
+ * called in case of an Rx indication event of the CANRXPDUID from the
+ * CAN Driver module.
+ */
+typedef enum
+{
+    CAN_NM,
+    CAN_TP,
+    CAN_TSYN,
+    CDD,
+    J1939NM,
+    J1939TP,
+    PDUR,
+    XCP
+} CanIfUser;
+
+/*
  * This container contains the configuration (parameters) of a transmit
  * CAN L-PDU. It has to be configured as often as a transmit CAN L-PDU
  * is needed.
@@ -292,32 +328,13 @@ typedef struct
     /*Defines the type of each transmit CAN L-PDU.*/
     CanIfTxPduType CanIfTxPduType;
 
+    /*Defines the upper layer (UL) module to which the confirmation of the successfully transmitted.*/
+    CanIfUser CanIfTxPduUserTxConfirmationUL;
+
     /*Configurable reference to a CanIf buffer configuration*/
     CanIfBufferCfg* CanIfTxPduBufferRef;
 
 } CanIfTxPduCfg;
-
-/*
- * This parameter defines the upper layer (UL) module to which the
- * indication of the successfully received CANRXPDUID has to be routed
- * via <User_RxIndication>. This <User_RxIndication> has to be invoked
- * when the indication of the configured CANRXPDUID will be received
- * by an Rx indication event from the CAN Driver module. If no upper
- * layer (UL) module is configured, no <User_RxIndication> has to be
- * called in case of an Rx indication event of the CANRXPDUID from the
- * CAN Driver module.
- */
-typedef enum
-{
-    CAN_NM,
-    CAN_TP,
-    CAN_TSYN,
-    CDD,
-    J1939NM,
-    J1939TP,
-    PDUR,
-    XCP
-} CanIfRxPduUserRxIndicationUL;
 
 /*
  * This container contains the configuration (parameters) of each receive
@@ -398,7 +415,7 @@ typedef struct  CanIfRxPduCfg
      * called in case of an Rx indication event of the CANRXPDUID from the
      * CAN Driver module.
      */
-    CanIfRxPduUserRxIndicationUL CanIfRxPduUserRxIndicationName;
+    CanIfUser CanIfRxPduUserRxIndicationName;
 
     /*Sub-Containers*/
 

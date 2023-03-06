@@ -104,6 +104,7 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIfTxPduId = CanIfTxPduId_0,
     .CanIfTxPduTruncation = FALSE,
     .CanIfTxPduType = CanIfTxPduType_0,
+    .CanIfTxPduUserTxConfirmationUL = CanIfTxPduUserTxConfirmationUL_0,
     .CanIfTxPduBufferRef = &CanIf_Configuration.CanIfInitCfg.CanIfBufferCfg[0U]
    },
    {
@@ -113,6 +114,7 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIfTxPduId = CanIfTxPduId_1,
     .CanIfTxPduTruncation = FALSE,
     .CanIfTxPduType = CanIfTxPduType_1,
+    .CanIfTxPduUserTxConfirmationUL = CanIfTxPduUserTxConfirmationUL_1,
     .CanIfTxPduBufferRef = &CanIf_Configuration.CanIfInitCfg.CanIfBufferCfg[0U]
    }
   },

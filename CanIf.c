@@ -13,7 +13,7 @@
 #include "CanIf.h"
 
 STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
-
+CanIf_State CanIfCurrent_State = CANIF_UNINIT ;
 /*
  * Service name:CanIf_GetTxPDU
  * Syntax :CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
@@ -155,4 +155,49 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
     return Can_SetControllerMode_return;
 
 }
+/******************************************************************************
+ *Service name: CanIf_TxConfirmation
+ *Syntax: void CanIf_TxConfirmation(PduIdType CanTxPduId)
+ *Service ID[hex]: 0x13
+ *Sync/Async: Synchronous
+ *Reentrancy: Reentrant
+ *Parameters (in):  - CanTxPduId This ID specifies the corresponding CAN L-PDU ID and implicitly the CAN Driver instance as well as the corresponding CAN controller device.
+ *Parameters (inout): None
+ *Parameters (out): None
+ *Return value: None
+ *Description: This service confirms a previously successfully processed transmission of a CAN TxPDU.
+ ******************************************************************************/
+ 
+ void CanIf_TxConfirmation(PduIdType CanTxPduId)
+ {
+	 
+#if( CanIfDevErrorDetect == STD_ON  )
+
+    /* Check if the CanIf module if initialized or not*/
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_TXID_SID, CANIF_E_UNINIT);
+    }
+    /* Check If CanTxPduId has an invalid value*/
+    if (CanTxPduId > CanIfMaxTxPduCfg )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_TXID_SID,  CANIF_E_PARAM_LPDU );
+    }
+
+#endif
+
+    CanIfTxPduCfg *TxPDU_ptr = NULL_PTR;
+	TxPDU_ptr = CanIf_GetTxPDU(CanTxPduId);
+    if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
+    {
+        /* PDUR_TxConfirmation(); */
+    }
+    else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
+    {
+        /* CAN_TP_TxConfirmation(); */
+
+    }
+ 
+
+ }
 
