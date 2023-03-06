@@ -407,7 +407,7 @@ typedef struct  CanIfRxPduCfg
     /*Sub-Containers*/
 
     /*added variable not in SWS in this container but needed in implementation*/
-    CanIf_PduModeType CanIf_PduModeType;
+//    CanIf_PduModeType CanIf_PduModeType;
 
 }CanIfRxPduCfg;
 
