@@ -99,9 +99,15 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         //        if( (CANIF_TX_OFFLINE == RxPDU->CanIf_PduModeType) || (CANIF_ONLINE == RxPDU->CanIf_PduModeType) )
         //        {
 
+        /***************************************before all of this check the channel mode of the  PDU ************************/
+        //        if( (CANIF_TX_OFFLINE == RxPDU->CanIf_PduModeType) || (CANIF_ONLINE == RxPDU->CanIf_PduModeType) )
+        //        {
         if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
         {
 
+
+            /*check of SW filter enable*/
+            if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
 
             /*check of SW filter enable*/
             if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
@@ -199,7 +205,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                     RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                     RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                     RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                    PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
+                    //PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
 
                     break;
                 }

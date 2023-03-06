@@ -107,4 +107,21 @@ void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
  ************************************************************************************/
 void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType ControllerMode);
 
+/************************************************************************************
+ * Service Name: <User_RxIndication>
+ * Sync/Async: Synchronous
+ *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
+ * Parameters (in):
+ *          RxPduId: ID of the received PDU.
+ *          PduInfoPtr :Contains the length (SduLength) of the received
+ *                      PDU, a pointer to a buffer (SduDataPtr) containing
+ *                      the PDU, and the MetaData related to this PDU.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value:     None
+ * Description: Indication of a received PDU from a lower layer communication interface
+ *              module
+ ************************************************************************************/
+void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
+
 #endif /* CANIF_CBK_H_ */
