@@ -135,6 +135,7 @@ const CanIf_ConfigType CanIf_Configuration =
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduCanId = CanIfCtrlId_0,
     .CanIfRxPduCanIdMask =CanIfRxPduCanIdMask_0
+//    .CanIf_PduModeType = CANIF_TX_OFFLINE
    },
    {
     .CanIfRxPduHrhIdRef=&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[0].CanIfHrhCfg[0],
@@ -150,6 +151,8 @@ const CanIf_ConfigType CanIf_Configuration =
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduCanId = CanIfCtrlId_1,
     .CanIfRxPduCanIdMask = CanIfRxPduCanIdMask_1
+//    .CanIf_PduModeType = CANIF_TX_OFFLINE
+
    },
   }
  },
