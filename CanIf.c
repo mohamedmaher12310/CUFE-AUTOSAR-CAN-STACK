@@ -190,14 +190,18 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
 	TxPDU_ptr = CanIf_GetTxPDU(CanTxPduId);
     if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
     {
-        /* PDUR_TxConfirmation(); */
+        /* PDUR_TxConfirmation(E_OK); */
     }
     else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
     {
-        /* CAN_TP_TxConfirmation(); */
+        /* CAN_TP_TxConfirmation(E_OK); */
+    }
+    else
+    {
 
     }
- 
+    }
 
  }
+
 
