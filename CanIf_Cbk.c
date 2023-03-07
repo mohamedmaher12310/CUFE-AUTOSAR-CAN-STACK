@@ -40,7 +40,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     CanIfHrhRangeCfg* RxPDU_Range = NULL_PTR;
     CanIfHrhCfg* HRH_index_Ptr = NULL_PTR;
     /*needed variables*/
-    PduIdType RxPDU_index ;
+    uint8 RxPDU_index ;
     uint8 HRH_index ;
     uint8 PDU_PASS=ZERO;
     /* NES2AL FL ENUM wel comparison ely fe page 41 [SWS_CANIF_00877] */
@@ -94,14 +94,11 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         HRH_index_Ptr = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
         HRH_index= (HRH_index_Ptr->CanIfHrhIdSymRef->CanObjectId);
         RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[Can_DRIVERS_NUMBER].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
-        /* [SWS_CANIF_00877] ??*/
-        /***************************************before all of this check the channel mode of the  PDU ************************/
-        //        if( (CANIF_TX_OFFLINE == RxPDU->CanIf_PduModeType) || (CANIF_ONLINE == RxPDU->CanIf_PduModeType) )
-        //        {
 
         /***************************************before all of this check the channel mode of the  PDU ************************/
         //        if( (CANIF_TX_OFFLINE == RxPDU->CanIf_PduModeType) || (CANIF_ONLINE == RxPDU->CanIf_PduModeType) )
         //        {
+
         if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
         {
 
@@ -202,7 +199,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                     RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                     RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                     RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-//                    PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
+                    //PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
 
                     break;
                 }
