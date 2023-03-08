@@ -11,6 +11,7 @@
 
 /*Include the module header file*/
 #include "CanIf.h"
+#include "CanIf_Cbk.h"
 
 STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
 CanIf_State CanIfCurrent_State = CANIF_UNINIT ;
@@ -119,6 +120,12 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
 
 #if( CanIfDevErrorDetect == STD_ON  )
 
+    /* Check if the module is initialized or not*/
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
     /* Check if the Controller ID is greater than the number of configured controllers*/
     if (ControllerId >= CAN_CONTROLLERS_NUMBER)
     {
@@ -155,53 +162,79 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
     return Can_SetControllerMode_return;
 
 }
-/******************************************************************************
- *Service name: CanIf_TxConfirmation
- *Syntax: void CanIf_TxConfirmation(PduIdType CanTxPduId)
- *Service ID[hex]: 0x13
- *Sync/Async: Synchronous
- *Reentrancy: Reentrant
- *Parameters (in):  - CanTxPduId This ID specifies the corresponding CAN L-PDU ID and implicitly the CAN Driver instance as well as the corresponding CAN controller device.
- *Parameters (inout): None
- *Parameters (out): None
- *Return value: None
- *Description: This service confirms a previously successfully processed transmission of a CAN TxPDU.
- ******************************************************************************/
- 
- void CanIf_TxConfirmation(PduIdType CanTxPduId)
- {
-	 
+
+/************************************************************************************
+ * Service Name: CanIf_ReadTxNotifStatus
+ * Service ID[hex]: 0x07
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): CanIfTxSduId - L-SDU handle to be transmitted.
+                                   This handle specifies the corresponding CAN LSDU ID and implicitly
+                                   the CAN Driver instance as
+                                   well as the corresponding CAN controller device.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: CanIf_NotifStatusType - Current confirmation status of the corresponding
+ *                                       CAN Tx L-PDU.
+ *
+ * Description: Function to  return the confirmation status (confirmation occurred or
+                not) of a specific static or dynamic CAN Tx L-PDU, requested by the
+                CanIfTxSduId.
+ ************************************************************************************/
+
+#if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId)
+{
+
 #if( CanIfDevErrorDetect == STD_ON  )
 
-    /* Check if the CanIf module if initialized or not*/
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_TXID_SID, CANIF_E_UNINIT);
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_ReadTxNotifStatus_SID, CANIF_E_UNINIT);
     }
-    /* Check If CanTxPduId has an invalid value*/
-    if (CanTxPduId > CanIfMaxTxPduCfg )
-    {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_TXID_SID,  CANIF_E_PARAM_LPDU );
-    }
+    /* [SWS_CANIF_00331] d If parameter CanIfTxSduId of
+       CanIf_ReadTxNotifStatus() is out of range or if no status information was
+       configured for this CAN Tx L-SDU, CanIf shall report development error code
+       CANIF_E_INVALID_TXPDUID to the Det_ReportError service of the DET
+       when CanIf_ReadTxNotifStatus() is called.
+     */
 
+    if (CanIfTxSduId > CanIfMaxTxPduCfg )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_ReadTxNotifStatus_SID,  CANIF_E_INVALID_TXPDUID );
+    }
 #endif
 
-    CanIfTxPduCfg *TxPDU_ptr = NULL_PTR;
-	TxPDU_ptr = CanIf_GetTxPDU(CanTxPduId);
-    if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
+    /* used variables and pointers */
+    const CanIfTxPduCfg *TxPDU_ptr = NULL_PTR;
+    CanIf_NotifStatusType ReturnState ;
+
+    TxPDU_ptr = &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[CanIfTxSduId];
+
+    /* [SWS_CANIF_00393] d If configuration parameters
+       CANIF_PUBLIC_READTXPDU_NOTIFY_STATUS_API (ECUC_CanIf_00609) and
+       CANIF_TXPDU_READ_NOTIFYSTATUS (ECUC_CanIf_00589) for the transmitted
+       L-SDU are set to TRUE, and if CanIf_ReadTxNotifStatus() is called, the CanIf
+       shall reset the notification status for the transmitted L-SDU.
+     */
+    if(TxPDU_ptr->CanIfTxPduReadNotifyStatus == TRUE)
     {
-        /* PDUR_TxConfirmation(E_OK); */
-    }
-    else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
-    {
-        /* CAN_TP_TxConfirmation(E_OK); */
+        if(CANIF_TX_RX_NOTIFICATION == CanIf_TxNotificationFlag[CanIfTxSduId])
+        {
+            ReturnState = CANIF_TX_RX_NOTIFICATION ;
+            CanIf_TxNotificationFlag[CanIfTxSduId]= CANIF_NO_NOTIFICATION;
+        }
+        else
+        {
+            ReturnState = CANIF_NO_NOTIFICATION ;
+        }
     }
     else
     {
-
+        ReturnState = CANIF_NO_NOTIFICATION ;
     }
-    }
-
- }
+    return ReturnState;
+}
+#endif /*CanIfPublicReadTxPduNotifyStatusApi */
 
 

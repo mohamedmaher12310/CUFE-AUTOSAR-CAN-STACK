@@ -119,36 +119,95 @@
  */
 #define CanIfPublicReadRxPduNotifyStatusApi   (STD_ON)
 
+/*
+ * Enables and disables the API for reading the notification status of
+ * transmit L-PDUs.
+ */
+#define CanIfPublicReadTxPduNotifyStatusApi   (STD_ON)
+
+/************************CanIfHrhCfg Container*******************************/
+/* Number of configured HRH*/
+#define HRH_NUMBER                         (2U)
+/*HRH Index numbers*/
+#define HRH0_ID                            (0U)
+#define HRH1_ID                            (1U)
+
+/************************CanIfHthCfg Container*******************************/
+/* Number of configured HTH*/
+#define HTH_NUMBER                         (3U)
+/*HTH Index numbers*/
+#define HTH0_ID                            (0U)
+#define HTH1_ID                            (1U)
+#define HTH2_ID                            (2U)
+/* Number of configured Tx Buffers*/
+#define CanIf_BUFFER_NUMBER                (HTH_NUMBER)
+
 /************************CanIfTxPduCfg Container*******************************/
+
+/*
+ * Maximum number of Pdus. This parameter is needed only in case of
+ * post-build loadable implementation using static memory allocation.
+ */
+#define CanIfMaxTxPduCfg                   (2U)
 
 /*ECU wide unique, symbolic handle for transmit CAN L-SDU.*/
 #define CanIfTxPduId_0          (0U)
 #define CanIfTxPduId_1          (1U)
 
+/*
+ * CAN Identifier of transmit CAN L-PDUs used by the CAN Driver for
+ * CAN L-PDU transmission.
+ */
 #define CanIfTxPduCanId_0       0x0
 #define CanIfTxPduCanId_1       0x1
 
+/*
+ * Identifier mask which denotes relevant bits in the CAN Identifier. This
+ * parameter may be used to keep parts of the CAN Identifier of dynamic
+ * transmit L-PDUs static.
+ */
 #define CanIfTxPduCanIdMask_0   0x0
 #define CanIfTxPduCanIdMask_1   0x0
 
+/*
+ * Type of CAN Identifier of the transmit CAN L-PDU used by the CAN
+ * Driver module for CAN L-PDU transmission.
+ */
 #define CanIfTxPduCanIdType_0  (CanIfTxPduCanIdType)STANDARD_CAN
 #define CanIfTxPduCanIdType_1  (CanIfTxPduCanIdType)STANDARD_CAN
 
-#define CanIfTxPduType_0       (CanIfTxPduType)DYNAMIC_ID
-#define CanIfTxPduType_1       (CanIfTxPduType)DYNAMIC_ID
+/* Defines the type of each transmit CAN L-PDU.*/
+#define CanIfTxPduType_0       (CanIfTxPduType)STATIC_ID
+#define CanIfTxPduType_1       (CanIfTxPduType)STATIC_ID
 
+/*
+ * This parameter defines the upper layer (UL) module to which the
+ * confirmation of the successfully transmitted CANTXPDUID has to be
+ * routed via the <User_TxConfirmation>. This <User_TxConfirmation>
+ * has to be invoked when the confirmation of the configured
+ * CANTXPDUID will be received by a Tx confirmation event from the
+ * CAN Driver module. If no upper layer (UL) module is configured, no
+ * <User_TxConfirmation> has to be called in case of a Tx confirmation
+ * event of the CANTXPDUID from the CAN Driver module.
+ */
 #define CanIfTxPduUserTxConfirmationUL_0       (CanIfUser)PDUR
 #define CanIfTxPduUserTxConfirmationUL_1       (CanIfUser)PDUR
 
 /************************CanIfRxPduCfg Container*******************************/
 
 /*
+ * Maximum number of Pdus. This parameter is needed only in case of
+ * post-build loadable implementation using static memory allocation.
+ */
+#define CanIfMaxRxPduCfg                         (2U)
+
+/*
  * ECU wide unique, symbolic handle for receive CAN L-SDU. It shall
  * fulfill ANSI/AUTOSAR definitions for constant defines.
  * Range: 0..max. number of defined CanRxPduIds
  */
-#define CanIfRxPduId_0            (uint32)0
-#define CanIfRxPduId_1            (uint32)1
+#define CanIfRxPduId_0            (0U)
+#define CanIfRxPduId_1            (1U)
 
 /*
  * Identifier mask which denotes relevant bits in the CAN Identifier. This
@@ -157,8 +216,8 @@
  * Identifier that must match the received CAN Identifier. Range: 11 bits
  * for Standard CAN Identifier, 29 bits for Extended CAN Identifier.
  */
-#define CanIfRxPduCanIdMask_0   0x0
-#define CanIfRxPduCanIdMask_1   0x0
+#define CanIfRxPduCanIdMask_0   (0b11111111111)
+#define CanIfRxPduCanIdMask_1   (0b11111111111)
 
 /*
  * CAN Identifier of Receive CAN L-PDUs used by the CAN Interface.
@@ -166,26 +225,46 @@
  * Identifier is assigned to the Pdu. If a range is assigned then the
  * CanIfRxPduCanIdRange parameter shall be used.
  */
-#define CanIfRxPduCanId_0       0x0
-#define CanIfRxPduCanId_1       0x1
+#define CanIfRxPduCanId_0       (0b00000000000)
+#define CanIfRxPduCanId_1       (0b00000000000)
+
+/*This parameter defines the name of the <User_RxIndication>.*/
+#define CanIfRxPduUserRxIndicationName_0          (CanIfUser)(PDUR)
+#define CanIfRxPduUserRxIndicationName_1          (CanIfUser)(PDUR)
+
+/*Data length of the received CAN L-PDUs used by the CAN Interface.*/
+#define CanIfRxPduDataLength_0                    (8U)
+#define CanIfRxPduDataLength_1                    (8U)
+
 
 /************************CanIfCtrlCfg Container*******************************/
+/*Number of Configured CanDrvs*/
+#define Can_DRIVERS_NUMBER                 (1U)
+
 /*
  * This parameter abstracts from the CAN Driver specific parameter
  * Controller. Each controller of all connected CAN Driver modules shall
  * be assigned to one specific ControllerId of the CanIf. Range:
  * 0..number of configured controllers of all CAN Driver modules
  */
-#define CanIfCtrlId_0   (uint8)0
-#define CanIfCtrlId_1   (uint8)1
+#define CanIfCtrlId_0   CAN0_CONTROLLER_ID
+#define CanIfCtrlId_1   CAN1_CONTROLLER_ID
 
 /************************CanIfHrhCfg Container*******************************/
+
 /*
- * Reference to controller Id to which the HRH belongs to. A controller
- * can contain one or more HRHs.
+ * Lower CAN Identifier of a receive CAN L-PDU for identifier range
+ * definition, in which all CAN Ids shall pass the software filtering.
  */
-#define CanIfHrhCanCtrlIdRef_0       (CanIfCtrlCfg)CanIfCtrlId_0
-#define CanIfHrhCanCtrlIdRef_1       (CanIfCtrlCfg)CanIfCtrlId_0
+#define CanIfHrhRangeRxPduLowerCanId_0              (0b00000000000)
+#define CanIfHrhRangeRxPduLowerCanId_1              (0b00000000000)
+
+/*
+ * Upper CAN Identifier of a receive CAN L-PDU for identifier range
+ * definition, in which all CAN Ids shall pass the software filtering.
+ */
+#define CanIfHrhRangeRxPduUpperCanId_0              (0b11111111111)
+#define CanIfHrhRangeRxPduUpperCanId_1              (0b11111111111)
 
 /*
  * Selects the hardware receive objects by using the HRH range/list from

@@ -105,17 +105,14 @@
 /* Service ID for CanIf Transmit API*/
 #define CANIF_TRANSMIT_SID                (uint8)0x49
 
-/* Service ID for CanIf Tx Id Confirmation API*/
-#define CANIF_TX_CONFIRMATION_TXID_SID               (uint8)0x13
-
 /* Service ID for CanIf Set PDU Mode API*/
 #define CANIF_SET_PDU_MODE_SID            (uint8)0x09
 
 /* Service ID for CanIf Set Dynamic Tx Id API*/
 #define CANIF_SET_DYNAMIC_TXID_SID        (uint8)0x0c
 
-/* Service ID for CanIf RxIndication Id API*/
-#define CanIf_RxIndication_RXID_SID       (uint8)0x14
+/* Service ID for CanIf_ReadTxNotifStatus  API*/
+#define CanIf_ReadTxNotifStatus_SID       (uint8)0x07
 
 /*******************************************************************************
  *                      DET Error Codes                                        *
@@ -256,7 +253,26 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
  ************************************************************************************/
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
+/************************************************************************************
+ * Service Name: CanIf_ReadTxNotifStatus
+ * Service ID[hex]: 0x07
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): CanIfTxSduId - L-SDU handle to be transmitted.
+                                   This handle specifies the corresponding CAN LSDU ID and implicitly
+                                   the CAN Driver instance as
+                                   well as the corresponding CAN controller device.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: CanIf_NotifStatusType - Current confirmation status of the corresponding
+ *                                       CAN Tx L-PDU.
+ *
+ * Description: Function to  return the confirmation status (confirmation occurred or
+                not) of a specific static or dynamic CAN Tx L-PDU, requested by the
+                CanIfTxSduId.
+ ************************************************************************************/
 
+CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId);
 
 /*******************************************************************************
  *                      Definitions used in Module                             *

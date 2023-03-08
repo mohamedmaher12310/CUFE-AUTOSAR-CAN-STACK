@@ -19,22 +19,6 @@
 /* Include of Can Header file*/
 #include "Can.h"
 
-#define HTH_NUMBER                          3
-#define CanIf_BUFFER_NUMBER                HTH_NUMBER
-#define Can_DRIVERS_NUMBER                 (uint8)1
-
-#define CanIfMaxTxPduCfg                   (uint8)2
-
-/*RX_TEAM*/
-/*
- * Maximum number of Pdus.
- * This parameter is needed only in case of post-build loadable implementation
- * using static memory allocation.
- */
-#define CanIfMaxRxPduCfg                         (uint8)2
-#define HRH_NUMBER                               (uint8)2
-#define CanIf_Rx_BUFFER_NUMBER                   HRH_NUMBER
-
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/
@@ -94,16 +78,6 @@ typedef struct
 
 } CanIfCtrlCfg;
 
-/*
- * Specifies whether a configured Range of CAN Ids shall only consider
- * standard CAN Ids or extended CAN Ids.
- */
-typedef enum
-{
-    EXTENDED,
-    STANDARD
-} CanIfHrhRangeRxPduRangeCanIdType;
-
 
 /* This container contains parameters related to each HTH.*/
 typedef struct
@@ -119,22 +93,6 @@ typedef struct
 typedef struct
 {
     /*
-     * CAN Identifier used as base value in combination with
-     * CanIfHrhRangeMask for a masked ID range in which all CAN Ids shall
-     * pass the software filtering. The size of this parameter is limited by
-     * CanIfHrhRangeRxPduRangeCanIdType.
-     */
-    uint32 CanIfHrhRangeBaseId;
-
-    /*
-     * Used as mask value in combination with CanIfHrhRangeBaseId for a
-     * masked ID range in which all CAN Ids shall pass the software filtering.
-     * The size of this parameter is limited by
-     * CanIfHrhRangeRxPduRangeCanIdType.
-     */
-    uint32 CanIfHrhRangeMask;
-
-    /*
      * Lower CAN Identifier of a receive CAN L-PDU for identifier range
      * definition, in which all CAN Ids shall pass the software filtering.
      */
@@ -146,11 +104,6 @@ typedef struct
      */
     uint32 CanIfHrhRangeRxPduUpperCanId;
 
-    /*
-     * Specifies whether a configured Range of CAN Ids shall only consider
-     * standard CAN Ids or extended CAN Ids.
-     */
-    CanIfHrhRangeRxPduRangeCanIdType CanIfHrhRangeRxPduRangeCanIdType;
 } CanIfHrhRangeCfg;
 
 /*
@@ -249,11 +202,11 @@ typedef enum
 
 
 /*
-   This container contains the Txbuffer configuration. Multiple buffers with
-    different sizes could be configured. If CanIfBufferSize
-    (ECUC_CanIf_00834) equals 0, the CanIf Tx L-PDU only refers via this
-    CanIfBufferCfg the corresponding CanIfHthCfg. */
-
+ * This container contains the Txbuffer configuration. Multiple buffers with
+ * different sizes could be configured. If CanIfBufferSize
+ * (ECUC_CanIf_00834) equals 0, the CanIf Tx L-PDU only refers via this
+ * CanIfBufferCfg the corresponding CanIfHthCfg.
+ */
 typedef struct
 {
     uint8 CanIfBufferSize;
@@ -322,6 +275,14 @@ typedef struct
     /*ECU wide unique, symbolic handle for transmit CAN L-SDU.*/
     uint32 CanIfTxPduId;
 
+    /*
+     * Enables and disables the API for reading the notification status of
+     * transmit L-PDUs.
+     */
+#if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+    boolean CanIfTxPduReadNotifyStatus;
+#endif
+
     /*Enables/disables truncation of PDUs that exceed the configured size.*/
     boolean CanIfTxPduTruncation;
 
@@ -340,7 +301,7 @@ typedef struct
  * This container contains the configuration (parameters) of each receive
  * CAN L-PDU.
  */
-typedef struct  CanIfRxPduCfg
+typedef struct
 {
     /*
      *  CAN Identifier of Receive CAN L-PDUs used by the CAN Interface.
@@ -417,8 +378,6 @@ typedef struct  CanIfRxPduCfg
      */
     CanIfUser CanIfRxPduUserRxIndicationName;
 
-    /*Sub-Containers*/
-
 }CanIfRxPduCfg;
 
 /* This container contains the init parameters of the CAN Interface.*/
@@ -430,21 +389,18 @@ typedef struct
      * the CAN Interface for all underlying CAN Dirvers.
      */
     uint8 CanIfInitCfgSet[CAN_HOH_NUMBER];
+
+
+    /* Maximum total size of all Tx buffers. This parameter is needed only in case of post-build loadable implementation using static memory allocation. */
+    uint64 CanIfMaxBufferSize;
+
     /* Sub-Containers */
-    /*
-     *  This container contains the Txbuffer configuration.
-        Multiple buffers with different sizes could be configured.
-        If CanIfBufferSize (ECUC_CanIf_00834) equals 0, the
-        CanIf Tx L-PDU only refers via this CanIfBufferCfg the
-        corresponding CanIfHthCfg*/
+
     CanIfBufferCfg CanIfBufferCfg[CanIf_BUFFER_NUMBER];
 
     CanIfInitHohCfg CanIfInitHohCfg[Can_DRIVERS_NUMBER];
 
     CanIfTxPduCfg CanIfTxPduCfg[CanIfMaxTxPduCfg];
-
-    /* Maximum total size of all Tx buffers. This parameter is needed only in case of post-build loadable implementation using static memory allocation. */
-    uint64 CanIfMaxBufferSize;  //
 
     CanIfRxPduCfg CanIfRxPduCfg[CanIfMaxRxPduCfg];
 } CanIfInitCfg;

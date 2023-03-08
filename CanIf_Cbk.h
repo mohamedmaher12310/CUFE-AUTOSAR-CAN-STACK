@@ -124,4 +124,23 @@ void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType C
  ************************************************************************************/
 void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 
+/*******************************************************************************
+ *                       External Variables                                    *
+ *******************************************************************************/
+
+/*CanIf Recieve Buffer (ReadAPI)*/
+#if (STD_ON == CanIfPublicReadRxPduDataApi)
+extern uint64 CanIf_RxBuffer[CanIfMaxRxPduCfg];
+#endif /*CanIfPublicReadRxPduDataApi*/
+
+/*Rx Notification Flags*/
+#if (STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+extern CanIf_NotifStatusType CanIf_RxNotificationFlag[CanIfMaxRxPduCfg];
+#endif /*CanIfPublicReadRxPduNotifyStatusApi*/
+
+/*Tx Notification Flags*/
+#if (STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+extern CanIf_NotifStatusType CanIf_TxNotificationFlag[CanIfMaxTxPduCfg];
+#endif /*CanIfPublicReadTxPduNotifyStatusApi*/
+
 #endif /* CANIF_CBK_H_ */

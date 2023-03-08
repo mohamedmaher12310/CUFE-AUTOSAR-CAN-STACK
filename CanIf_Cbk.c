@@ -10,15 +10,15 @@
  ******************************************************************************/
 #include "CanIf_Cbk.h"
 
-/*CanIf Recieve Buffer (ReadAPI)*/
-#if (STD_ON == CanIfPublicReadRxPduDataApi)
-uint64 CanIf_RxBuffer[CanIfMaxRxPduCfg]={ZERO};
-#endif /*CanIfPublicReadRxPduDataApi*/
-
 /*Rx Notification Flags*/
 #if (STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
-CanIf_NotifStatusType CanIf_RxNotificationFlag[CanIfMaxRxPduCfg]={ZERO};
+CanIf_NotifStatusType CanIf_RxNotificationFlag[CanIfMaxRxPduCfg]={CANIF_NO_NOTIFICATION,CANIF_NO_NOTIFICATION};
 #endif /*CanIfPublicReadRxPduNotifyStatusApi*/
+
+/*Tx Notification Flags*/
+#if (STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+CanIf_NotifStatusType CanIf_TxNotificationFlag[CanIfMaxTxPduCfg]={CANIF_NO_NOTIFICATION,CANIF_NO_NOTIFICATION};
+#endif /*CanIfPublicReadTxPduNotifyStatusApi*/
 
 /************************************************************************************
  * Service Name: CanIf_RxIndication
@@ -58,7 +58,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     /* If parameter Mailbox->Hoh of CanIf_RxIndication() has an invalid value, CanIf shall report development error code*/
     if(Mailbox->Hoh > CAN_HOH_NUMBER)
     {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_HOH);
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_HOH);
     }
     else
     {
@@ -70,7 +70,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
      */
     if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) )
     {
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_CANID);
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_CANID);
     }
     else
     {
@@ -83,7 +83,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     if( ( NULL_PTR == Mailbox) || ( NULL_PTR== PduInfoPtr)  )
     {
 
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_PARAM_POINTER);
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_POINTER);
     }
     else
 #endif
@@ -124,7 +124,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 #if (CanIfPrivateDataLengthCheck == STD_ON)
                 if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
                 {
-                    Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
+                    Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
 
                 }
 #endif
@@ -172,7 +172,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 #if (CanIfPrivateDataLengthCheck == STD_ON)
             if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
             {
-                Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_RxIndication_RXID_SID, CANIF_E_INVALID_DATA_LENGTH);
+                Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
 
             }
 #endif
