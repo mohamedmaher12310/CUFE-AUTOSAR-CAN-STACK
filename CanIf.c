@@ -15,6 +15,8 @@
 
 STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
 CanIf_State CanIfCurrent_State = CANIF_UNINIT ;
+Can_ControllerStateType CanIf_ControlleMode[CAN_CONTROLLERS_NUMBER];
+CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
 /*
  * Service name:CanIf_GetTxPDU
  * Syntax :CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
@@ -51,22 +53,96 @@ CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
     return NULL_PTR;
 }
 
+/************************************************************************************
+ * Service Name: CanIf_Init
+ * Service ID[hex]: 0x01
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): ConfigPtr - Pointer to configuration parameter set.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: None
+ * Description: Function to Initialize internal and external interfaces of the
+ *              CAN Interface for the further processing
+ ************************************************************************************/
+void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
+{
 
-/* *Service name: CanIf_Transmit
- *Syntax: Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
- *Service ID[hex]: 0x49
- *Sync/Async: Synchronous
- *Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
- *Parameters (in): TxPduId Identifier of the PDU to be transmitted
- *PduInfoPtr Length of and pointer to the PDU data and pointer
- *to MetaData.
- *Parameters (inout): None
- *Parameters (out): None
- *Return value: Std_ReturnType E_OK: Transmit request has been accepted.
- *E_NOT_OK: Transmit request has not been accepted.
- *Description: Requests transmission of a PDU.
- *
- * */
+#if(CanIfDevErrorDetect == STD_ON)
+    /* check if the input configuration pointer is not a NULL_PTR */
+    if (NULL_PTR == ConfigPtr)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_INIT_SID, CANIF_E_PARAM_POINTER);
+    }
+    else
+    {
+        /* Do Nothing*/
+    }
+#endif
+
+    /* needed variables */
+    uint8 count;
+
+    /* check if the module is initialized or not */
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+
+#if(STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+        /* clear the RX Notification flags */
+        for(count =0; count < CanIfMaxRxPduCfg ; count++)
+        {
+            CanIf_RxNotificationFlag[count]= CANIF_NO_NOTIFICATION;
+        }
+#endif
+
+#if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+        /* clear the TX Notification flags */
+        for(count =0; count < CanIfMaxTxPduCfg ; count++)
+        {
+            CanIf_TxNotificationFlag[count]= CANIF_NO_NOTIFICATION;
+        }
+#endif
+
+        /* [SWS_CANIF_00001] The CanIf expects that the CAN Controller remains in STOPPED mode like after power-on reset
+         * after the initialization process has been completed.
+         *  In this mode the CanIf and CanDrv are neither able to transmit nor receive CAN L-PDUs
+         */
+        for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
+        {
+            CanIf_ControlleMode[count] = CAN_CS_STOPPED;
+        }
+
+        /* [SWS_CANIF_00864] During initialization CanIf shall switch every channel to
+           CANIF_OFFLINE.
+         */
+        for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
+        {
+            CanIf_ChannelPduMode[count] = CANIF_OFFLINE;
+        }
+    }
+    else
+    {
+        /* misra */
+    }
+
+    /* the CanIF module is initialized and ready */
+    CanIfCurrent_State = CANIF_READY;
+}
+
+/************************************************************************************
+ * Service Name: CanIf_Transmit
+ * Service ID[hex]: 0x49
+ * Sync/Async: Synchronous
+ * Reentrancy: Reentrant for different PduIds. Non reentrant for the same PduId.
+ * Parameters (in): TxPduId - Identifier of the PDU to be transmitted
+ *                  PduInfoPtr - Length of and pointer to the PDU data and pointer
+ *                               to MetaData.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: Std_ReturnType - E_OK: Transmit request has been accepted.
+ *                                E_NOT_OK: Transmit request hasn't been accepted
+ * Description: Function to Request transmission of a PDU.
+ ************************************************************************************/
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
 {
     Std_ReturnType Can_Write_Return;
@@ -181,7 +257,6 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
                 not) of a specific static or dynamic CAN Tx L-PDU, requested by the
                 CanIfTxSduId.
  ************************************************************************************/
-
 #if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
 CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId)
 {

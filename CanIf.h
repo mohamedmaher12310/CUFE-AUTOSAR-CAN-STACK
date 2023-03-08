@@ -287,6 +287,6 @@ CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId);
 
 extern CanIf_State CanIfCurrent_State ;
 extern const CanIf_ConfigType CanIf_Configuration ;
-
-
+extern Can_ControllerStateType CanIf_ControlleMode[CAN_CONTROLLERS_NUMBER];
+extern CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
 #endif /* CANIF_H_ */

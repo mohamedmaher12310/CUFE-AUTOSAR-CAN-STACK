@@ -12,12 +12,12 @@
 
 /*Rx Notification Flags*/
 #if (STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
-CanIf_NotifStatusType CanIf_RxNotificationFlag[CanIfMaxRxPduCfg]={CANIF_NO_NOTIFICATION,CANIF_NO_NOTIFICATION};
+CanIf_NotifStatusType CanIf_RxNotificationFlag[CanIfMaxRxPduCfg];
 #endif /*CanIfPublicReadRxPduNotifyStatusApi*/
 
 /*Tx Notification Flags*/
 #if (STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
-CanIf_NotifStatusType CanIf_TxNotificationFlag[CanIfMaxTxPduCfg]={CANIF_NO_NOTIFICATION,CANIF_NO_NOTIFICATION};
+CanIf_NotifStatusType CanIf_TxNotificationFlag[CanIfMaxTxPduCfg];
 #endif /*CanIfPublicReadTxPduNotifyStatusApi*/
 
 /************************************************************************************
