@@ -149,8 +149,16 @@
 /*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
 #define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
 
+#define CANIF_E_DATA_LENGTH_MISMATCH  (uint8)  62
+
+
 #define CANNIF_STANDARD_MAX    0x400007FF   /*max number for Standard32Bit*/
 #define CANNIF_EXTENDED_MAX    0xDFFFFFFF   /*max number for Extended32Bit*/
+
+#define CANNIF_STANDARD_MAX_SDU_Length    (uint8)8
+#define CANNIF_FD_MAX_SDU_Length    (uint8)64
+
+
 
 /*******************************************************************************
  *                      Function Prototypes                                    *

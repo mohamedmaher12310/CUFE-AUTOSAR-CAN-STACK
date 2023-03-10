@@ -174,9 +174,76 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
     Std_ReturnType Can_Write_Return;
     Can_PduType Can_PduData;
     CanIfTxPduCfg* TxPDU =  NULL_PTR;
-
     /*Get the TxPDU from the TxPduId passed to the function*/
     TxPDU = CanIf_GetTxPDU(TxPduId);
+    uint8 ControllerId = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthCanCtrlIdRef->CanIfCtrlCanCtrlRef->CanControllerId;
+    CanIfTxPduCanIdType Pdu_CanId_Type = TxPDU->CanIfTxPduCanIdType;
+
+#if( CanIfDevErrorDetect == STD_ON  )
+
+            /* Check if the module is initialized or not*/
+            if (CANIF_UNINIT == CanIfCurrent_State)
+            {
+                Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_UNINIT);
+                Can_Write_Return = E_NOT_OK;
+            }
+
+    /* [SWS_CANIF_00319] If parameter TxPduId of CanIf_Transmit() has an invalid
+     * value, CanIf shall report development error code CANIF_E_INVALID_TXPDUID to
+     * the Det_ReportError service of the DET, when CanIf_Transmit() is called
+     */
+    if (TxPduId > CanIfMaxTxPduCfg )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID,  CANIF_E_INVALID_TXPDUID );
+        Can_Write_Return = E_NOT_OK;
+    }
+
+    /* [SWS_CANIF_00320] d If parameter PduInfoPtr of CanIf_Transmit() has an
+     * invalid value, CanIf shall report development error code CANIF_E_PARAM_POINTER
+     * to the Det_ReportError service of the DET module, when CanIf_Transmit()
+     * is called.
+     */
+    if(   NULL_PTR== PduInfoPtr  )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_PARAM_POINTER);
+    }
+
+    /* [SWS_CANIF_00893] d When CanIf_Transmit() is called with PduInfoPtr-
+     * >SduLength exceeding the maximum length of the PDU referenced by TxPduId:
+     * • SduLength > 8 if the Can_IdType indicates a classic CAN frame
+     * • SduLength > 64 if the Can_IdType indicates a CAN FD frame
+     * CanIf shall report runtime error code CANIF_E_DATA_LENGTH_MISMATCH to the
+     * Det_ReportRuntimeError() service of the DET.
+     */
+    if((Pdu_CanId_Type ==STANDARD_CAN )||(Pdu_CanId_Type ==EXTENDED_CAN ))
+    {
+        if(PduInfoPtr->SduLength >CANNIF_STANDARD_MAX_SDU_Length)
+        {
+            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_DATA_LENGTH_MISMATCH);
+            Can_Write_Return = E_NOT_OK;
+        }
+    }
+    if((Pdu_CanId_Type ==STANDARD_FD_CAN )||(Pdu_CanId_Type ==EXTENDED_FD_CAN ))
+    {
+        if(PduInfoPtr->SduLength >CANNIF_FD_MAX_SDU_Length)
+        {
+            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_DATA_LENGTH_MISMATCH);
+            Can_Write_Return = E_NOT_OK;
+        }
+    }
+
+#endif
+
+    /* [SWS_CANIF_00317]  The service CanIf_Transmit() shall not accept a transmit request,
+     *  if the controller mode referenced by ControllerId is different to
+     *  CAN_CS_STARTED and the channel mode at least for the transmit path is not online
+     *  or offline active.
+     */
+    if((CanIf_ControllerMode[ControllerId]!=CAN_CS_STARTED) && ((CanIf_ChannelPduMode[ControllerId] != CANIF_ONLINE) || (CanIf_ChannelPduMode[ControllerId] != CANIF_TX_OFFLINE_ACTIVE) ))
+    {
+        Can_Write_Return = E_NOT_OK;
+    }
+
 
     /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
     Can_HwHandleType Hth = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthIdSymRef->CanObjectId;
