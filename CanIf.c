@@ -15,7 +15,7 @@
 
 STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
 CanIf_State CanIfCurrent_State = CANIF_UNINIT ;
-Can_ControllerStateType CanIf_ControlleMode[CAN_CONTROLLERS_NUMBER];
+Can_ControllerStateType CanIf_ControllerMode[CAN_CONTROLLERS_NUMBER];
 CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
 /*
  * Service name:CanIf_GetTxPDU
@@ -117,7 +117,7 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
          */
         for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
         {
-            CanIf_ControlleMode[count] = CAN_CS_STOPPED;
+            CanIf_ControllerMode[count] = CAN_CS_STOPPED;
             CanIf_ChannelPduMode[count] = CANIF_OFFLINE;
         }
     }
@@ -148,7 +148,7 @@ void CanIf_DeInit(void)
     /* deinitializing the Controllers and  setting the channel modes to CANIF_OFFLINE */
     for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
     {
-        CanIf_ControlleMode[count] = CAN_CS_UNINIT;
+        CanIf_ControllerMode[count] = CAN_CS_UNINIT;
         CanIf_ChannelPduMode[count] = CANIF_OFFLINE;
     }
     /* set the CanIf state to UNINIT state */
@@ -220,38 +220,46 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
 Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateType ControllerMode)
 {
 
+    Can_ControllerStateType Requested_Mode ;
+    Std_ReturnType Can_SetControllerMode_return ;
+
 #if( CanIfDevErrorDetect == STD_ON  )
 
     /* Check if the module is initialized or not*/
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID, CANIF_E_UNINIT);
-        return E_NOT_OK;
+        Can_SetControllerMode_return = E_NOT_OK;
     }
     /* Check if the Controller ID is greater than the number of configured controllers*/
     if (ControllerId >= CAN_CONTROLLERS_NUMBER)
     {
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CONTROLLERID );
-        return E_NOT_OK;
+        Can_SetControllerMode_return = E_NOT_OK;
     }
 
     /* Check If parameter ControllerMode has an invalid value*/
-    if (  (ControllerMode !=CAN_CS_STARTED) || (ControllerMode !=CAN_CS_STOPPED) || (ControllerMode !=CAN_CS_SLEEP) )
+    if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
     {
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CTRLMODE );
-        return E_NOT_OK;
+        Can_SetControllerMode_return = E_NOT_OK;
     }
 
 
 #endif
 
-    Can_ControllerStateType Requested_Mode ;
-    Std_ReturnType Can_SetControllerMode_return ;
 
     switch (ControllerMode)
     {
     case CAN_CS_STOPPED :
+
+        /* [SWS_CANIF_00866] If CanIf_SetControllerMode(ControllerId,
+         * CAN_CS_STOPPED) or CanIf_ControllerBusOff(ControllerId) is called,
+         * CanIf shall set the PDU channel mode of the corresponding channel to
+         * CANIF_TX_OFFLINE.
+         */
         Requested_Mode =CAN_CS_STOPPED;
+        CanIf_ChannelPduMode[ControllerId] = CANIF_TX_OFFLINE;
         Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
         break;
 
@@ -354,32 +362,49 @@ CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId)
  * Description: Function to set the requested mode at the L-PDUs of a predefined logical
  *              PDU channel.
  ************************************************************************************/
-//Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequest)
-//{
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//}
-//}
-//
+Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequest)
+{
+    Std_ReturnType ReturnState;
+#if( CanIfDevErrorDetect == STD_ON  )
+
+    /*check if the module is initialized or not */
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_PDU_MODE_SID, CANIF_E_UNINIT);
+    }
+
+    /* [SWS_CANIF_00341] d If CanIf_SetPduMode() is called with invalid ControllerId,
+     *  CanIf shall report development error code CANIF_E_PARAM_CONTROLLERID
+     *  to the Det_ReportError service of the DET module.
+     */
+    if (ControllerId >= CAN_CONTROLLERS_NUMBER)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_PDU_MODE_SID,  CANIF_E_PARAM_CONTROLLERID );
+        ReturnState = E_NOT_OK;
+    }
+
+    /* [SWS_CANIF_00860] d If CanIf_SetPduMode() is called with invalid PduModeRequest,
+     * CanIf shall report development error code CANIF_E_PARAM_PDU_MODE
+     * to the Det_ReportError service of the DET module.
+     */
+    if ((PduModeRequest != CANIF_OFFLINE) && (PduModeRequest != CANIF_TX_OFFLINE) && (PduModeRequest != CANIF_TX_OFFLINE_ACTIVE) && (PduModeRequest != CANIF_ONLINE))
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_PDU_MODE_SID,  CANIF_E_PARAM_PDU_MODE );
+        ReturnState = E_NOT_OK;
+    }
+#endif
+    /* [SWS_CANIF_00874] d The service CanIf_SetPduMode() shall not accept any request and shall return E_NOT_OK,
+     *  if the controller mode referenced by ControllerId is not in state CAN_CS_STARTED.
+     */
+    if(CanIf_ControllerMode[ControllerId] != CAN_CS_STARTED)
+    {
+        ReturnState = E_NOT_OK;
+    }
+    else
+    {
+        CanIf_ChannelPduMode[ControllerId] = PduModeRequest ;
+        ReturnState = E_OK;
+    }
+    return ReturnState;
+}
+
