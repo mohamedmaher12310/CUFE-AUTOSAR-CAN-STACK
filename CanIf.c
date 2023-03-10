@@ -83,6 +83,10 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
     /* needed variables */
     uint8 count;
 
+    /* [SWS_CANIF_00085] d The service CanIf_Init() shall initialize the global variables
+     *  and data structures of the CanIf including flags and buffers.
+     */
+
     /* check if the module is initialized or not */
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
@@ -107,16 +111,13 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
          * after the initialization process has been completed.
          *  In this mode the CanIf and CanDrv are neither able to transmit nor receive CAN L-PDUs
          */
-        for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
-        {
-            CanIf_ControlleMode[count] = CAN_CS_STOPPED;
-        }
 
-        /* [SWS_CANIF_00864] During initialization CanIf shall switch every channel to
-           CANIF_OFFLINE.
+        /* [SWS_CANIF_00864] During initialization CanIf shall switch
+         * every channel to CANIF_OFFLINE.
          */
         for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
         {
+            CanIf_ControlleMode[count] = CAN_CS_STOPPED;
             CanIf_ChannelPduMode[count] = CANIF_OFFLINE;
         }
     }
@@ -129,6 +130,31 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
     CanIfCurrent_State = CANIF_READY;
 }
 
+/************************************************************************************
+ * Service Name: CanIf_DeInit
+ * Service ID[hex]: 0x02
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): None
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: None
+ * Description: Function to De-initialize the CanIf module.
+ ************************************************************************************/
+void CanIf_DeInit(void)
+{
+
+    uint8 count ;
+    /* deinitializing the Controllers and  setting the channel modes to CANIF_OFFLINE */
+    for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
+    {
+        CanIf_ControlleMode[count] = CAN_CS_UNINIT;
+        CanIf_ChannelPduMode[count] = CANIF_OFFLINE;
+    }
+    /* set the CanIf state to UNINIT state */
+    CanIfCurrent_State = CANIF_UNINIT ;
+
+}
 /************************************************************************************
  * Service Name: CanIf_Transmit
  * Service ID[hex]: 0x49
@@ -312,4 +338,48 @@ CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId)
 }
 #endif /*CanIfPublicReadTxPduNotifyStatusApi */
 
-
+/************************************************************************************
+ * Service Name: CanIf_SetPduMode
+ * Service ID[hex]: 0x09
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): ControllerId - All PDUs of the own ECU connected to the corresponding
+ *                                 CanIf ControllerId, which is assigned to a physical
+ *                                 CAN controller are addressed.
+ *                  PduModeRequest - Requested PDU mode change.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: Std_ReturnType - E_OK: Request for mode transition has been accepted.
+ *                                E_NOT_OK:  Request for mode transition hasn't been accepted
+ * Description: Function to set the requested mode at the L-PDUs of a predefined logical
+ *              PDU channel.
+ ************************************************************************************/
+//Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequest)
+//{
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//}
+//}
+//

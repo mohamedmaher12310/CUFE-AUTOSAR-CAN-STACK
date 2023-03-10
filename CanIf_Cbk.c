@@ -219,3 +219,74 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         }
     }
 }
+
+/******************************************************************************
+ *Service name: CanIf_TxConfirmation
+ *Syntax: void CanIf_TxConfirmation(PduIdType CanTxPduId)
+ *Service ID[hex]: 0x13
+ *Sync/Async: Synchronous
+ *Reentrancy: Reentrant
+ *Parameters (in):  - CanTxPduId This ID specifies the corresponding CAN L-PDU ID and implicitly the CAN Driver instance as well as the corresponding CAN controller device.
+ *Parameters (inout): None
+ *Parameters (out): None
+ *Return value: None
+ *Description: This service confirms a previously successfully processed transmission of a CAN TxPDU.
+ ******************************************************************************/
+
+void CanIf_TxConfirmation(PduIdType CanTxPduId)
+{
+
+#if( CanIfDevErrorDetect == STD_ON  )
+
+    /* [SWS_CANIF_00412] If CanIf was not initialized before calling CanIf_TxConfirmation(), CanIf shall not call the service
+     * <User_TxConfirmation>() and shall not set the Tx confirmation status, when
+     * CanIf_TxConfirmation() is called.
+     */
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_SID, CANIF_E_UNINIT);
+    }
+
+    /* [SWS_CANIF_00410] If parameter CanTxPduId of CanIf_TxConfirmation()
+     * has an invalid value, CanIf shall report development error code
+     * CANIF_E_PARAM_LPDU to the Det_ReportError service of the DET module,
+     * when CanIf_TxConfirmation() is called.
+     */
+    if (CanTxPduId > CanIfMaxTxPduCfg )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_SID,  CANIF_E_PARAM_LPDU );
+    }
+
+#endif
+
+    /* needed pointers */
+    CanIfTxPduCfg *TxPDU_ptr = NULL_PTR;
+    TxPDU_ptr =  &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[CanTxPduId];
+
+    /* [SWS_CANIF_00391]  If configuration parameters
+     * CANIF_PUBLIC_READTXPDU_NOTIFY_STATUS_API (ECUC_CanIf_00609) and
+     * CANIF_TXPDU_READ_NOTIFYSTATUS (ECUC_CanIf_00589) for the Transmitted
+     *  L-PDU are set to TRUE, and if CanIf_TxConfirmation() is called, CanIf shall set
+     * the notification status for the Transmitted L-PDU.
+     */
+#if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+
+    if(TxPDU_ptr->CanIfTxPduReadNotifyStatus == TRUE)
+    {
+        CanIf_TxNotificationFlag[CanTxPduId]= CANIF_TX_RX_NOTIFICATION;
+    }
+
+#endif /*CanIfPublicReadTxPduNotifyStatusApi */
+    if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
+    {
+        /* PDUR_TxConfirmation(E_OK); */
+    }
+    else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
+    {
+        /* CAN_TP_TxConfirmation(E_OK); */
+    }
+    else
+    {
+
+    }
+}
