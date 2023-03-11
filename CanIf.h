@@ -117,6 +117,9 @@
 /* Service ID for CanIf_ReadRxNotifStatus  API*/
 #define CanIf_ReadRxNotifStatus_SID       (uint8)0x08
 
+/* Service ID for CanIf_ReadRxPduData  API */
+#define CANIF_READ_RX_PDU_DATA_SID       (uint8)0x06
+
 /*******************************************************************************
  *                      DET Error Codes                                        *
  *******************************************************************************/
@@ -284,6 +287,26 @@ CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId);
 CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanIfRxSduId);
 #endif /*CanIfPublicReadRxPduNotifyStatusApi */
 
+/************************************************************************************
+ * Service Name: CanIf_ReadRxPduData
+ * Service ID[hex]: 0x06
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): CanIfRxSduId - Receive L-SDU handle specifying the correspondoing
+ *                                 CAN L-SDU ID and implicitly the CAN Driver instance as well
+ *                                 as the corresponding CAN controller device.
+ * Parameters (inout): None
+ * Parameters (out): CanIfRxInfoPtr - Contains the length (SduLength) of the received
+ *                                    PDU, a pointer to a buffer (SduDataPtr) containing
+ *                                    the PDU, and the MetaData related to this PDU.
+ * Return value: Std_ReturnType - E_OK: Request for L-SDU data has been accepted.
+ *                                E_NOT_OK:  No valid data has been received
+ * Description: Function to provide the Data Length and the received data of the
+ *              requested CanIfRxSduId to the calling upper layer
+ ************************************************************************************/
+#if(STD_ON == CanIfPublicReadRxPduDataApi)
+Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxSduId,PduInfoType* CanIfRxInfoPtr);
+#endif /*CanIfPublicReadRxPduDataApi*/
 
 
 /*******************************************************************************

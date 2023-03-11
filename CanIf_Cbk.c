@@ -178,7 +178,6 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         {
                             uint8 ControllerId = HRH_Ptr->CanIfHrhCanCtrlIdRef->CanIfCtrlId;
                             /* Store the message in the Rx Buffer*/
-                            /* Modify function argument?! */
                             Can_MessageReceive(ControllerId, HOH_index, &CanIf_RxBuffer[RxPDU_index]);
                         }
                         else
@@ -250,7 +249,6 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                     {
                         uint8 ControllerId = HRH_Ptr->CanIfHrhCanCtrlIdRef->CanIfCtrlId;
                         /* Store the message in the Rx Buffer*/
-                        /* Modify function argument?! */
                         Can_MessageReceive(ControllerId, HOH_index, &CanIf_RxBuffer[RxPDU_index]);
                     }
                     else

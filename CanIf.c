@@ -596,3 +596,105 @@ CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanIfRxSduId)
 }
 #endif /*CanIfPublicReadRxPduNotifyStatusApi */
 
+/************************************************************************************
+ * Service Name: CanIf_ReadRxPduData
+ * Service ID[hex]: 0x06
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): CanIfRxSduId - Receive L-SDU handle specifying the correspondoing
+ *                                 CAN L-SDU ID and implicitly the CAN Driver instance as well
+ *                                 as the corresponding CAN controller device.
+ * Parameters (inout): None
+ * Parameters (out): CanIfRxInfoPtr - Contains the length (SduLength) of the received
+ *                                    PDU, a pointer to a buffer (SduDataPtr) containing
+ *                                    the PDU, and the MetaData related to this PDU.
+ * Return value: Std_ReturnType - E_OK: Request for L-SDU data has been accepted.
+ *                                E_NOT_OK:  No valid data has been received
+ * Description: Function to provide the Data Length and the received data of the
+ *              requested CanIfRxSduId to the calling upper layer
+ ************************************************************************************/
+#if(STD_ON == CanIfPublicReadRxPduDataApi)
+Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxSduId,PduInfoType* CanIfRxInfoPtr)
+{
+    Std_ReturnType Return_Value;
+    uint8 ControllerId = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[CanIfRxSduId].CanIfRxPduHrhIdRef->CanIfHrhCanCtrlIdRef->CanIfCtrlId;
+#if( CanIfDevErrorDetect == STD_ON  )
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_READ_RX_PDU_DATA_SID, CANIF_E_UNINIT);
+        Return_Value = E_NOT_OK;
+    }
+    else
+    {
+        /*Do Nothing*/
+    }
+    /*
+     * [SWS_CANIF_00325] d If parameter CanIfRxSduId of CanIf_ReadRxPduData()
+     * has an invalid value, e.g. not configured to be stored within CanIf via
+     * CANIF_READRXPDU_DATA (ECUC_CanIf_00600), CanIf shall report development
+     * error code CANIF_E_INVALID_RXPDUID to the Det_ReportError service of the
+     * DET, when CanIf_ReadRxPduData() is called. c(SRS_BSW_00323)
+     */
+    if (CanIfRxSduId > CanIfMaxRxPduCfg )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_READ_RX_PDU_DATA_SID,  CANIF_E_INVALID_RXPDUID );
+        Return_Value = E_NOT_OK;
+    }
+    else
+    {
+        /*Do Nothing*/
+    }
+    /*
+     * [SWS_CANIF_00326] d If parameter CanIfRxInfoPtr of
+     * CanIf_ReadRxPduData() has an invalid value, CanIf shall report development error code
+     * CANIF_E_PARAM_POINTER to the Det_ReportError service of
+     * the DET module, when CanIf_ReadRxPduData() is called. c(SRS_BSW_00323)
+     */
+    if (CanIfRxInfoPtr == NULL_PTR)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_READ_RX_PDU_DATA_SID,  CANIF_E_PARAM_POINTER);
+        Return_Value = E_NOT_OK;
+    }
+    else
+    {
+        /*Do Nothing*/
+    }
+    /*
+     * [SWS_CANIF_00324] d The function CanIf_ReadRxPduData() shall not accept a
+     * request and return E_NOT_OK, if the corresponding controller mode refrenced by ControllerId
+     * is different to CAN_CS_STARTED and the channel mode is in the receive
+     * path online. c()
+     */
+    if(CanIf_ControllerMode[ControllerId]!=CAN_CS_STARTED)
+    {
+        Return_Value = E_NOT_OK;
+    }
+    else
+    {
+        /*Do Nothing*/
+    }
+    /*
+     * [SWS_CANIF_00329] d CanIf_ReadRxPduData() shall not be used for CanIfRxSduId,
+     * which are defined to receive multiple CAN-Ids (range reception). c()
+     */
+    if (CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[CanIfRxSduId].CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType == BASIC)
+    {
+        Return_Value = E_NOT_OK;
+    }
+#endif /*CanIfDevErrorDetect*/
+    {
+        /*Read the data from CanIf Buffer*/
+        if (CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[CanIfRxSduId].CanIf_RxPduReadData == TRUE)
+        {
+            CanIfRxInfoPtr->SduDataPtr = CanIf_RxBuffer[CanIfRxSduId].sdu;
+            CanIfRxInfoPtr->SduLength = CanIf_RxBuffer[CanIfRxSduId].length;
+            Return_Value = E_OK;
+        }
+        else
+        {
+            /*Do Nothing*/
+        }
+    }
+    return Return_Value;
+}
+#endif /*CanIfPublicReadRxPduDataApi*/
