@@ -17,6 +17,7 @@ STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
 CanIf_State CanIfCurrent_State = CANIF_UNINIT ;
 Can_ControllerStateType CanIf_ControllerMode[CAN_CONTROLLERS_NUMBER];
 CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
+uint8 HOH_HRH_MAP[HRH_NUMBER];
 /*
  * Service name:CanIf_GetTxPDU
  * Syntax :CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
@@ -29,27 +30,15 @@ CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
 
 CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
 {
-    uint8 TxPDU_index;
     if(TxPDU_ID<CanIfMaxTxPduCfg)
     {
-        for(TxPDU_index =0;TxPDU_index<CanIfMaxTxPduCfg;TxPDU_index++ )
-        {
-            if(TxPDU_ID == CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index].CanIfTxPduId)
-            {
-                return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_index];
-            }
-            else
-            {
-
-            }
-        }
+        return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_ID];
     }
     else
     {
         return NULL_PTR;
 
     }
-
     return NULL_PTR;
 }
 
@@ -106,7 +95,6 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
             CanIf_TxNotificationFlag[count]= CANIF_NO_NOTIFICATION;
         }
 #endif
-
         /* [SWS_CANIF_00001] The CanIf expects that the CAN Controller remains in STOPPED mode like after power-on reset
          * after the initialization process has been completed.
          *  In this mode the CanIf and CanDrv are neither able to transmit nor receive CAN L-PDUs
@@ -124,6 +112,17 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
     else
     {
         /* misra */
+    }
+    /*Mapping between HRH & HOH */
+    for (count = ZERO ; count < HRH_NUMBER ; count++)
+    {
+        CanIfRxPduCfg* RxPDU = NULL_PTR;
+        uint8 RxPDU_index;
+        /* CanIfRxPduCfg Container*/
+        RxPDU=ConfigPtr->CanIfInitCfg.CanIfRxPduCfg;
+        /*Index of Pdu*/
+        RxPDU_index = RxPDU->CanIfRxPduId;
+        HOH_HRH_MAP[count]= ConfigPtr->CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanObjectId;
     }
 
     /* the CanIF module is initialized and ready */
@@ -143,7 +142,6 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
  ************************************************************************************/
 void CanIf_DeInit(void)
 {
-
     uint8 count ;
     /* deinitializing the Controllers and  setting the channel modes to CANIF_OFFLINE */
     for(count=0 ; count < CAN_CONTROLLERS_NUMBER ; count++)
@@ -153,8 +151,8 @@ void CanIf_DeInit(void)
     }
     /* set the CanIf state to UNINIT state */
     CanIfCurrent_State = CANIF_UNINIT ;
-
 }
+
 /************************************************************************************
  * Service Name: CanIf_Transmit
  * Service ID[hex]: 0x49
@@ -171,6 +169,9 @@ void CanIf_DeInit(void)
  ************************************************************************************/
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
 {
+    /* needed variables */
+    uint32 TxPDU_CanID ;
+    Std_ReturnType CanIf_Transmit_Return;
     Std_ReturnType Can_Write_Return;
     Can_PduType Can_PduData;
     CanIfTxPduCfg* TxPDU =  NULL_PTR;
@@ -181,12 +182,12 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
 
 #if( CanIfDevErrorDetect == STD_ON  )
 
-            /* Check if the module is initialized or not*/
-            if (CANIF_UNINIT == CanIfCurrent_State)
-            {
-                Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_UNINIT);
-                Can_Write_Return = E_NOT_OK;
-            }
+    /* Check if the module is initialized or not*/
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_UNINIT);
+        CanIf_Transmit_Return = E_NOT_OK;
+    }
 
     /* [SWS_CANIF_00319] If parameter TxPduId of CanIf_Transmit() has an invalid
      * value, CanIf shall report development error code CANIF_E_INVALID_TXPDUID to
@@ -195,7 +196,7 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
     if (TxPduId > CanIfMaxTxPduCfg )
     {
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID,  CANIF_E_INVALID_TXPDUID );
-        Can_Write_Return = E_NOT_OK;
+        CanIf_Transmit_Return = E_NOT_OK;
     }
 
     /* [SWS_CANIF_00320] d If parameter PduInfoPtr of CanIf_Transmit() has an
@@ -220,7 +221,7 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
         if(PduInfoPtr->SduLength >CANNIF_STANDARD_MAX_SDU_Length)
         {
             Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_DATA_LENGTH_MISMATCH);
-            Can_Write_Return = E_NOT_OK;
+            CanIf_Transmit_Return = E_NOT_OK;
         }
     }
     if((Pdu_CanId_Type ==STANDARD_FD_CAN )||(Pdu_CanId_Type ==EXTENDED_FD_CAN ))
@@ -228,8 +229,19 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
         if(PduInfoPtr->SduLength >CANNIF_FD_MAX_SDU_Length)
         {
             Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_DATA_LENGTH_MISMATCH);
-            Can_Write_Return = E_NOT_OK;
+            CanIf_Transmit_Return = E_NOT_OK;
         }
+    }
+
+    /* [SWS_CANIF_00900] When CanIf_Transmit() is called with PduInfoPtr->SduLength
+     *  exceeding the maximum length of the PDU referenced by TxPduId
+     * and CanIfTxPduTruncation is disabled, CanIf shall report the runtime error
+     * CANIF_E_TXPDU_LENGTH_EXCEEDED and return E_NOT_OK without further actions.
+     */
+    if((PduInfoPtr->SduLength > CANIF_MAX_PDU_Length) && (TxPDU->CanIfTxPduTruncation == FALSE))   /* how to use the TX PDUID to get the max Pdu length  ???*/
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_TXPDU_LENGTH_EXCEEDED);
+        CanIf_Transmit_Return = E_NOT_OK;
     }
 
 #endif
@@ -241,8 +253,10 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
      */
     if((CanIf_ControllerMode[ControllerId]!=CAN_CS_STARTED) && ((CanIf_ChannelPduMode[ControllerId] != CANIF_ONLINE) || (CanIf_ChannelPduMode[ControllerId] != CANIF_TX_OFFLINE_ACTIVE) ))
     {
-        Can_Write_Return = E_NOT_OK;
+        CanIf_Transmit_Return = E_NOT_OK;
     }
+
+
 
 
     /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
@@ -250,21 +264,57 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
 
     /*Assigning the variables passed by the function to the Can_PduType variable to pass it
      * to the Can_Write */
-    Can_PduData.id = TxPDU->CanIfTxPduCanId;
-    Can_PduData.length = PduInfoPtr->SduLength;
-    Can_PduData.sdu = PduInfoPtr->SduDataPtr;
-    Can_PduData.swPduHandle = TxPduId;
 
-    /*Can_Write(Hth,Can_PduType* PduInfo) */
-    Can_Write_Return = Can_Write(Hth, &Can_PduData);
-    if (Can_Write_Return == CAN_OK)
+    /* [SWS_CANIF_00318] CanIf_Transmit() shall call Can_Write() with the hardware transmit handle corresponding
+     *  to the provided TxPduId and a Can_PduType structure where:
+     * • swPduHandle is set to the CanTxPduId used in the corresponding CanIf_TxConfirmation() call
+     * • length is set to the value provided as PduInfoPtr->SduLength, possibly reduced according to [SWS_CANIF_00894]
+     * • id is set to the CAN ID associated with the TxPduId
+     * • sdu is set to the pointer provided as PduInfoPtr->SduDataPtr
+     */
+
+    /* [SWS_CANIF_00243] d CanIf shall set the two most significant bits (’IDentifier Extension flag’ and ’CAN FD flag’)
+     *  of the CanId (PduInfoPtr->id) before CanIf passes the predefined CanId to CanDrv at call of Can_Write()
+     * The CanId format type of each CAN L-PDU can be configured by CanIfTxPduCanIdType, refer to CanIfTxPduCanIdType
+     */
+    TxPDU_CanID = TxPDU->CanIfTxPduCanId;      /* used TxPDU->CanIfTxPduCanId to get the CANID of the PDU */
+
+    if(TxPDU->CanIfTxPduCanIdType == STANDARD_CAN)
     {
-        return E_OK;
+        TxPDU_CanID =   TxPDU_CanID | TWO_MSB_STANDARD_MASK ;
+    }
+    else if(TxPDU->CanIfTxPduCanIdType == EXTENDED_CAN)
+    {
+        TxPDU_CanID =   TxPDU_CanID | TWO_MSB_EXTENDED_MASK ;
+    }
+    Can_PduData.id = TxPDU_CanID;
+
+    /* [SWS_CANIF_00894] When CanIf_Transmit() is called with PduInfoPtr->SduLength
+     *  exceeding the maximum length of the PDU referenced by TxPduId and
+     * CanIfTxPduTruncation is enabled, CanIf shall transmit as much data as possible
+     * and discard the rest.
+     */
+    if((PduInfoPtr->SduLength > CANIF_MAX_PDU_Length) && (TxPDU->CanIfTxPduTruncation == TRUE))
+    {
+        Can_PduData.length = CANIF_MAX_PDU_Length;
     }
     else
     {
-        return E_NOT_OK;
+        Can_PduData.length = PduInfoPtr->SduLength;
     }
+    Can_PduData.sdu = PduInfoPtr->SduDataPtr;
+    Can_PduData.swPduHandle = TxPduId;
+
+    Can_Write_Return = Can_Write(Hth, &Can_PduData);
+    if (Can_Write_Return == E_OK)
+    {
+        CanIf_Transmit_Return = E_OK;
+    }
+    else
+    {
+        CanIf_Transmit_Return = E_NOT_OK;
+    }
+    return CanIf_Transmit_Return;
 }
 
 
@@ -474,4 +524,75 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequ
     }
     return ReturnState;
 }
+
+/************************************************************************************
+ * Service Name: CanIf_ReadRxNotifStatus
+ * Service ID[hex]: 0x08
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): CanIfRxSduId - Receive L-SDU handle specifying the correspondoing
+ *                                 CAN L-SDU ID and implicitly the CAN Driver instance as well
+ *                                 as the corresponding CAN controller device.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: CanIf_NotifStatusType - Current indication status of the corresponding CAN
+ *                                       Rx L-PDU.
+ * Description: Function to return the indication status (indication occurred or not) of a
+ *              specific CAN Rx L-PDU, requested by the CanIfRxSduId.
+ ************************************************************************************/
+#if(STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanIfRxSduId)
+{
+#if( CanIfDevErrorDetect == STD_ON  )
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_ReadRxNotifStatus_SID, CANIF_E_UNINIT);
+    }
+    /*
+     * [SWS_CANIF_00336] d If parameter CanIfRxSduId of
+     * CanIf_ReadRxNotifStatus() is out of range or if status for CanRxPduId
+     * was requested whereas CANIF_READRXPDU_DATA_API is disabled or if no status
+     * information was configured for this CAN Rx L-SDU, CanIf shall report development
+     * error code CANIF_E_INVALID_RXPDUID to the Det_ReportError service of
+     * the DET, when CanIf_ReadRxNotifStatus() is called. c(SRS_BSW_00323)
+     */
+
+    if (CanIfRxSduId > CanIfMaxRxPduCfg )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CanIf_ReadTxNotifStatus_SID,  CANIF_E_INVALID_RXPDUID );
+    }
+#endif
+
+    /* used variables and pointers */
+    const CanIfRxPduCfg *RxPDU_ptr = NULL_PTR;
+    CanIf_NotifStatusType ReturnState ;
+
+    RxPDU_ptr = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[CanIfRxSduId];
+
+    /*
+     * [SWS_CANIF_00394] d If configuration parameters
+     * CANIF_PUBLIC_READRXPDU_NOTIFY_STATUS_API (ECUC_CanIf_00608) and
+     * CANIF_RXPDU_READ_NOTIFYSTATUS (ECUC_CanIf_00595) are set to TRUE, and
+     * if CanIf_ReadRxNotifStatus() is called, then CanIf shall reset the notification
+     * status for the received L-SDU.
+     */
+    if(RxPDU_ptr->CanIf_RxPduReadNotifyStatus == TRUE)
+    {
+        if(CANIF_TX_RX_NOTIFICATION == CanIf_RxNotificationFlag[CanIfRxSduId])
+        {
+            ReturnState = CANIF_TX_RX_NOTIFICATION ;
+            CanIf_RxNotificationFlag[CanIfRxSduId]= CANIF_NO_NOTIFICATION;
+        }
+        else
+        {
+            ReturnState = CANIF_NO_NOTIFICATION ;
+        }
+    }
+    else
+    {
+        ReturnState = CANIF_NO_NOTIFICATION ;
+    }
+    return ReturnState;
+}
+#endif /*CanIfPublicReadRxPduNotifyStatusApi */
 

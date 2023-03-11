@@ -130,7 +130,7 @@ void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 
 /*CanIf Recieve Buffer (ReadAPI)*/
 #if (STD_ON == CanIfPublicReadRxPduDataApi)
-extern uint64 CanIf_RxBuffer[CanIfMaxRxPduCfg];
+extern Can_PduType CanIf_RxBuffer[CanIfMaxRxPduCfg];
 #endif /*CanIfPublicReadRxPduDataApi*/
 
 /*Rx Notification Flags*/

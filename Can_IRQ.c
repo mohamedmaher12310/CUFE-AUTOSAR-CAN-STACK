@@ -78,7 +78,8 @@ void CAN0_Handler(void)
         if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH].CanObjectType==TRANSMIT) /* interrupt caused by transmit message object */
         {
             Object_Check[CAN0_CONTROLLER_ID][HOH][Mailbox_Index].Check = Confirmed;
-            /*CanIf_TxConfirmation()*/
+            /* How to know TxPduID in IRQ?!*/
+            /*CanIf_TxConfirmation();*/
             Transmit_Count++; /* increment the transmit count */
         }
         else if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH].CanObjectType==RECIEVE) /* interrupt caused by receive message object */
@@ -107,7 +108,7 @@ void CAN0_Handler(void)
             /*Is this Right or Wrong?! DATA NORMALIZATION*/
 
             CanIfRx_PduInfoPtr.SduLength = (REG_VAL(CAN0_BASE,CAN_IF1MCTL_OFFSET) & CANIF1MCTL_DLC_MASK);
-            CanIfRx_PduInfoPtr.SduDataPtr = &(REG_VAL(CAN0_BASE,CAN_IF1DA1_OFFSET));
+            /*Can Message Recieve here?!!*/
 
             /*Call User (CanIf) to indicate recieved message*/
             CanIf_RxIndication(&CanIfRx_Mailbox,&CanIfRx_PduInfoPtr);

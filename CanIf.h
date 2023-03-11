@@ -114,6 +114,9 @@
 /* Service ID for CanIf_ReadTxNotifStatus  API*/
 #define CanIf_ReadTxNotifStatus_SID       (uint8)0x07
 
+/* Service ID for CanIf_ReadRxNotifStatus  API*/
+#define CanIf_ReadRxNotifStatus_SID       (uint8)0x08
+
 /*******************************************************************************
  *                      DET Error Codes                                        *
  *******************************************************************************/
@@ -149,14 +152,11 @@
 /*RUN TIME Code to report that CAN Interface Fails Data Length Check*/
 #define CANIF_E_INVALID_DATA_LENGTH  (uint8)  61
 
+/* RUN TIME Code to report the  Data Length Mismatch */
 #define CANIF_E_DATA_LENGTH_MISMATCH  (uint8)  62
 
-
-#define CANNIF_STANDARD_MAX    0x400007FF   /*max number for Standard32Bit*/
-#define CANNIF_EXTENDED_MAX    0xDFFFFFFF   /*max number for Extended32Bit*/
-
-#define CANNIF_STANDARD_MAX_SDU_Length    (uint8)8
-#define CANNIF_FD_MAX_SDU_Length    (uint8)64
+/* RUN TIME Code to report that Message length  exceeded the maximum length */
+#define CANIF_E_TXPDU_LENGTH_EXCEEDED                 (uint8)90
 
 
 
@@ -242,24 +242,6 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr);
  ************************************************************************************/
 Std_ReturnType CanIf_SetPduMode(uint8 ControllerId,CanIf_PduModeType PduModeRequest);
 
-/************************************************************************************
- * Service Name: CanIf_SetDynamicTxId
- * Service ID[hex]: 0x0c
- * Sync/Async: Synchronous
- * Reentrancy: Non Reentrant
- * Parameters (in): CanIfTxSduId - L-SDU handle to be transmitted. This handle specifies
- *                                 the corresponding CAN L-SDU ID and implicitly the
- *                                 CAN Driver instance as well as the corresponding CAN controller
- *                                 device.
- *                  CanId - Standard/Extended CAN ID of CAN L-SDU that shall be transmitted as FD
- *                          or conventional CAN frame.
- * Parameters (inout): None
- * Parameters (out): None
- * Return value: None
- * Description: Function to reconfigure the corresponding CAN identifier of the
- *              requested CAN L-PDU.
- ************************************************************************************/
-void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
 
 /************************************************************************************
  * Service Name: CanIf_ReadTxNotifStatus
@@ -279,14 +261,43 @@ void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId,Can_IdType CanId);
                 not) of a specific static or dynamic CAN Tx L-PDU, requested by the
                 CanIfTxSduId.
  ************************************************************************************/
-
+#if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
 CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId);
+#endif /*CanIfPublicReadTxPduNotifyStatusApi*/
+
+/************************************************************************************
+ * Service Name: CanIf_ReadRxNotifStatus
+ * Service ID[hex]: 0x08
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): CanIfRxSduId - Receive L-SDU handle specifying the correspondoing
+ *                                 CAN L-SDU ID and implicitly the CAN Driver instance as well
+ *                                 as the corresponding CAN controller device.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: CanIf_NotifStatusType - Current indication status of the corresponding CAN
+ *                                       Rx L-PDU.
+ * Description: Function to return the indication status (indication occurred or not) of a
+ *              specific CAN Rx L-PDU, requested by the CanIfRxSduId.
+ ************************************************************************************/
+#if(STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanIfRxSduId);
+#endif /*CanIfPublicReadRxPduNotifyStatusApi */
+
+
 
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/
-
-
+#define TWO_MSB_MASK                     (0xC0000000)
+#define TWO_MSB_STANDARD_MASK            (0x00000000)
+#define TWO_MSB_EXTENDED_MASK            (0x80000000)
+#define EXTENDED_ID_BITS_NUM             (29U)
+#define CANNIF_STANDARD_MAX              (0x400007FF)   /*max number for Standard32Bit*/
+#define CANNIF_EXTENDED_MAX              (0xDFFFFFFF)   /*max number for Extended32Bit*/
+#define CANNIF_STANDARD_MAX_SDU_Length   (uint8)8
+#define CANNIF_FD_MAX_SDU_Length         (uint8)64
+#define CANIF_MAX_PDU_Length             (uint8)8
 
 
 /*******************************************************************************
@@ -297,4 +308,6 @@ extern CanIf_State CanIfCurrent_State ;
 extern const CanIf_ConfigType CanIf_Configuration ;
 extern Can_ControllerStateType CanIf_ControllerMode[CAN_CONTROLLERS_NUMBER];
 extern CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
+extern uint8 HOH_HRH_MAP[HRH_NUMBER];
+
 #endif /* CANIF_H_ */

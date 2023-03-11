@@ -385,7 +385,7 @@ extern void Can_DisableControllerInterrupts( uint8 Controller );
 extern Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType Transition);
 
 /*Recieve message from message object*/
-extern uint8 Can_MessageReceive(uint32 Controller_Base_Address,Can_HwHandleType MessageObj_Num, Can_PduType* Message);
+extern uint8 Can_MessageReceive(uint32 Controller_ID,Can_HwHandleType MessageObj_Num, Can_PduType* Message);
 
 /*******************************************************************************
  *                      Definitions used in Module                             *

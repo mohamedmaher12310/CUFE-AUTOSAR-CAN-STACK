@@ -144,7 +144,7 @@ int main(void)
                     MSG_Number_INT[0] = 0;
                     UART1_SendString("\nYou Recieved Message from Mailbox (1):\n");
                     Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_BASE, 1, &Can_Message_Rx);
+                    Can_MessageReceive(CAN0_CONTROLLER_ID, 1, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
@@ -162,7 +162,7 @@ int main(void)
                     MSG_Number_INT[1] = 0;
                     UART1_SendString("\nYou Recieved Message from Mailbox (2):\n");
                     Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_BASE, 2, &Can_Message_Rx);
+                    Can_MessageReceive(CAN0_CONTROLLER_ID, 2, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
@@ -180,7 +180,7 @@ int main(void)
                     MSG_Number_INT[2] = 0;
                     UART1_SendString("\nYou Recieved Message from Mailbox (3):\n");
                     Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_BASE, 3, &Can_Message_Rx);
+                    Can_MessageReceive(CAN0_CONTROLLER_ID, 3, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)

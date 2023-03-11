@@ -1103,9 +1103,21 @@ void Can_DeInit(void)
     }
 }
 
-uint8 Can_MessageReceive(uint32 Controller_Base_Address,
+uint8 Can_MessageReceive(uint32 Controller_ID,
                          Can_HwHandleType MessageObj_Num, Can_PduType* Message)
 {
+    uint32 Controller_Base_Address;
+    switch (Controller_ID)
+    {
+    case CAN0_CONTROLLER_ID:
+        Controller_Base_Address = CAN0_BASE;
+        break;
+    case CAN1_CONTROLLER_ID:
+        Controller_Base_Address = CAN1_BASE;
+        break;
+    default:
+        break;
+    }
     uint16 ui16CmdMaskReg;
     uint16 ui16MaskReg0, ui16MaskReg1;
     uint16 ui16ArbReg0, ui16ArbReg1;
@@ -1519,7 +1531,7 @@ void Can_MainFunction_Read(void)
                 for(Mailbox_Index = ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
 
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN0_BASE_ADDRESS,Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].mailbox,&Can_Msg_Received);
+                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN0_CONTROLLER_ID,Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].mailbox,&Can_Msg_Received);
 
                     /*
                      * Check if the there is a new message in the
@@ -1597,7 +1609,7 @@ void Can_MainFunction_Read(void)
                 for(Object_Index = ZERO ;Object_Index < Can_Configuration.Controller[CAN1_CONTROLLER_ID].HOH[HO_Index].CanHardwareObjectCount; Object_Index++)
 
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive( CAN1_BASE_ADDRESS, HO_Index, &Can_Msg_Received);
+                    uint8 NEW_DATA_UPDATE = Can_MessageReceive( CAN1_CONTROLLER_ID, HO_Index, &Can_Msg_Received);
 
                     /*
                      * Check if the there is a new message in the
