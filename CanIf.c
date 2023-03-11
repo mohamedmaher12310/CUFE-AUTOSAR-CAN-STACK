@@ -32,14 +32,12 @@ CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
 {
     if(TxPDU_ID<CanIfMaxTxPduCfg)
     {
-        return &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_ID];
+        return (CanIfTxPduCfg*)&CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[TxPDU_ID];
     }
     else
     {
         return NULL_PTR;
-
     }
-    return NULL_PTR;
 }
 
 /************************************************************************************
@@ -681,6 +679,7 @@ Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxSduId,PduInfoType* CanIfRxIn
     {
         Return_Value = E_NOT_OK;
     }
+    else
 #endif /*CanIfDevErrorDetect*/
     {
         /*Read the data from CanIf Buffer*/
