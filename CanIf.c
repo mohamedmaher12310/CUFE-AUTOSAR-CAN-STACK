@@ -335,9 +335,7 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
 {
     Can_ControllerStateType Requested_Mode ;
     Std_ReturnType Can_SetControllerMode_return ;
-
 #if( CanIfDevErrorDetect == STD_ON  )
-
     /* Check if the module is initialized or not*/
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
@@ -350,40 +348,51 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateTyp
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CONTROLLERID );
         Can_SetControllerMode_return = E_NOT_OK;
     }
-
     /* Check If parameter ControllerMode has an invalid value*/
     if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
     {
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_SET_CONTROLLER_MODE_SID,  CANIF_E_PARAM_CTRLMODE );
         Can_SetControllerMode_return = E_NOT_OK;
     }
-
-
-#endif
-
-
-    switch (ControllerMode)
+    else
+#endif /*CanIfDevErrorDetect*/
     {
-    case CAN_CS_STOPPED :
+        switch (ControllerMode)
+        {
+        case CAN_CS_STOPPED :
 
-        /* [SWS_CANIF_00866] If CanIf_SetControllerMode(ControllerId,
-         * CAN_CS_STOPPED) or CanIf_ControllerBusOff(ControllerId) is called,
-         * CanIf shall set the PDU channel mode of the corresponding channel to
-         * CANIF_TX_OFFLINE.
-         */
-        Requested_Mode =CAN_CS_STOPPED;
-        CanIf_ChannelPduMode[ControllerId] = CANIF_TX_OFFLINE;
-        Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
-        break;
-
-    case CAN_CS_STARTED:
-        Requested_Mode =CAN_CS_STARTED;
-        Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
-        break;
+            /* [SWS_CANIF_00866] If CanIf_SetControllerMode(ControllerId,
+             * CAN_CS_STOPPED) or CanIf_ControllerBusOff(ControllerId) is called,
+             * CanIf shall set the PDU channel mode of the corresponding channel to
+             * CANIF_TX_OFFLINE.
+             */
+            Requested_Mode =CAN_CS_STOPPED;
+            CanIf_ChannelPduMode[ControllerId] = CANIF_TX_OFFLINE;
+            Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
+            if(Can_SetControllerMode_return == E_OK)
+            {
+                CanIf_ControllerMode[ControllerId] = CAN_CS_STOPPED;
+            }
+            else
+            {
+                /* do nothing */
+            }
+            break;
+        case CAN_CS_STARTED:
+            Requested_Mode =CAN_CS_STARTED;
+            Can_SetControllerMode_return = Can_SetControllerMode( ControllerId , Requested_Mode );
+            if(Can_SetControllerMode_return == E_OK)
+            {
+                CanIf_ControllerMode[ControllerId] = CAN_CS_STARTED;
+            }
+            else
+            {
+                /* do nothing */
+            }
+            break;
+        }
     }
-
     return Can_SetControllerMode_return;
-
 }
 
 /************************************************************************************

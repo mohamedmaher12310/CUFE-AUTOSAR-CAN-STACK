@@ -242,6 +242,7 @@ typedef struct
 {
  Confirmation_Check Check;
  uint8 mailbox;
+ PduIdType PduID;
 } Message_Confirmation;
 
 /*******************************************************************************

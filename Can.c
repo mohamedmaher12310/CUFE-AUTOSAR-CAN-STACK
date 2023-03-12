@@ -1287,7 +1287,6 @@ void Can_MainFunction_Write(void)
     {
         if(TRANSMIT == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
         {
-
             /*
              * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
              * Configurations of can controller 0.
@@ -1319,15 +1318,13 @@ void Can_MainFunction_Write(void)
                                     polling mode. (SRS_Can_01051
                                      CanIf_TxConfirmation();
                              */
+                            CanIf_TxConfirmation(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].PduID);
                         }
-                        else{
-                        /*MISRA : do nothing*/}
+                        else
+                        {
+                            /*MISRA : do nothing*/
+                        }
 
-                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
-
-                        void CanIf_TxConfirmation( PduIdType CanTxPduId );
-
-                        /*call CanIf_TxConfirmation function*/
                     }
 
                     else
@@ -1341,33 +1338,17 @@ void Can_MainFunction_Write(void)
             {
                 /*MISRA : do nothing*/
             }
-
-
-
-
         }
         else
         {
             /*MISRA : do nothing*/
         }
     }
-
-
-
-
-
-
 #endif
-
 #endif
     /*
      * Same configuration and checks but controller 1
      */
-
-
-
-
-
 #if (STD_ON == CanConf_CAN1_CONTROLLER_ACTIVATION)
     /*
      *The function Can_MainFunction_Write shall perform the
@@ -2002,6 +1983,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
             }
             Object_Check[Can_Controller_ID][Hth][ZERO].Check = Unconfirmed;
             Return_Value = E_OK;
+            Object_Check[Can_Controller_ID][Hth][ZERO].PduID = PduInfo->swPduHandle;
         }
         /*Basic CAN*/
         else if (BASIC == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanHandleType)
@@ -2113,6 +2095,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                         /*Do Nothing*/
                     }
                     Return_Value = E_OK;
+                    Object_Check[Can_Controller_ID][Hth][ObjectCount_Iter].PduID = PduInfo->swPduHandle;
                     break;
                 }
                 else
