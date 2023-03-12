@@ -47,23 +47,6 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     uint8 RxPDU_index;
     uint8 HOH_index ;
     uint8 HRH_index ;
-    /* NES2AL FL ENUM wel comparison ely fe page 41 [SWS_CANIF_00877] */
-    /*
-     * [SWS_CANIF_00877] d If CanIf receives a L-PDU (see CanIf_RxIndication()),
-     * Basically, CanIf supports reception either of Standard CAN IDs or
-     * Extended_ID CAN IDs on one Physical CAN Channel by the parameters CANIF_TXPDU_CANIDTYPE (see ECUC_CanIf_00590) and
-     * CANIF_RXPDU_CANIDTYPE (see ECUC_CanIf_00596).
-     */
-    boolean Extended_ID=ZERO;
-    Can_IdType Id_Type = ( (Mailbox->CanId && (TWO_MSB_MASK)) >> EXTENDED_ID_BITS_NUM ) ;
-    if (Id_Type == STANDARD_CAN_Rx)
-    {
-        Extended_ID = ZERO;
-    }
-    else if (Id_Type == EXTENDED_CAN_Rx)
-    {
-        Extended_ID = ONE;
-    }
 #if(STD_ON == CanIfDevErrorDetect)
     /* If CanIf was not initialized before calling CanIf_RxIndication(),
      * CanIf shall not execute Rx indication handling, when CanIf_RxIndication() is called.
@@ -116,7 +99,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     {
         /* Store the addresses to pointers*/
         /* CanIfRxPduCfg Container*/
-        RxPDU=&CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
+        RxPDU = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
         /*Index of Pdu*/
         RxPDU_index = RxPDU->CanIfRxPduId;
         /* CanIfHrhCfg Container*/
@@ -136,6 +119,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                 /*Do Nothing*/
             }
         }
+        /*Use MACROS instead of variables*/
         /* CanIfHrhRangeCfg Container*/
         RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[CAN_INSTANCE_ID].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
         /* BASIC CAN*/
@@ -151,7 +135,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                  * ()
                  */
                 /* Check on Upper & Lower Range*/
-                if( ( ((Mailbox->CanId) &(RxPDU->CanIfRxPduCanIdMask)) >= (RxPDU_Range->CanIfHrhRangeRxPduLowerCanId) ) && ( ((Mailbox->CanId)&(RxPDU->CanIfRxPduCanIdMask)) <= (RxPDU_Range->CanIfHrhRangeRxPduUpperCanId) )  )
+                if((((Mailbox->CanId) &(RxPDU->CanIfRxPduCanIdMask))>=(RxPDU_Range->CanIfHrhRangeRxPduLowerCanId))&&(((Mailbox->CanId)&(RxPDU->CanIfRxPduCanIdMask))<=(RxPDU_Range->CanIfHrhRangeRxPduUpperCanId)))
                 {
                     /*Passed the SW Filter Check, Check on Data Length*/
 #if (CanIfPrivateDataLengthCheck == STD_ON)
@@ -357,4 +341,56 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
     {
 
     }
+}
+
+/************************************************************************************
+ * Service Name: CanIf_ControllerModeIndication
+ * Service ID[hex]: 0x17
+ * Sync/Async: Synchronous
+ * Reentrancy: Reentrant
+ * Parameters (in): ControllerId - Abstract CanIf ControllerId which is assigned to a
+ *                                 CAN controller, which state has been transitioned.
+ *                  ControllerMode - Mode to which the CAN controller transitioned
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: None
+ * Description: Function to indicate a controller state transition referring to the
+ *              corresponding CAN controller with the abstract CanIf ControllerId.
+ ************************************************************************************/
+void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType ControllerMode)
+{
+
+#if( CanIfDevErrorDetect == STD_ON  )
+
+    /* [SWS_CANIF_00702] If CanIf was not initialized before calling
+     * CanIf_ControllerModeIndication(), CanIf shall not execute state transition notification,
+     *  when CanIf_ControllerModeIndication() is called.
+     */
+    if (CANIF_UNINIT == CanIfCurrent_State)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID, CANIF_E_UNINIT);
+    }
+
+    /* [SWS_CANIF_00700] If parameter ControllerId of
+     * CanIf_ControllerModeIndication() has an invalid value, CanIf
+     * shall report development error code CANIF_E_PARAM_CONTROLLERID
+     * to the Det_ReportError service of the DET module, when
+     * CanIf_ControllerModeIndication() is called.
+     */
+    if (ControllerId >= CAN_CONTROLLERS_NUMBER)
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CONTROLLERID );
+    }
+
+    /* Check If parameter ControllerMode has an invalid value*/
+       if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
+       {
+           Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CTRLMODE );
+       }
+#endif
+
+    /* [SWS_CANIF_00711] When callback CanIf_ControllerModeIndication(ControllerId,ControllerMode)
+     *  is called, CanIf shall call CanSm_ControllerModeIndication(ControllerId,ControllerMode) of the CanSm
+     */
+/*    CanSm_ControllerModeIndication(ControllerId,ControllerMode); */
 }

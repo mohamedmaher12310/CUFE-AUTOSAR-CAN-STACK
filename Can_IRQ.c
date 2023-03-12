@@ -19,13 +19,16 @@ volatile boolean Error_Flag = 0; /* flag to detect an error interrupt has occurr
 volatile uint8 Error_Status = 0; /* variable to store the error status */
 volatile uint32 Recieve_Count =0; /* variable that increments when a message is received*/
 volatile uint32 Transmit_Count =0; /* variable that increments when a message is transmitted*/
+
+/* Data Normalization */
+Can_PduType Temp_Buffer;
+
 uint8 HOH;
 void CAN0_Handler(void)
 {
     /*CanIf_RxIndication Arguments*/
     Can_HwType CanIfRx_Mailbox;
     PduInfoType CanIfRx_PduInfoPtr;
-    Can_IdType CanIfRx_Id;
 
     MSG_Object_INT_Flag=0;  /* clearing the message object flag for re-use */
     uint32 status = REG_VAL(CAN0_BASE,CAN_INT_OFFSET);  /* reading the CAN_INT register to detect the interrupt cause */
@@ -84,39 +87,34 @@ void CAN0_Handler(void)
         }
         else if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH].CanObjectType==RECIEVE) /* interrupt caused by receive message object */
         {
-            /*Lock Mailbox until Reading of Pdu from Users*/
-            Object_Check[CAN0_CONTROLLER_ID][HOH][Mailbox_Index].Check = Unconfirmed;
-            /*Setting argument values of CanIf_RxIndication*/
-            REG_VAL(CAN0_BASE,CAN_IF1CRQ_OFFSET) =  status & (SIX_BIT_MASK);
-            /*Check if the ID is standard*/
-            if( BIT_IS_CLEAR( REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET),XTD_BIT) )
+            if (Object_Check[CAN0_CONTROLLER_ID][HOH][Mailbox_Index].Check == Confirmed)
             {
-                CanIfRx_Id = ( REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET) & CANIF1ARB2_ID_MASK ) >> 2;
+                /*Lock Mailbox until Reading of Pdu from Users*/
+                Object_Check[CAN0_CONTROLLER_ID][HOH][Mailbox_Index].Check = Unconfirmed;
+                /*Data Normalization Necessary = Storing the data in a temporary buffer inside the CanDrv*/
+                Can_MessageReceive(CAN0_CONTROLLER_ID, status, &Temp_Buffer);
+                /*Storing the CanId*/
+                CanIfRx_Mailbox.CanId = Temp_Buffer.id;
+                /*Storing Controller Id*/
+                CanIfRx_Mailbox.ControllerId = CAN0_CONTROLLER_ID;
+                /* Storing the Hoh Object Id*/
+                CanIfRx_Mailbox.Hoh = Can_Configuration.CanConfigSet.CanHardwareObject[HOH].CanObjectId;
+                /*Storing the length*/
+                CanIfRx_PduInfoPtr.SduLength = Temp_Buffer.length;
+                /*Refering to the data pointer*/
+                CanIfRx_PduInfoPtr.SduDataPtr = Temp_Buffer.sdu;
+                /*Call User (CanIf) to indicate recieved message*/
+                CanIf_RxIndication(&CanIfRx_Mailbox,&CanIfRx_PduInfoPtr);
+                /*
+                 * The hardware object will be immediately released
+                 * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
+                 */
+                Object_Check[CAN0_CONTROLLER_ID][HOH][Mailbox_Index].Check = Confirmed;
             }
             else
             {
-                /*
-                 *   ID is Extended
-                 */
-                CanIfRx_Id = (( REG_VAL(CAN0_BASE,CAN_IF1ARB2_OFFSET) & CANIF1ARB2_ID_MASK ) <<16) | REG_VAL(CAN0_BASE,CAN_IF1ARB1_OFFSET) ;
+                /*Do Nothing*/
             }
-            CanIfRx_Mailbox.CanId = CanIfRx_Id;
-            /*Controller ID with respect to CanDrv or CanIf ?!*/
-            CanIfRx_Mailbox.ControllerId = CAN0_CONTROLLER_ID;
-            CanIfRx_Mailbox.Hoh = Can_Configuration.CanConfigSet.CanHardwareObject[HOH].CanObjectId;
-
-            /*Is this Right or Wrong?! DATA NORMALIZATION*/
-
-            CanIfRx_PduInfoPtr.SduLength = (REG_VAL(CAN0_BASE,CAN_IF1MCTL_OFFSET) & CANIF1MCTL_DLC_MASK);
-            /*Can Message Recieve here?!!*/
-
-            /*Call User (CanIf) to indicate recieved message*/
-            CanIf_RxIndication(&CanIfRx_Mailbox,&CanIfRx_PduInfoPtr);
-            /*
-             * The hardware object will be immediately released
-             * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
-             */
-            Object_Check[CAN0_CONTROLLER_ID][HOH][Mailbox_Index].Check = Confirmed;
             Recieve_Count++; /* increment the receive count */
         }
         MSG_Object_INT_Flag =1; /* raise the message object flag to detect that an interrupt occurred */

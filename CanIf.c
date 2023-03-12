@@ -231,8 +231,9 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
         }
     }
 
-    /* [SWS_CANIF_00900] When CanIf_Transmit() is called with PduInfoPtr->SduLength
-     *  exceeding the maximum length of the PDU referenced by TxPduId
+    /*
+     * [SWS_CANIF_00900] When CanIf_Transmit() is called with PduInfoPtr->SduLength
+     * exceeding the maximum length of the PDU referenced by TxPduId
      * and CanIfTxPduTruncation is disabled, CanIf shall report the runtime error
      * CANIF_E_TXPDU_LENGTH_EXCEEDED and return E_NOT_OK without further actions.
      */
@@ -253,9 +254,6 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
     {
         CanIf_Transmit_Return = E_NOT_OK;
     }
-
-
-
 
     /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
     Can_HwHandleType Hth = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthIdSymRef->CanObjectId;
@@ -287,8 +285,9 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
     }
     Can_PduData.id = TxPDU_CanID;
 
-    /* [SWS_CANIF_00894] When CanIf_Transmit() is called with PduInfoPtr->SduLength
-     *  exceeding the maximum length of the PDU referenced by TxPduId and
+    /*
+     * [SWS_CANIF_00894] When CanIf_Transmit() is called with PduInfoPtr->SduLength
+     * exceeding the maximum length of the PDU referenced by TxPduId and
      * CanIfTxPduTruncation is enabled, CanIf shall transmit as much data as possible
      * and discard the rest.
      */
@@ -334,7 +333,6 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
  ************************************************************************************/
 Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId,Can_ControllerStateType ControllerMode)
 {
-
     Can_ControllerStateType Requested_Mode ;
     Std_ReturnType Can_SetControllerMode_return ;
 

@@ -11,6 +11,8 @@
 
 /*Include the module header file*/
 #include "Can.h"
+/* Include of CanIf Callback Header file*/
+#include "CanIf_Cbk.h"
 uint32 CPUcpsie(void)
 {
     /*
@@ -188,6 +190,8 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType 
     default :
         break;
     }
+    /*Indicate a mode transition to the user (CanIf)*/
+    CanIf_ControllerModeIndication(Controller,Transition);
     return Return_Value;
 }
 
