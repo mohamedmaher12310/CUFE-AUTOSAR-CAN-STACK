@@ -17,7 +17,7 @@
 #include "Can.h"
 #include "UART.h"
 #include "Os.h"
-
+#include "CanIf.h"
 #define EIGHT_BYTES     (8U)
 
 int main(void)
@@ -36,8 +36,11 @@ int main(void)
      * Initialize the Can Driver
      ****************************************************************************************/
     Can_Init(&Can_Configuration);
+    /***************************************************************************************
+     * Initialize the CanIf
+     ****************************************************************************************/
 
-
+    CanIf_Init(&CanIf_Configuration);
     /***************************************************************************************
      * Initialize the SysTick Timer
      ****************************************************************************************/
@@ -47,14 +50,17 @@ int main(void)
      * Enable the CAN for operation.
      ****************************************************************************************/
     Can_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
+    /***************************************************************************************
+     * Enable the CANIf for operation.
+     ****************************************************************************************/
 
+    CanIf_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
     /***************************************************************************************
      * Enable interrupts on the Can Controller 0.
      ****************************************************************************************/
 
     Can_DisableControllerInterrupts(CAN0_CONTROLLER_ID);
     Can_EnableControllerInterrupts(CAN0_CONTROLLER_ID);
-
 
     /***************************************************************************************
      * Initialize the message objects that will be used for sending/receiving CAN messages.
@@ -63,15 +69,28 @@ int main(void)
     uint8 Rx_Message_Data_Buffer[8];
     uint8 *SDU_Ptr;
     SDU_Ptr = Tx_Message_Data_Buffer;
-    Can_PduType Can_Message_Tx;
+    //    Can_PduType Can_Message_Tx;
     Can_PduType Can_Message_Rx;
 
-    Can_Message_Tx.length= EIGHT_BYTES;
-    Can_Message_Tx.swPduHandle = ZERO;
-    Can_Message_Tx.sdu = SDU_Ptr;
+    //    Can_Message_Tx.length= EIGHT_BYTES;
+    //    Can_Message_Tx.swPduHandle = ZERO;
+    //    Can_Message_Tx.sdu = SDU_Ptr;
 
     Can_Message_Rx.length= EIGHT_BYTES;
+    /***************************************************************************************
+     * Initialize the PDU information that will be used for sending/receiving CAN messages.
+     ****************************************************************************************/
+    PduIdType pdu_id_tx;
 
+    PduInfoType CanIf_Message_Tx;
+    PduInfoType CanIf_Message_Rx;
+    CanIf_Message_Tx.SduLength = EIGHT_BYTES;
+    CanIf_Message_Tx.SduDataPtr = SDU_Ptr;
+
+    CanIf_Message_Rx.SduLength = EIGHT_BYTES;
+
+    Std_ReturnType return_result;
+    /***********************************/
     unsigned char RecievedChar;
     unsigned char Choice;
     UART1_SendString("Welcome to CAN Network\nPress: \n[1] Send to Computer (2)\n[2] Send to Computer (3)\n[3] Send to Both (2 & 3)\n[4]Read Recieved Messages\n");
@@ -80,11 +99,11 @@ int main(void)
     uint32 x;
     while(1)
     {
-//        x = GetCounterValue();
-//        if (( x % (uint32)CAN_MAIN_FUNCTION_PERIOD) == 0)
-//        {
-//            Can_MainFunction_Write();
-//        }
+        //                x = GetCounterValue();
+        //        if (( x % (uint32)CAN_MAIN_FUNCTION_PERIOD) == 0)
+        //        {
+        //            Can_MainFunction_Write();
+        //        }
 
         while (RecievedChar == 0)
         {
@@ -104,14 +123,25 @@ int main(void)
             {
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
-            Can_Message_Tx.id=2;
-            Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
+            //            Can_Message_Tx.id=2;
+            pdu_id_tx=0;
+            return_result = CanIf_Transmit(pdu_id_tx,&CanIf_Message_Tx);
+            if(E_OK == return_result )
+            {
+                /*for polling test*/
+                Can_MainFunction_Write();
+            }
+            else
+            {
+                UART1_SendString("[CAN controller hardware object is busy]");
+            }
+            //  Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
             {
                 RecievedString[i] = '\0';
                 Tx_Message_Data_Buffer[i] = '\0';
             }
-            Can_MainFunction_Write();
+
         }
         else if (RecievedChar == '2')
         {
@@ -122,8 +152,19 @@ int main(void)
             {
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
-            Can_Message_Tx.id=3;
-            Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
+            //            Can_Message_Tx.id=3;
+            pdu_id_tx=0;
+            return_result = CanIf_Transmit(pdu_id_tx,&CanIf_Message_Tx);
+            if(E_OK == return_result )
+            {
+                /*for polling test*/
+                Can_MainFunction_Write();
+            }
+            else
+            {
+                UART1_SendString("[CAN controller hardware object is busy]");
+            }
+            // Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
             {
                 RecievedString[i] = '\0';
@@ -143,14 +184,18 @@ int main(void)
                 {
                     MSG_Number_INT[0] = 0;
                     UART1_SendString("\nYou Recieved Message from Mailbox (1):\n");
-                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_CONTROLLER_ID, 1, &Can_Message_Rx);
+//                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
+                    CanIf_Message_Rx.SduDataPtr = Rx_Message_Data_Buffer;
+                    /*now it is called in ISR*/
+//                    Can_MessageReceive(CAN0_CONTROLLER_ID, 1, &Can_Message_Rx);
+
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
-                    for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
+                    for (RecievedCount =0; RecievedCount<CanIf_Message_Rx.SduLength ; RecievedCount++)
                     {
                         UARTCharPut(0x4000D000, Rx_Message_Data_Buffer[RecievedCount]);
                     }
+
                     unsigned char i=0;
                     for ( i=0;i<8;i++)
                     {
@@ -161,8 +206,10 @@ int main(void)
                 {
                     MSG_Number_INT[1] = 0;
                     UART1_SendString("\nYou Recieved Message from Mailbox (2):\n");
-                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_CONTROLLER_ID, 2, &Can_Message_Rx);
+//                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
+                    CanIf_Message_Rx.SduDataPtr = Rx_Message_Data_Buffer;
+                    /*now it is called in ISR*/
+//                    Can_MessageReceive(CAN0_CONTROLLER_ID, 2, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)
@@ -179,8 +226,10 @@ int main(void)
                 {
                     MSG_Number_INT[2] = 0;
                     UART1_SendString("\nYou Recieved Message from Mailbox (3):\n");
-                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
-                    Can_MessageReceive(CAN0_CONTROLLER_ID, 3, &Can_Message_Rx);
+//                    Can_Message_Rx.sdu = Rx_Message_Data_Buffer;// set pointer to rx buffer
+                    CanIf_Message_Rx.SduDataPtr = Rx_Message_Data_Buffer;
+                    /*now it is called in ISR*/
+//                    Can_MessageReceive(CAN0_CONTROLLER_ID, 3, &Can_Message_Rx);
                     Recieve_Count--;
                     unsigned char RecievedCount=0;
                     for (RecievedCount =0; RecievedCount<Can_Message_Rx.length ; RecievedCount++)

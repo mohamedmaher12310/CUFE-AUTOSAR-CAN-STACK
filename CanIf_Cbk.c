@@ -47,6 +47,8 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     uint8 RxPDU_index;
     uint8 HOH_index ;
     uint8 HRH_index ;
+
+    uint8 test_flag=0;
 #if(STD_ON == CanIfDevErrorDetect)
     /* If CanIf was not initialized before calling CanIf_RxIndication(),
      * CanIf shall not execute Rx indication handling, when CanIf_RxIndication() is called.
@@ -190,6 +192,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                             RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                             RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
                             /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                            test_flag=1;
                             break;
                         }
                         default:
@@ -261,6 +264,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                         RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
                         /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                        test_flag=1;
                         break;
                     }
                     default:
