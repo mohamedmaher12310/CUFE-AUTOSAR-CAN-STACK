@@ -158,16 +158,16 @@
  * CAN Identifier of transmit CAN L-PDUs used by the CAN Driver for
  * CAN L-PDU transmission.
  */
-#define CanIfTxPduCanId_0       0x0
-#define CanIfTxPduCanId_1       0x1
+#define CanIfTxPduCanId_0       (0b00000000010)
+#define CanIfTxPduCanId_1       (0b00000000000)
 
 /*
  * Identifier mask which denotes relevant bits in the CAN Identifier. This
  * parameter may be used to keep parts of the CAN Identifier of dynamic
  * transmit L-PDUs static.
  */
-#define CanIfTxPduCanIdMask_0   0x0
-#define CanIfTxPduCanIdMask_1   0x0
+#define CanIfTxPduCanIdMask_0   (0b11111111111)
+#define CanIfTxPduCanIdMask_1   (0b11111111111)
 
 /*
  * Type of CAN Identifier of the transmit CAN L-PDU used by the CAN

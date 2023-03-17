@@ -39,29 +39,24 @@ int main(void)
     /***************************************************************************************
      * Initialize the CanIf
      ****************************************************************************************/
-
     CanIf_Init(&CanIf_Configuration);
     /***************************************************************************************
      * Initialize the SysTick Timer
      ****************************************************************************************/
     SYSTICK_VOIDInit();
-
     /***************************************************************************************
      * Enable the CAN for operation.
      ****************************************************************************************/
-    Can_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
+//    Can_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
     /***************************************************************************************
      * Enable the CANIf for operation.
      ****************************************************************************************/
-
     CanIf_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
     /***************************************************************************************
      * Enable interrupts on the Can Controller 0.
      ****************************************************************************************/
-
     Can_DisableControllerInterrupts(CAN0_CONTROLLER_ID);
     Can_EnableControllerInterrupts(CAN0_CONTROLLER_ID);
-
     /***************************************************************************************
      * Initialize the message objects that will be used for sending/receiving CAN messages.
      ****************************************************************************************/
@@ -158,7 +153,7 @@ int main(void)
             if(E_OK == return_result )
             {
                 /*for polling test*/
-                Can_MainFunction_Write();
+//                Can_MainFunction_Write();
             }
             else
             {
