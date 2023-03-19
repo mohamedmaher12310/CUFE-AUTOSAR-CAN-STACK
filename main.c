@@ -22,7 +22,7 @@
 #define EIGHT_BYTES     (8U)
 Can_PduType Temp_Buffer;
 int main(void)
-{
+    {
     /***************************************************************************************
      * Initialize the Port Driver
      ****************************************************************************************/
@@ -66,6 +66,10 @@ int main(void)
     SDU_Ptr = Tx_Message_Data_Buffer;
     Can_PduType Can_Message_Tx;
 
+    PduInfoType Tx_Pdu;
+    Tx_Pdu.SduLength = EIGHT_BYTES;
+    Tx_Pdu.SduDataPtr = SDU_Ptr;
+
     Can_Message_Tx.length= EIGHT_BYTES;
     Can_Message_Tx.swPduHandle = ZERO;
     Can_Message_Tx.sdu = SDU_Ptr;
@@ -103,13 +107,14 @@ int main(void)
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
             Can_Message_Tx.id=2;
-            Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
+            CanIf_Transmit(CanIfTxPduId_0, &Tx_Pdu);
+            //Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
             {
                 RecievedString[i] = '\0';
                 Tx_Message_Data_Buffer[i] = '\0';
             }
-            Can_MainFunction_Write();
+            //Can_MainFunction_Write();
         }
         else if (RecievedChar == '2')
         {
