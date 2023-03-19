@@ -26,7 +26,6 @@ extern uint8 * recieved_data;
 
 /* Data Normalization */
 extern Can_PduType Temp_Buffer;
-Can_PduType Temp_Buffer;
 
 uint8 HOH;
 void CAN0_Handler(void)
@@ -184,8 +183,3 @@ void CAN1_Handler(void)
     //        Error_Flag =0;  /* nullify the error flag after successful transmission or reception of message */
     //    }
 }
-
-
-
-
-

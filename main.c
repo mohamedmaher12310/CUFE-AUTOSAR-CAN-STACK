@@ -20,7 +20,7 @@
 #include "CanIf.h"
 #include "CanIf_Cbk.h"
 #define EIGHT_BYTES     (8U)
-
+Can_PduType Temp_Buffer;
 
 
 void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
@@ -59,6 +59,7 @@ int main(void)
      ****************************************************************************************/
 
     CanIf_Init(&CanIf_Configuration);
+
     /***************************************************************************************
      * Initialize the SysTick Timer
      ****************************************************************************************/
@@ -67,10 +68,7 @@ int main(void)
     /***************************************************************************************
      * Enable the CAN for operation.
      ****************************************************************************************/
-//    Can_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
-    /***************************************************************************************
-     * Enable the CANIf for operation.
-     ****************************************************************************************/
+    CanIf_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
 
     CanIf_SetControllerMode(CAN0_CONTROLLER_ID, CAN_CS_STARTED);
     /***************************************************************************************
@@ -88,7 +86,6 @@ int main(void)
     uint8 *SDU_Ptr;
     SDU_Ptr = Tx_Message_Data_Buffer;
     //    Can_PduType Can_Message_Tx;
-    Can_PduType Can_Message_Rx;
 
     //    Can_Message_Tx.length= EIGHT_BYTES;
     //    Can_Message_Tx.swPduHandle = ZERO;
@@ -117,7 +114,7 @@ int main(void)
     uint32 x;
     while(1)
     {
-        //                x = GetCounterValue();
+        //        x = GetCounterValue();
         //        if (( x % (uint32)CAN_MAIN_FUNCTION_PERIOD) == 0)
         //        {
         //            Can_MainFunction_Write();
