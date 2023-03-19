@@ -313,7 +313,7 @@ Parent Container: CanHwFilter
 Description: Specifies (together with the filter mask) the identifiers range that passes
              the hardware filter.
  */
-#define CAN_HW_FILTER_CODE_0                           0b00000000010
+#define CAN_HW_FILTER_CODE_0                           0b00000000001
 #define CAN_HW_FILTER_CODE_1                           0b00000000010
 #define CAN_HW_FILTER_CODE_2                           0b00000000000
 #define CAN_HW_FILTER_CODE_3                           0b00000000000

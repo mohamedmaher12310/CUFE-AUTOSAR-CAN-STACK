@@ -101,7 +101,15 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         /* CanIfRxPduCfg Container*/
         RxPDU = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
         /*Index of Pdu*/
-        RxPDU_index = RxPDU->CanIfRxPduId;
+        uint8 i ;
+        for( i=0; i< CanIfMaxRxPduCfg ;i++)
+        {
+            if (Mailbox->CanId == CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[i].CanIfRxPduCanId)
+            {
+                RxPDU_index = i;
+                break;
+            }
+        }
         /* CanIfHrhCfg Container*/
         HRH_Ptr = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
         /*Index of Hoh*/
@@ -383,14 +391,14 @@ void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType C
     }
 
     /* Check If parameter ControllerMode has an invalid value*/
-       if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
-       {
-           Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CTRLMODE );
-       }
+    if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CTRLMODE );
+    }
 #endif
 
     /* [SWS_CANIF_00711] When callback CanIf_ControllerModeIndication(ControllerId,ControllerMode)
      *  is called, CanIf shall call CanSm_ControllerModeIndication(ControllerId,ControllerMode) of the CanSm
      */
-/*    CanSm_ControllerModeIndication(ControllerId,ControllerMode); */
+    /*    CanSm_ControllerModeIndication(ControllerId,ControllerMode); */
 }
