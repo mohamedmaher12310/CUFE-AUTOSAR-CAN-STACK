@@ -112,17 +112,19 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
         /* misra */
     }
     /*Mapping between HRH & HOH */
-    for (count = ZERO ; count < HRH_NUMBER ; count++)
+    uint8 HRH_INDEX=ZERO;
+    for (count = ZERO ; count < CAN_HOH_NUMBER ; count++)
     {
-        CanIfRxPduCfg* RxPDU = NULL_PTR;
-        uint8 RxPDU_index;
-        /* CanIfRxPduCfg Container*/
-        RxPDU=ConfigPtr->CanIfInitCfg.CanIfRxPduCfg;
-        /*Index of Pdu*/
-        RxPDU_index = RxPDU->CanIfRxPduId;
-        HOH_HRH_MAP[count]= ConfigPtr->CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanObjectId;
+        if (Can_Configuration.CanConfigSet.CanHardwareObject[count].CanObjectType == RECIEVE)
+        {
+            HOH_HRH_MAP[HRH_INDEX] = count;
+            HRH_INDEX++;
+        }
+        else
+        {
+            /* Do Nothing*/
+        }
     }
-
     /* the CanIF module is initialized and ready */
     CanIfCurrent_State = CANIF_READY;
 }

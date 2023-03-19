@@ -226,7 +226,7 @@
  * CanIfRxPduCanIdRange parameter shall be used.
  */
 #define CanIfRxPduCanId_0       (0b00000000001)
-#define CanIfRxPduCanId_1       (0b00000000000)
+#define CanIfRxPduCanId_1       (0b00000000011)
 
 /*This parameter defines the name of the <User_RxIndication>.*/
 #define CanIfRxPduUserRxIndicationName_0          (CanIfUser)(PDUR)

@@ -24,9 +24,10 @@ volatile uint32 Transmit_Count =0; /* variable that increments when a message is
 /* Data Normalization */
 extern Can_PduType Temp_Buffer;
 
-uint8 HOH;
+
 void CAN0_Handler(void)
 {
+    uint8 HOH;
     /*CanIf_RxIndication Arguments*/
     Can_HwType CanIfRx_Mailbox;
     PduInfoType CanIfRx_PduInfoPtr;
