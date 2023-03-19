@@ -225,7 +225,7 @@
  * Identifier is assigned to the Pdu. If a range is assigned then the
  * CanIfRxPduCanIdRange parameter shall be used.
  */
-#define CanIfRxPduCanId_0       (0b00000000000)
+#define CanIfRxPduCanId_0       (0b00000000010)
 #define CanIfRxPduCanId_1       (0b00000000000)
 
 /*This parameter defines the name of the <User_RxIndication>.*/

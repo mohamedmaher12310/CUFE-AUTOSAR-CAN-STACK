@@ -1199,20 +1199,23 @@ uint8 Can_MessageReceive(uint32 Controller_ID,
 
         Data_REG = (CAN_IF1DA1_OFFSET);
 
+       static uint8 data_ptr[8] = {0};
+
         for(Data_Index = 0; Data_Index < Message->length ;)
         {
             Data_Value = REG_VAL(CAN0_BASE,Data_REG);
             Data_REG+=FOUR;
-            Message->sdu[Data_Index++] = (uint8)Data_Value;
+            data_ptr[Data_Index++] = (uint8)Data_Value;
             if(Data_Index < Message->length)
             {
-                Message->sdu[Data_Index++] = (uint8)(Data_Value >> 8);
+                data_ptr[Data_Index++] = (uint8)(Data_Value >> 8);
             }
             else
             {
                 /*Misra*/
             }
         }
+        Message->sdu = data_ptr;
         /*
          * Setting The value of New data bit to indicate new message
          */

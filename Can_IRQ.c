@@ -22,7 +22,7 @@ volatile uint32 Recieve_Count =0; /* variable that increments when a message is 
 volatile uint32 Transmit_Count =0; /* variable that increments when a message is transmitted*/
 
 /* Data Normalization */
-Can_PduType Temp_Buffer;
+extern Can_PduType Temp_Buffer;
 
 uint8 HOH;
 void CAN0_Handler(void)
@@ -179,8 +179,3 @@ void CAN1_Handler(void)
     //        Error_Flag =0;  /* nullify the error flag after successful transmission or reception of message */
     //    }
 }
-
-
-
-
-
