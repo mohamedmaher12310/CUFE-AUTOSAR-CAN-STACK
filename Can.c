@@ -1203,6 +1203,7 @@ uint8 Can_MessageReceive(uint32 Controller_ID,
         {
             Data_Value = REG_VAL(CAN0_BASE,Data_REG);
             Data_REG+=FOUR;
+
             Message->sdu[Data_Index++] = (uint8)Data_Value;
             if(Data_Index < Message->length)
             {

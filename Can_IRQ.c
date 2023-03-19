@@ -20,8 +20,12 @@ volatile boolean Error_Flag = 0; /* flag to detect an error interrupt has occurr
 volatile uint8 Error_Status = 0; /* variable to store the error status */
 volatile uint32 Recieve_Count =0; /* variable that increments when a message is received*/
 volatile uint32 Transmit_Count =0; /* variable that increments when a message is transmitted*/
+/*habaaal*/
+extern uint8 * recieved_data;
+ uint8* recieved_data;
 
 /* Data Normalization */
+extern Can_PduType Temp_Buffer;
 Can_PduType Temp_Buffer;
 
 uint8 HOH;
@@ -103,6 +107,7 @@ void CAN0_Handler(void)
                 CanIfRx_PduInfoPtr.SduLength = Temp_Buffer.length;
                 /*Refering to the data pointer*/
                 CanIfRx_PduInfoPtr.SduDataPtr = Temp_Buffer.sdu;
+                recieved_data = Temp_Buffer.sdu;
                 /*Call User (CanIf) to indicate recieved message*/
                 CanIf_RxIndication(&CanIfRx_Mailbox,&CanIfRx_PduInfoPtr);
                 /*

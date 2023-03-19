@@ -38,6 +38,7 @@ Can_PduType CanIf_RxBuffer[CanIfMaxRxPduCfg];
  * Description: Function to indicate a successful reception of a received CAN Rx L-PDU
  *              to the CanIf after passing all filters and validation checks.
  ************************************************************************************/
+ uint8 test_flag=0;
 void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPtr)
 {
     /*Variables to store the needed Data*/
@@ -48,7 +49,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     uint8 HOH_index ;
     uint8 HRH_index ;
 
-    uint8 test_flag=0;
+
 #if(STD_ON == CanIfDevErrorDetect)
     /* If CanIf was not initialized before calling CanIf_RxIndication(),
      * CanIf shall not execute Rx indication handling, when CanIf_RxIndication() is called.
@@ -191,7 +192,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                             RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                             RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                             RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                            /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                            PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
                             test_flag=1;
                             break;
                         }
@@ -263,7 +264,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                         RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                         RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                        /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                        PDUR_RxIndication(RxPDU_index,&RxPduPDUR);
                         test_flag=1;
                         break;
                     }
@@ -336,15 +337,19 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
     if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
     {
         /* PDUR_TxConfirmation(E_OK); */
+        test_flag=1;
+        PDUR_TxConfirmation(TxPDU_ptr->CanIfTxPduId, E_OK);
     }
     else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
     {
         /* CAN_TP_TxConfirmation(E_OK); */
+
     }
     else
     {
 
     }
+    test_flag=1;
 }
 
 /************************************************************************************
