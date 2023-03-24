@@ -45,7 +45,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     CanIfRxPduCfg* RxPDU = NULL_PTR;
     CanIfHrhRangeCfg* RxPDU_Range = NULL_PTR;
     const CanIfHrhCfg* HRH_Ptr = NULL_PTR;
-    uint8 RxPDU_index;
+    uint32 RxPDU_index;
     uint8 HOH_index ;
     uint8 HRH_index ;
 #if(STD_ON == CanIfDevErrorDetect)
