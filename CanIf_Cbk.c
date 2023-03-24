@@ -102,55 +102,127 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         /* CanIfRxPduCfg Container*/
         RxPDU = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
         /*Index of Pdu*/
-        uint8 i ;
-        for( i=0; i< CanIfMaxRxPduCfg ;i++)
-        {
-            if (Mailbox->CanId == CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[i].CanIfRxPduCanId)
+        RxPDU_index = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[Mailbox->CanId].CanIfRxPduCanId;
+        if(Mailbox->CanId == RxPDU_index ){
+            //        uint8 i ;
+            //        for( i=0; i< CanIfMaxRxPduCfg ;i++)
+            //        {
+            //            if (Mailbox->CanId == CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[i].CanIfRxPduCanId)
+            //            {
+            //                RxPDU_index = i;
+            //                //                RxPDU_index = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[Mailbox->CanId].CanIfRxPduCanId;
+            //                break;
+            //            }
+            //        }
+            /* CanIfHrhCfg Container*/
+            HRH_Ptr = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
+            /*Index of Hoh*/
+            HOH_index = (HRH_Ptr->CanIfHrhIdSymRef->CanObjectId);
+            /*Index of Hrh*/
+            uint8 iter;
+            for (iter = ZERO; iter < HRH_NUMBER ; iter ++)
             {
-                RxPDU_index = i;
-//                RxPDU_index = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[Mailbox->CanId].CanIfRxPduCanId;
-                break;
+                if (HOH_HRH_MAP[iter] == HOH_index)
+                {
+                    HRH_index = iter;
+                    break;
+                }
+                else
+                {
+                    /*Do Nothing*/
+                }
             }
-        }
-        /* CanIfHrhCfg Container*/
-        HRH_Ptr = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
-        /*Index of Hoh*/
-        HOH_index = (HRH_Ptr->CanIfHrhIdSymRef->CanObjectId);
-        /*Index of Hrh*/
-        uint8 iter;
-        for (iter = ZERO; iter < HRH_NUMBER ; iter ++)
-        {
-            if (HOH_HRH_MAP[iter] == HOH_index)
+            /*Use MACROS instead of variables*/
+            /* CanIfHrhRangeCfg Container*/
+            RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[CAN_INSTANCE_ID].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
+            /* BASIC CAN*/
+            if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
             {
-                HRH_index = iter;
-                break;
+                /*Check for SW Filtering*/
+                if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
+                {
+                    /* A range of CanIds which shall pass the software receive filter shall either be defined by its upper limit (see CANIF_HRHRANGE_UPPER_CANID,
+                     * ECUC_CanIf_00630) and lower limit (see CANIF_HRHRANGE_LOWER_CANID,
+                     * ECUC_CanIf_00629) CanId, or by a base ID (see CANIF_HRHRANGE_BASEID) and
+                     * a mask that defines the relevant bits of the base ID (see CANIF_HRHRANGE_MASK). c
+                     * ()
+                     */
+                    /* Check on Upper & Lower Range*/
+                    if((((Mailbox->CanId) &(RxPDU->CanIfRxPduCanIdMask))>=(RxPDU_Range->CanIfHrhRangeRxPduLowerCanId))&&(((Mailbox->CanId)&(RxPDU->CanIfRxPduCanIdMask))<=(RxPDU_Range->CanIfHrhRangeRxPduUpperCanId)))
+                    {
+                        /*Passed the SW Filter Check, Check on Data Length*/
+#if (CanIfPrivateDataLengthCheck == STD_ON)
+                        /*If CanIf_RxIndication() is called with invalid PduInfoPtr->SduLength,
+                         * runtime error CANIF_E_INVALID_DATA_LENGTH is reported (see[SWS_CANIF_00168]).
+                         */
+                        if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
+                        {
+                            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
+                        }
+                        /*Passed the Data Length Check*/
+                        else
+#endif /*CanIfPrivateDataLengthCheck*/
+                        {
+                            /* [SWS_CANIF_00198] d If the configuration parameter
+                             * CANIF_PUBLIC_READRXPDU_DATA_API (ECUC_CanIf_00607) is set to TRUE,
+                             * CanIf shall store each received L-SDU, at which CANIF_RXPDU_READDATA
+                             * (ECUC_CanIf_00600) is enabled, into a receive L-SDU buffer. This means that if the
+                             * configuration parameter CANIF_RXPDU_READDATA (ECUC_CanIf_00600) is set to
+                             * TRUE, CanIf has to allocate a receive L-SDU buffer for this receive L-SDU.
+                             */
+#if (STD_ON == CanIfPublicReadRxPduDataApi)
+                            if (RxPDU->CanIf_RxPduReadData == TRUE)
+                            {
+                                /* Store the message in the Rx Buffer*/
+                                CanIf_RxBuffer[RxPDU_index]=Temp_Buffer;
+                            }
+                            else
+                            {
+                                /*Do Nothing*/
+                            }
+#endif /*CanIfPublicReadRxPduDataApi*/
+                            /*Rx Notification Flags*/
+#if (STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+                            if(RxPDU->CanIf_RxPduReadNotifyStatus == TRUE)
+                            {
+                                CanIf_RxNotificationFlag[RxPDU_index]=CANIF_TX_RX_NOTIFICATION;
+                            }
+                            else
+                            {
+                                /*Do Nothing*/
+                            }
+#endif /*CanIfPublicReadRxPduNotifyStatusApi*/
+                            /*  Call the User*/
+                            switch(RxPDU->CanIfRxPduUserRxIndicationName)
+                            {
+                            case PDUR :
+                            {
+                                PduInfoType RxPduPDUR;
+                                RxPduPDUR.SduLength = PduInfoPtr->SduLength;
+                                RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
+                                RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
+                                /*PDUR_CanIf_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                                break;
+                            }
+                            default:
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        /*Do Nothing*/
+                    }
+                }
             }
+            /*FULL CAN*/
             else
             {
-                /*Do Nothing*/
-            }
-        }
-        /*Use MACROS instead of variables*/
-        /* CanIfHrhRangeCfg Container*/
-        RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[CAN_INSTANCE_ID].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
-        /* BASIC CAN*/
-        if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
-        {
-            /*Check for SW Filtering*/
-            if(TRUE == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhSoftwareFilter))
-            {
-                /* A range of CanIds which shall pass the software receive filter shall either be defined by its upper limit (see CANIF_HRHRANGE_UPPER_CANID,
-                 * ECUC_CanIf_00630) and lower limit (see CANIF_HRHRANGE_LOWER_CANID,
-                 * ECUC_CanIf_00629) CanId, or by a base ID (see CANIF_HRHRANGE_BASEID) and
-                 * a mask that defines the relevant bits of the base ID (see CANIF_HRHRANGE_MASK). c
-                 * ()
-                 */
-                /* Check on Upper & Lower Range*/
-                if((((Mailbox->CanId) &(RxPDU->CanIfRxPduCanIdMask))>=(RxPDU_Range->CanIfHrhRangeRxPduLowerCanId))&&(((Mailbox->CanId)&(RxPDU->CanIfRxPduCanIdMask))<=(RxPDU_Range->CanIfHrhRangeRxPduUpperCanId)))
+                /*Check on CanId*/
+                if( ( (Mailbox->CanId) & (RxPDU->CanIfRxPduCanIdMask) ) == (RxPDU->CanIfRxPduCanIdMask)&(RxPDU->CanIfRxPduCanId) )
                 {
-                    /*Passed the SW Filter Check, Check on Data Length*/
 #if (CanIfPrivateDataLengthCheck == STD_ON)
-                    /*If CanIf_RxIndication() is called with invalid PduInfoPtr->SduLength,
+                    /* If CanIf_RxIndication() is called with invalid PduInfoPtr->SduLength,
                      * runtime error CANIF_E_INVALID_DATA_LENGTH is reported (see[SWS_CANIF_00168]).
                      */
                     if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
@@ -205,75 +277,6 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         default:
                             break;
                         }
-                    }
-                }
-                else
-                {
-                    /*Do Nothing*/
-                }
-            }
-        }
-        /*FULL CAN*/
-        else
-        {
-            /*Check on CanId*/
-            if( ( (Mailbox->CanId) & (RxPDU->CanIfRxPduCanIdMask) ) == (RxPDU->CanIfRxPduCanIdMask)&(RxPDU->CanIfRxPduCanId) )
-            {
-#if (CanIfPrivateDataLengthCheck == STD_ON)
-                /* If CanIf_RxIndication() is called with invalid PduInfoPtr->SduLength,
-                 * runtime error CANIF_E_INVALID_DATA_LENGTH is reported (see[SWS_CANIF_00168]).
-                 */
-                if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
-                {
-                    Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
-                }
-                /*Passed the Data Length Check*/
-                else
-#endif /*CanIfPrivateDataLengthCheck*/
-                {
-                    /* [SWS_CANIF_00198] d If the configuration parameter
-                     * CANIF_PUBLIC_READRXPDU_DATA_API (ECUC_CanIf_00607) is set to TRUE,
-                     * CanIf shall store each received L-SDU, at which CANIF_RXPDU_READDATA
-                     * (ECUC_CanIf_00600) is enabled, into a receive L-SDU buffer. This means that if the
-                     * configuration parameter CANIF_RXPDU_READDATA (ECUC_CanIf_00600) is set to
-                     * TRUE, CanIf has to allocate a receive L-SDU buffer for this receive L-SDU.
-                     */
-#if (STD_ON == CanIfPublicReadRxPduDataApi)
-                    if (RxPDU->CanIf_RxPduReadData == TRUE)
-                    {
-                        /* Store the message in the Rx Buffer*/
-                        CanIf_RxBuffer[RxPDU_index]=Temp_Buffer;
-                    }
-                    else
-                    {
-                        /*Do Nothing*/
-                    }
-#endif /*CanIfPublicReadRxPduDataApi*/
-                    /*Rx Notification Flags*/
-#if (STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
-                    if(RxPDU->CanIf_RxPduReadNotifyStatus == TRUE)
-                    {
-                        CanIf_RxNotificationFlag[RxPDU_index]=CANIF_TX_RX_NOTIFICATION;
-                    }
-                    else
-                    {
-                        /*Do Nothing*/
-                    }
-#endif /*CanIfPublicReadRxPduNotifyStatusApi*/
-                    /*  Call the User*/
-                    switch(RxPDU->CanIfRxPduUserRxIndicationName)
-                    {
-                    case PDUR :
-                    {
-                        PduInfoType RxPduPDUR;
-                        RxPduPDUR.SduLength = PduInfoPtr->SduLength;
-                        RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
-                        RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                        /*PDUR_CanIf_RxIndication(RxPDU_index,&RxPduPDUR);*/
-                        break;
-                    }
-                    default:
-                        break;
                     }
                 }
             }
