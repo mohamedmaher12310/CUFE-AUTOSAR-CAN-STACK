@@ -108,6 +108,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
             if (Mailbox->CanId == CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[i].CanIfRxPduCanId)
             {
                 RxPDU_index = i;
+//                RxPDU_index = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[Mailbox->CanId].CanIfRxPduCanId;
                 break;
             }
         }
@@ -198,7 +199,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                             RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                             RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                             RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                            /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                            /*PDUR_CanIf_RxIndication(RxPDU_index,&RxPduPDUR);*/
                             break;
                         }
                         default:
@@ -268,7 +269,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                         RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                         RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                        /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                        /*PDUR_CanIf_RxIndication(RxPDU_index,&RxPduPDUR);*/
                         break;
                     }
                     default:
