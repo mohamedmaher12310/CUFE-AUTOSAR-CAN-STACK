@@ -92,16 +92,11 @@
 /* Null pointer has been passed as an argument */
 #define PDUR_E_PARAM_POINTER                        (uint8)0x09
 
-
-
 /*******************************************************************************
  *                     RUN TIME Error Codes                                        *
  *******************************************************************************/
 /* Loss of a PDU instance (buffer overrun in gateway operation) */
 #define PDUR_E_PDU_INSTANCES_LOST  (uint8)0x0a
-
-
-
 
 
 /*******************************************************************************
@@ -135,7 +130,6 @@ void PduR_Init(const PduR_PBConfigType* ConfigPtr);
  * Description: Function to Request transmission of a PDU.
  ************************************************************************************/
 Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPtr );
-
 
 
 

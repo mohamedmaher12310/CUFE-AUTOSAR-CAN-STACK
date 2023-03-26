@@ -43,8 +43,53 @@
 #endif
 
 
-/************************PduRGeneral Container*******************************/
+/************************PduRBswModules Container************************/
+
+/*
+ * Specifies if the BSW module supports the Communication Interface APIs
+ * or not. Value true the APIs are supported.
+ * A module can have both Communication Interface APIs and Transport
+ * Protocol APIs (e.g. the COM module).
+ */
+#define PduRCommunicationInterface                      (STD_ON)
+
+/*
+ * The PduRLowerModule will decide who will call the APIs and who will
+ * implement the APIs.
+ * For example, if the CanIf module is referenced then the PDU Router
+ * module will implement the PduR_CanIfRxIndication API. And the PDUR
+ * module will call the CanIf_Transmit API. Other APIs are of course also
+ * covered.
+ */
+#define PduRLowerModule                                 (STD_ON)
+
+/*
+ * Specifies if the BSW module supports the TxConfirmation API or not.
+ * Value true the API is supported.
+ */
+#define PduRTxConfirmation                              (STD_ON)
+
+/*
+ * The PduRUpperModule will decide who will call the APIs and who will
+ * implement the APIs.
+ * For example, if the COM module is referenced then the PDU Router
+ * module will implement the PduR_Transmit API. And the PDUR module will
+ * call the Com_RxIndication API. Other APIs are of course also covered.
+ */
+#define PduRUpperModule                                 (STD_ON)
+
+/*
+ * This is a reference to one BSW module's configuration (i.e. not the ECUC
+ * parameter definition template).
+ * Example, there could be several configurations of LinIf and this reference
+ * selects one of them.
+ */
+#define PduRBswModuleRef                                &CanIf_Configuration
+
+/************************PduRGeneral Container************************/
 #define PduRDevErrorDetect                      (STD_ON)
+
+
 
 
 #endif /* PDUR_CFG_H_ */
