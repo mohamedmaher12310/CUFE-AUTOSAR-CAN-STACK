@@ -20,6 +20,8 @@
 
 /* Service ID for CanIf Trigger Transmit API*/
 #define PDUR_CANIFRXINDICATION_SID              (uint8)0x42
+#define PDUR_CANIFTXCONFIRMATION_SID              (uint8)0x48
+
 
 
 /*******************************************************************************
@@ -42,6 +44,21 @@
  *              interface module.
  ************************************************************************************/
 void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
+
+/************************************************************************************
+ * Service Name: PduR_CanIfTxConfirmation
+ * Service ID[hex]: 0x48
+ * Sync/Async: Synchronous
+ * Reentrancy: Reentrant
+ * Parameters (in): id - Identification of the transmitted I-PDU.
+ *                  result - Result of the transmission of the I-PDU.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: None
+ * Description: This function is called after the I-PDU has been transmitted on its network, the
+ *              result indicates whether the transmission was successful or not.
+ ************************************************************************************/
+void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result)
 
 /*******************************************************************************
  *                       External Variables                                    *
