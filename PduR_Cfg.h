@@ -87,9 +87,10 @@
 #define PduRBswModuleRef                                &CanIf_Configuration
 
 /************************PduRGeneral Container************************/
+/*Switches the development error detection and notification on or off.*/
 #define PduRDevErrorDetect                      (STD_ON)
 
-
+/************************PduRGeneral Container************************/
 
 
 #endif /* PDUR_CFG_H_ */
