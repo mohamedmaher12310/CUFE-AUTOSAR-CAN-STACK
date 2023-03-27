@@ -13,25 +13,111 @@
 #define PDUR_TYPES_H_
 
 /*****************Configuration Containers*****************/
-/*
- * Each container describes a specific BSW module
- * (upper/CDD/lower/IpduM) that the PDU Router shall interface to.
- * The reason to have it as own configuration container instead of implication
- * of the routing path is to be able to configure CDDs properly and to force
- * module's to be used in a post-build situation even though no routing is
- * made to/from this module (future configurations may include these
- * modules).
+
+
+/* Specifies how data are provided: direct (as part of the Transmit call) or via
+ * the TriggerTransmit callback function. Only required for non-TP gatewayed
+ * I-PDUs.
+ */
+typedef enum
+{
+    PDUR_DIRECT,
+    PDUR_TRIGGERTRANSMIT
+}PduRDestPduDataProvision;
+
+
+/* This container is a subcontainer of PduRRoutingPath and
+ * specifies one destination for the PDU to be routed
  */
 typedef struct
 {
+    /* Specifies how data are provided: direct (as part of the Transmit call) or via
+     * the TriggerTransmit callback function. Only required for non-TP gatewayed
+     * I-PDUs.
+     */
+    PduRDestPduDataProvision PduRDestPduDataProvision;
+
+    /* Destination PDU reference; reference to unique PDU identifier which shall
+     * be used by the PDU Router instead of the source PDU ID when calling the
+     * related function of the destination module.
+     */
+    PduIdType* PduRDestPduRef;
+
+}PduRDestPdu;
+
+/* This container is a subcontainer of PduRRoutingPath and
+ * specifies the source of the PDU to be routed.
+ */
+typedef struct
+{
+    /* When enabled, the TxConfirmation will be
+     * forwarded to the upper layer. Prerequisites: Lower layer and upper layer
+     * support TxConfirmation.
+     */
+   boolean PduRSrcPduUpTxConf;
+
+   /* Source PDU reference; reference to unique PDU identifier which shall be
+    * used for the requested PDU Router operation.
+    */
+   PduIdType* PduRSrcPduRef;
+
+}PduRSrcPdu;
 
 
+/* This container is a subcontainer of PduRRoutingTable and
+ * specifies the routing path of a PDU.
+ */
+typedef struct
+{
+    /* This parameter defines the queue depth for this routing path */
+    uint8 PduRQueueDepth;
+
+    /* Reference to [ PduRDestPdu ] */
+    PduRDestPdu* PduRDestPduRRef;
+
+    /* Reference to [ PduRSrcPdu ] */
+    PduRSrcPdu* PduRSrcPduRRef;
+
+} PduRRoutingPath ;
+
+
+/*
+ * Represents one table of routing paths.
+ * This routing table allows multiple configurations that can be used to create
+ * several routing tables in the same configuration. This is mainly used for
+ * post-build (e.g. post-build selectable) but can be used by pre-compile and
+ * link-time for variant handling.
+ */
+typedef struct
+{
+    /* Identification of the configuration of the PduR configuration. This
+     * identification can be read using the PduR API.
+     */
+    uint16 PduRConfigurationId;
+
+
+    /* This container is a subcontainer of PduRRoutingPath and
+     * specifies one destination for the PDU to be routed
+     */
+    PduRDestPdu PduRDestPdu;
+
+    /* This container is a subcontainer of PduRRoutingTable and
+     * specifies the routing path of a PDU.
+     */
+    PduRRoutingPath PduRRoutingPath;
+
+    /* This container is a subcontainer of PduRRoutingPath and
+     * specifies the source of the PDU to be routed.
+     */
+    PduRSrcPdu PduRSrcPdu;
 
 } PduRRoutingPaths ;
+
 
 /*  Data structure containing post-build-time configuration data of the PDU Router */
 typedef struct
 {
+    PduRRoutingPaths PduRRoutingPaths[PduRMaxRoutingPathCnt];
 
 }PduR_PBConfigType;
 

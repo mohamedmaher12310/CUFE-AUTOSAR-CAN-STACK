@@ -90,7 +90,52 @@
 /*Switches the development error detection and notification on or off.*/
 #define PduRDevErrorDetect                      (STD_ON)
 
-/************************PduRGeneral Container************************/
+/************************PduRRoutingPaths Container************************/
 
+    /* Maximum number of RoutingPaths in all RoutingTables. This parameter is
+     * needed only in case of post-build loadable implementation using static
+     * memory allocation.
+     */
+#define     PduRMaxRoutingPathCnt   (uint16)1
+
+
+/************************PduRDestPdu subContainer************************/
+
+/* PDU identifier assigned by PDU Router. Used by communication interface
+ * and transport protocol modules for confirmation
+ *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
+ *(PduR_<Lo>TriggerTransmit)
+ */
+#define     PduRDestPduHandleId   (uint16)2
+
+/* This parameter is only for communication interfaces. Transport protocol
+ * modules will always call the TxConfirmation function.
+ * If set the destination communication interface module will call the
+ * TxConfirmation. However the TxConfirmation may be not called due to
+ * error. So the PduR shall not block until the TxConfirmation is called.
+ */
+#define PduRTransmissionConfirmation                      (STD_ON)
+
+/************************PduRSrcPdu subContainer************************/
+
+/* PDU identifier assigned by PDU Router */
+#define     PduRSrcPduHandleId   (uint16)2
+
+
+/************************PduRTxBuffer subContainer************************/
+
+ /* Length of the Tx buffer in bytes. This parameter limits the size of buffered routed PDUs.*/
+#define     PduRPduMaxLength   (uint32)2
+
+
+
+#define PduR_Configuration_ID1    (uint16) 1
+#define PduR_DestData_Provision    PDUR_DIRECT
+
+#define PduR_Queue_Depth    (uint8) 1
+
+#define PduR_SrcPduUp_TxConfirmation (STD_ON)
+
+#define PduR_MaxPduID           (uint8) 255
 
 #endif /* PDUR_CFG_H_ */

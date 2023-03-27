@@ -143,7 +143,8 @@ Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPt
  *                       External Variables                                    *
  *******************************************************************************/
 
-extern const CanIf_ConfigType CanIf_Configuration ;
+extern const PduR_PBConfigType PduR_Configuration ;
+extern PduR_StateType PduRCurrent_State ;
 
 
 #endif /* PDUR_H_ */
