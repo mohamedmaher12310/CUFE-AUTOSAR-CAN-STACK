@@ -41,7 +41,7 @@ typedef struct
      * be used by the PDU Router instead of the source PDU ID when calling the
      * related function of the destination module.
      */
-    PduIdType* PduRDestPduRef;
+    CanIfTxPduCfg* PduRDestPduRef;
 
 }PduRDestPdu;
 
@@ -59,7 +59,7 @@ typedef struct
    /* Source PDU reference; reference to unique PDU identifier which shall be
     * used for the requested PDU Router operation.
     */
-   PduIdType* PduRSrcPduRef;
+   CanIfRxPduCfg* PduRSrcPduRef;
 
 }PduRSrcPdu;
 

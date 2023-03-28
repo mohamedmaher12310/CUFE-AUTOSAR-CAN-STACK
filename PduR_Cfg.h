@@ -130,6 +130,7 @@
 
 
 #define PduR_Configuration_ID1    (uint16) 1
+
 #define PduR_DestData_Provision    PDUR_DIRECT
 
 #define PduR_Queue_Depth    (uint8) 1

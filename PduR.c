@@ -19,6 +19,38 @@
 PduR_StateType PduRCurrent_State  = PDUR_UNINIT;
 
 /************************************************************************************
+ * Service Name: PduR_Init
+ * Service ID[hex]: 0xf0
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant
+ * Parameters (in): ConfigPtr - Pointer to post build configuration.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: None
+ * Description: Function to Initialize the PDU Router.
+ ************************************************************************************/
+void PduR_Init(const PduR_PBConfigType* ConfigPtr)
+{
+
+#if( PduRDevErrorDetect == STD_ON  )
+
+    /* check if NULL pointer is passed as an argument */
+    if (NULL_PTR == ConfigPtr)
+    {
+        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_INIT_SID, PDUR_E_PARAM_POINTER);
+    }
+    /* check if the configuration parameter is invalid */
+    if(ConfigPtr != &PduR_Configuration)
+    {
+        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_INIT_SID, PDUR_E_INIT_FAILED);
+    }
+#endif
+
+    PduRCurrent_State = PDUR_ONLINE;
+}
+
+
+/************************************************************************************
  * Service Name: PduR_ComTransmit
  * Service ID[hex]: 0x49
  * Sync/Async: Synchronous
@@ -64,14 +96,8 @@ Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPt
     }
 #endif
 
-PduIdType Pdu_ID ;
+    PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[TxPduId].PduRDestPdu.PduRDestPduRef->CanIfTxPduId;
+    Pdur_ComTransmitReturn = CanIf_Transmit(Pdu_ID, PduInfoPtr);
 
-
-
-
-
-
-
-
-
+    return Pdur_ComTransmitReturn;
 }
