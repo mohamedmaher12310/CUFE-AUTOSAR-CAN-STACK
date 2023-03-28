@@ -13,6 +13,7 @@
 #define CANIF_CBK_H_
 
 #include "CanIf.h"
+#include "PduR_CanIf.h"
 
 /******************************************************************************
  *                      API Service Id Macros                                 *
@@ -50,8 +51,9 @@
  * Description: Function to confirm a previously successfully processed transmission
                 of a CAN TxPDU.
  ************************************************************************************/
+#if (PduRTxConfirmation)
 void CanIf_TxConfirmation(PduIdType CanTxPduId);
-
+#endif /*PduRTxConfirmation*/
 /************************************************************************************
  * Service Name: CanIf_RxIndication
  * Service ID[hex]: 0x14

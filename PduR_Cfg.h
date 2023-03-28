@@ -63,11 +63,6 @@
  */
 #define PduRLowerModule                                 (STD_ON)
 
-/*
- * Specifies if the BSW module supports the TxConfirmation API or not.
- * Value true the API is supported.
- */
-#define PduRTxConfirmation                              (STD_ON)
 
 /*
  * The PduRUpperModule will decide who will call the APIs and who will
@@ -101,14 +96,13 @@
 
 /************************PduRDestPdu subContainer************************/
 
-/* PDU identifier assigned by PDU Router. Used by communication interface
- * and transport protocol modules for confirmation
- *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
- *(PduR_<Lo>TriggerTransmit)
- */
-#define     PduRDestPduHandleId_0   (uint16)0
-#define     PduRDestPduHandleId_1   (uint16)1
-#define     PduRDestPduHandleId_2   (uint16)2
+///* PDU identifier assigned by PDU Router. Used by communication interface
+// * and transport protocol modules for confirmation
+// *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
+// *(PduR_<Lo>TriggerTransmit)
+// */
+//#define     PduRDestPduHandleId_0   (uint16)0
+
 
 
 /* This parameter is only for communication interfaces. Transport protocol
@@ -121,10 +115,10 @@
 
 /************************PduRSrcPdu subContainer************************/
 
-/* PDU identifier assigned by PDU Router */
-#define     PduRSrcPduHandleId_0   (uint16)0
-#define     PduRSrcPduHandleId_1   (uint16)1
-#define     PduRSrcPduHandleId_2   (uint16)2
+///* PDU identifier assigned by PDU Router */
+//#define     PduRSrcPduHandleId_0   (uint16)0
+//#define     PduRSrcPduHandleId_1   (uint16)1
+//#define     PduRSrcPduHandleId_2   (uint16)2
 
 
 
