@@ -106,7 +106,10 @@
  *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
  *(PduR_<Lo>TriggerTransmit)
  */
-#define     PduRDestPduHandleId   (uint16)2
+#define     PduRDestPduHandleId_0   (uint16)0
+#define     PduRDestPduHandleId_1   (uint16)1
+#define     PduRDestPduHandleId_2   (uint16)2
+
 
 /* This parameter is only for communication interfaces. Transport protocol
  * modules will always call the TxConfirmation function.
@@ -119,7 +122,10 @@
 /************************PduRSrcPdu subContainer************************/
 
 /* PDU identifier assigned by PDU Router */
-#define     PduRSrcPduHandleId   (uint16)2
+#define     PduRSrcPduHandleId_0   (uint16)0
+#define     PduRSrcPduHandleId_1   (uint16)1
+#define     PduRSrcPduHandleId_2   (uint16)2
+
 
 
 /************************PduRTxBuffer subContainer************************/

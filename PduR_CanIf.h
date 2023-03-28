@@ -58,7 +58,7 @@ void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
  * Description: This function is called after the I-PDU has been transmitted on its network, the
  *              result indicates whether the transmission was successful or not.
  ************************************************************************************/
-void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result)
+void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result);
 
 /*******************************************************************************
  *                       External Variables                                    *

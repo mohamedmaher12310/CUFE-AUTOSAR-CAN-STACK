@@ -37,6 +37,13 @@ typedef struct
      */
     PduRDestPduDataProvision PduRDestPduDataProvision;
 
+    /* PDU identifier assigned by PDU Router. Used by communication interface
+     * and transport protocol modules for confirmation
+     *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
+     *(PduR_<Lo>TriggerTransmit)
+     */
+    uint16 PduRDestPduHandleId;
+
     /* Destination PDU reference; reference to unique PDU identifier which shall
      * be used by the PDU Router instead of the source PDU ID when calling the
      * related function of the destination module.
@@ -50,16 +57,21 @@ typedef struct
  */
 typedef struct
 {
+
+    /* PDU identifier assigned by PDU Router */
+    uint16 PduRSrcPduHandleId;
+
+
     /* When enabled, the TxConfirmation will be
      * forwarded to the upper layer. Prerequisites: Lower layer and upper layer
      * support TxConfirmation.
      */
-   boolean PduRSrcPduUpTxConf;
+    boolean PduRSrcPduUpTxConf;
 
-   /* Source PDU reference; reference to unique PDU identifier which shall be
-    * used for the requested PDU Router operation.
-    */
-   CanIfRxPduCfg* PduRSrcPduRef;
+    /* Source PDU reference; reference to unique PDU identifier which shall be
+     * used for the requested PDU Router operation.
+     */
+    /* ComIPdu* PduRSrcPduRef; */
 
 }PduRSrcPdu;
 

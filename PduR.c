@@ -15,7 +15,6 @@
 /*Include the module header file*/
 #include "PduR.h"
 
-
 PduR_StateType PduRCurrent_State  = PDUR_UNINIT;
 
 /************************************************************************************
@@ -101,3 +100,6 @@ Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPt
 
     return Pdur_ComTransmitReturn;
 }
+
+
+
