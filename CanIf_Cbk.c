@@ -343,7 +343,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 #endif /*CanIfPublicReadTxPduNotifyStatusApi */
     if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
     {
-        /* PDUR_TxConfirmation(E_OK); */
+     //   PduR_CanIfTxConfirmation( id,E_OK);
     }
     else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
     {

@@ -2,7 +2,7 @@
  *
  * Module: CanIf
  *
- * File Name: Can.c
+ * File Name: CanIf.c
  *
  * Description: Source file for CanIf Module.
  *
