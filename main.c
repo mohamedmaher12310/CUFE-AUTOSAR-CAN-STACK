@@ -91,11 +91,6 @@ int main(void)
     Tx_Pdu.SduLength = EIGHT_BYTES;
     Tx_Pdu.SduDataPtr = SDU_Ptr;
 
-    Can_Message_Tx.length= EIGHT_BYTES;
-    Can_Message_Tx.swPduHandle = ZERO;
-    Can_Message_Tx.sdu = SDU_Ptr;
-
-    Can_Message_Rx.length= EIGHT_BYTES;
     /***************************************************************************************
      * Initialize the PDU information that will be used for sending/receiving CAN messages.
      ****************************************************************************************/
@@ -142,7 +137,7 @@ int main(void)
             {
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
-            Can_Message_Tx.id=2;
+//            Can_Message_Tx.id=2;
             CanIf_Transmit(CanIfTxPduId_0, &Tx_Pdu);
             //Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
