@@ -166,8 +166,8 @@
  * parameter may be used to keep parts of the CAN Identifier of dynamic
  * transmit L-PDUs static.
  */
-#define CanIfTxPduCanIdMask_0   0x0
-#define CanIfTxPduCanIdMask_1   0x0
+#define CanIfTxPduCanIdMask_0   (0b11111111111)
+#define CanIfTxPduCanIdMask_1   (0b11111111111)
 
 /*
  * Type of CAN Identifier of the transmit CAN L-PDU used by the CAN

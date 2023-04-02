@@ -82,7 +82,7 @@ typedef struct
 /* This container contains parameters related to each HTH.*/
 typedef struct
 {
-    CanIfCtrlCfg* CanIfHthCanCtrlIdRef;
+  const  CanIfCtrlCfg* CanIfHthCanCtrlIdRef;
     CanHardwareObject* CanIfHthIdSymRef;
 } CanIfHthCfg ;
 
@@ -116,7 +116,7 @@ typedef struct
      * Reference to controller Id to which the HRH belongs to. A controller
      * can contain one or more HRHs.
      */
-    CanIfCtrlCfg* CanIfHrhCanCtrlIdRef;
+ const CanIfCtrlCfg* CanIfHrhCanCtrlIdRef;
 
     /*
      * The parameter refers to a particular HRH object in the CanDrv
@@ -210,7 +210,7 @@ typedef enum
 typedef struct
 {
     uint8 CanIfBufferSize;
-    CanIfHthCfg* CanIfBufferHthRef;
+   const CanIfHthCfg* CanIfBufferHthRef;
 
 } CanIfBufferCfg;
 
@@ -293,7 +293,7 @@ typedef struct
     CanIfUser CanIfTxPduUserTxConfirmationUL;
 
     /*Configurable reference to a CanIf buffer configuration*/
-    CanIfBufferCfg* CanIfTxPduBufferRef;
+   const CanIfBufferCfg* CanIfTxPduBufferRef;
 
 } CanIfTxPduCfg;
 
@@ -326,7 +326,7 @@ typedef struct
      * The HRH to which Rx L-PDU belongs to, is referred through this
      * parameter.
      */
-    CanIfHrhCfg* CanIfRxPduHrhIdRef;
+   const CanIfHrhCfg* CanIfRxPduHrhIdRef;
 
     /*
      * Enables and disables receive indication for each receive CAN L-SDU
@@ -413,7 +413,7 @@ typedef struct
 typedef struct
 {
     /*Reference to the Init Hoh Configuration*/
-    CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
+   const CanIfInitHohCfg* CanIfCtrlDrvInitHohConfigRef;
 
     /*
      * CAN Interface Driver Reference.

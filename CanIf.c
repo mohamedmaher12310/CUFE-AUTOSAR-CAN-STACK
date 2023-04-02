@@ -13,11 +13,14 @@
 #include "CanIf.h"
 #include "CanIf_Cbk.h"
 
+
 STATIC CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID);
 CanIf_State CanIfCurrent_State = CANIF_UNINIT ;
 Can_ControllerStateType CanIf_ControllerMode[CAN_CONTROLLERS_NUMBER];
 CanIf_PduModeType CanIf_ChannelPduMode[CAN_CONTROLLERS_NUMBER];
 uint8 HOH_HRH_MAP[HRH_NUMBER];
+ Can_PduType Can_PduData;
+
 /*
  * Service name:CanIf_GetTxPDU
  * Syntax :CanIfTxPduCfg* CanIf_GetTxPDU(PduIdType TxPDU_ID)
@@ -173,7 +176,6 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
     uint32 TxPDU_CanID ;
     Std_ReturnType CanIf_Transmit_Return;
     Std_ReturnType Can_Write_Return;
-    Can_PduType Can_PduData;
     CanIfTxPduCfg* TxPDU =  NULL_PTR;
     /*Get the TxPDU from the TxPduId passed to the function*/
     TxPDU = CanIf_GetTxPDU(TxPduId);

@@ -100,6 +100,9 @@ void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType C
  ************************************************************************************/
 void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 
+void PDUR_TxConfirmation(PduIdType TxPduId, Std_ReturnType type_return);
+
+
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
@@ -117,6 +120,8 @@ extern CanIf_NotifStatusType CanIf_RxNotificationFlag[CanIfMaxRxPduCfg];
 /*Tx Notification Flags*/
 #if (STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
 extern CanIf_NotifStatusType CanIf_TxNotificationFlag[CanIfMaxTxPduCfg];
+
 #endif /*CanIfPublicReadTxPduNotifyStatusApi*/
+extern  uint8 test_flag;
 
 #endif /* CANIF_CBK_H_ */
