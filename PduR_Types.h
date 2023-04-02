@@ -48,6 +48,8 @@ typedef struct
      * be used by the PDU Router instead of the source PDU ID when calling the
      * related function of the destination module.
      */
+
+    /*how it could be accessed from CanIf_Types.h*/
     CanIfTxPduCfg* PduRDestPduRef;
 
 }PduRDestPdu;
@@ -136,7 +138,7 @@ typedef struct
 /* Identification of the post-build configuration currently used for routing I-PDUs
  *  An ECU may contain several configurations (post-build selectable), each have unique id
  */
-typedef uint8   PduR_PBConfigIdType;
+typedef uint16   PduR_PBConfigIdType;
 
 /* Identification of a Routing Table */
 typedef uint16 PduR_RoutingPathGroupIdType;

@@ -19,7 +19,7 @@
  ******************************************************************************/
 
 /* Service ID for CanIf Trigger Transmit API*/
-#define PDUR_CANIFRXINDICATION_SID              (uint8)0x42
+#define PDUR_CANIFRXINDICATION_SID                (uint8)0x42
 #define PDUR_CANIFTXCONFIRMATION_SID              (uint8)0x48
 
 
