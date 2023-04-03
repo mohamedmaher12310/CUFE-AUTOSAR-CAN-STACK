@@ -34,4 +34,60 @@ typedef struct PduInfoType
 } PduInfoType;
 
 
+
+/*The direction defines if this I-PDU, and therefore the contributing signals and
+ *signal groups, shall be sent or received.
+ */
+typedef enum
+{
+    RECEIVE,
+    SEND
+}ComIPduDirection;
+
+/*For the definition of the two modes Immediate and Deferred.*/
+typedef enum
+{
+    DEFERRED,
+    IMMEDIATE
+}ComIPduSignalProcessing;
+
+/*Defines if this I-PDU is a normal I-PDU that can be sent unfragmented or if this is a
+ *large I-PDU that shall be sent via the Transport Protocol of the underlying bus.
+ */
+typedef enum
+{
+    NORMAL,
+    TP
+}ComIPduType;
+/************************ComIPdu Container************************/
+typedef struct
+{
+    ComIPduDirection ComIPduDirection;
+
+    uint16 ComIPduHandleId;
+
+    ComIPduSignalProcessing ComIPduSignalProcessing;
+
+// ???   ComIPduGroup* ComIPduGroupRef;
+
+// ???   ComSignalGroup* ComIPduSignalGroupRef;
+
+// ???   ComSignal* ComIPduSignalRef;
+
+    /*Reference to the "global" Pdu structure to allow harmonization of handle
+     *IDs in the COM-Stack
+     * id in RTE think can be stoped and implemented as uint16
+     */
+    uint16 ComPduIdRef;
+
+    /*Sub-Container*/
+//    ComIPduCounter ComIPduCounter;
+//    ComIPduReplication ComIPduReplication;
+//    ComTxIPdu ComTxIPdu;
+
+
+}ComIPdu;
+
+
+
 #endif /* COMMSTACK_TYPES_H_ */

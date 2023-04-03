@@ -12,6 +12,10 @@
 #ifndef PDUR_TYPES_H_
 #define PDUR_TYPES_H_
 
+/* Include of Communication Stack Types*/
+#include "CommStack_Types.h"
+
+
 /*****************Configuration Containers*****************/
 
 
@@ -71,7 +75,7 @@ typedef struct
     /* Source PDU reference; reference to unique PDU identifier which shall be
      * used for the requested PDU Router operation.
      */
-    /* ComIPdu* PduRSrcPduRef; */
+     ComIPdu* PduRSrcPduRef;
 
 }PduRSrcPdu;
 
