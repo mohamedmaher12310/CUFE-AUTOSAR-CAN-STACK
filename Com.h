@@ -56,7 +56,7 @@
 #include "CommStack_Types.h"
 
 /*Including Det module for developmnet error reporting*/
-#if (STD_ON == ComDevErrorDetect)
+#if (STD_ON == COM_DEV_ERROR_DETECT)
 #include "Det.h"
 
 /* AUTOSAR Version checking between Det and CanIf Modules */

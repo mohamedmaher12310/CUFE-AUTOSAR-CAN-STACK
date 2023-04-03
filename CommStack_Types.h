@@ -15,6 +15,7 @@
 
 #include "Std_Types.h"
 
+#include "Com_Cfg.h"
 /*******************************************************************************
  *                              Module Data Types                              *
  *******************************************************************************/
@@ -59,6 +60,29 @@ typedef enum
     NORMAL,
     TP
 }ComIPduType;
+
+/************************ComConfig Container************************/
+typedef struct{
+
+    uint64 ComDataMemSize;
+
+    /*Sub-Containers*/
+
+    ComIPdu ComIPdu[ComMaxIPduCnt];
+
+    ComIPduGroup ComIPduGroup[ComSupportedIPduGroups];
+
+//  ??  ComSignal ComSignal;
+
+//  ?? ComSignalGroup ComSignalGroup;
+
+
+
+}ComConfig;
+
+
+
+
 /************************ComIPdu Container************************/
 typedef struct
 {
