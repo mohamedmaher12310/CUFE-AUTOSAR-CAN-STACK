@@ -8,7 +8,6 @@
  *
  * Author: CUFE 2023 Team
  ******************************************************************************/
-
 #ifndef CUFE_AUTOSAR_CAN_STACK_COM_H_
 #define CUFE_AUTOSAR_CAN_STACK_COM_H_
 
@@ -35,6 +34,12 @@
 #define COM_AR_RELEASE_MAJOR_VERSION   (4U)
 #define COM_AR_RELEASE_MINOR_VERSION   (3U)
 #define COM_AR_RELEASE_PATCH_VERSION   (1U)
+
+/*
+ * Macros for Com Module Status
+ */
+#define COM_INITIALIZED                (1U)
+#define COM_NOT_INITIALIZED            (0U)
 
 /* PduR Pre-Compile Configuration Header file */
 #include "Com_Cfg.h"
@@ -68,6 +73,11 @@
 
 #endif
 
+/******************************************************************************
+ *                      API Service Id Macros                                 *
+ ******************************************************************************/
+
+
 /*the service is currently not available e.g.
  *the corresponding I-PDU group is stopped
  *(or a development error has been detected)
@@ -80,8 +90,34 @@
  */
 #define COM_BUSY                        0x81
 
+/*******************************************************************************
+ *                      DET Error Codes                                        *
+ *******************************************************************************/
+/* API service called with wrong parameter */
+#define COM_E_PARAM                     0x01
 
+/* Error code if any other API service, except Com_GetStatus, is
+ * called before the AUTOSAR COM module was initialized with Com_Init or after a call
+ * to Com_Deinit
+ */
+#define COM_E_UNINIT                    0x02
 
+/* NULL pointer checking */
+#define COM_E_PARAM_POINTER             0x03
+
+/* Invalid configuration set selection */
+#define COM_E_INIT_FAILED               0x04
+
+/*******************************************************************************
+ *                     RUN TIME Error Codes                                        *
+ *******************************************************************************/
+
+/* Transmission request was skipped */
+#define COM_E_SKIPPED_TRANSMISSION      0x05
+
+/*******************************************************************************
+ *                      Function Prototypes                                    *
+ *******************************************************************************/
 
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */
