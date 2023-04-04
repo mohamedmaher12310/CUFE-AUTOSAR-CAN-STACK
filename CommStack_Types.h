@@ -177,73 +177,6 @@ typedef struct
  * If this reference is omitted this I-PDU group does not belong to another I-PDU group.
  */
 ComIPduGroup* ComIPduGroupGroupRef;
-
-
-
-/************************ComIPdu Sub-Container************************/
-typedef struct
-{
-    /* This parameter defines the existence and the name of a callout function for
-     * the corresponding I-PDU. If this parameter is omitted no I-PDU callout
-     * shall take place for the corresponding I-PDU.
-     */
-    uint8* ComIPduCallout;
-
-
-    /* The direction defines if this I-PDU, and therefore the contributing signals and signal
-     * groups, shall be sent or received.
-     */
-    ComIPduDirection ComIPduDirection;
-
-    /* The numerical value used as the ID of this I-PDU. The ComIPduHandleId
-     * is required by the API calls Com_RxIndication, Com_TpRxIndication,
-     * Com_StartOfReception and Com_CopyRxData to receive I-PDUs from the
-     * PduR (ComIP-duDirection: Receive), as well as the PduId passed to an
-     * Rx-I-PDU-callout. For Tx-I-PDUs (ComIPduDirection: Send), this handle Id
-     * is used for the APIs calls Com_TxConfirmation, Com_TriggerTransmit,
-     * Com_TriggerIPDUSend or Com_TriggerIPDUSendWithMetaData,
-     * Com_CopyTxData and Com_TpTxConfirmation to transmit respectively
-     * confirm transmissions of I-PDUs, as well as the PduId passed to the Tx-IPDU-callout configured
-     * with ComIPduCallout and/or ComIPduTriggerTransmitCallout.
-     */
-    uint16 ComIPduHandleId;
-
-    /* For the definition of the two modes Immediate and Deferred. */
-    ComIPduSignalProcessing ComIPduSignalProcessing;
-
-    /* If there is a trigger transmit callout defined for this I-PDU this parameter
-     * contains the name of the callout function.
-     */
-    uint8* ComIPduTriggerTransmitCallout;
-
-    /* Defines if this I-PDU is a normal I-PDU that can be sent unfragmented or if this is a
-     * large I-PDU that shall be sent via the Transport Protocol of the underlying bus.
-     */
-    ComIPduType ComIPduType;
-
-    /* Sub-Containers */
-
-    /* Reference to the I-PDU groups this I-PDU belongs to. */
-    ComIPduGroup* ComIPduGroupRef;
-
-    // ???   ComSignalGroup* ComIPduSignalGroupRef;
-
-    // ???   ComSignal* ComIPduSignalRef;
-
-    /*Reference to the "global" Pdu structure to allow harmonization of handle
-     *IDs in the COM-Stack
-     * id in RTE think can be stoped and implemented as uint16
-     */
-    uint16 ComPduIdRef;
-
-    /*Sub-Container*/
-    //    ComIPduCounter ComIPduCounter;
-    //    ComIPduReplication ComIPduReplication;
-    //    ComTxIPdu ComTxIPdu;
-
-
-}ComIPdu;
-
 /************************ComFilter Sub-Container************************/
 
 /* This container contains the configuration parameters of the AUTOSAR
@@ -279,6 +212,7 @@ typedef struct
     sint32 ComFilterX;
 
 }ComFilter;
+
 
 /************************ComSignal Sub-Container************************/
 
@@ -411,7 +345,6 @@ typedef struct
     ComFilter ComFilter;
 
 }ComSignal;
-
 /************************ComGroupSignal Sub-Container************************/
 
 /* This container contains the configuration parameters of group signals. I.e.
@@ -476,7 +409,6 @@ typedef struct
      */
     ComFilter ComFilter;
 }ComGroupSignal;
-
 /************************ComSignalGroup Sub-Container************************/
 
 /* Contains the configuration parameters of the AUTOSAR COM module's signal groups. */
@@ -574,6 +506,76 @@ typedef struct
     ComGroupSignal ComGroupSignal;
 
 }ComSignalGroup;
+/************************ComIPdu Sub-Container************************/
+typedef struct
+{
+    /* This parameter defines the existence and the name of a callout function for
+     * the corresponding I-PDU. If this parameter is omitted no I-PDU callout
+     * shall take place for the corresponding I-PDU.
+     */
+    uint8* ComIPduCallout;
+
+
+    /* The direction defines if this I-PDU, and therefore the contributing signals and signal
+     * groups, shall be sent or received.
+     */
+    ComIPduDirection ComIPduDirection;
+
+    /* The numerical value used as the ID of this I-PDU. The ComIPduHandleId
+     * is required by the API calls Com_RxIndication, Com_TpRxIndication,
+     * Com_StartOfReception and Com_CopyRxData to receive I-PDUs from the
+     * PduR (ComIP-duDirection: Receive), as well as the PduId passed to an
+     * Rx-I-PDU-callout. For Tx-I-PDUs (ComIPduDirection: Send), this handle Id
+     * is used for the APIs calls Com_TxConfirmation, Com_TriggerTransmit,
+     * Com_TriggerIPDUSend or Com_TriggerIPDUSendWithMetaData,
+     * Com_CopyTxData and Com_TpTxConfirmation to transmit respectively
+     * confirm transmissions of I-PDUs, as well as the PduId passed to the Tx-IPDU-callout configured
+     * with ComIPduCallout and/or ComIPduTriggerTransmitCallout.
+     */
+    uint16 ComIPduHandleId;
+
+    /* For the definition of the two modes Immediate and Deferred. */
+    ComIPduSignalProcessing ComIPduSignalProcessing;
+
+    /* If there is a trigger transmit callout defined for this I-PDU this parameter
+     * contains the name of the callout function.
+     */
+    uint8* ComIPduTriggerTransmitCallout;
+
+    /* Defines if this I-PDU is a normal I-PDU that can be sent unfragmented or if this is a
+     * large I-PDU that shall be sent via the Transport Protocol of the underlying bus.
+     */
+    ComIPduType ComIPduType;
+
+    /* Sub-Containers */
+
+    /* Reference to the I-PDU groups this I-PDU belongs to. */
+    ComIPduGroup* ComIPduGroupRef;
+
+        ComSignalGroup* ComIPduSignalGroupRef;
+
+        ComSignal* ComIPduSignalRef;
+
+    /*Reference to the "global" Pdu structure to allow harmonization of handle
+     *IDs in the COM-Stack
+     * id in RTE think can be stoped and implemented as uint16
+     */
+    uint16 ComPduIdRef;
+
+    /*Sub-Container*/
+    //    ComIPduCounter ComIPduCounter;
+    //    ComIPduReplication ComIPduReplication;
+    //    ComTxIPdu ComTxIPdu;
+
+
+}ComIPdu;
+
+
+
+
+
+
+
 
 /************************ComTxMode Sub-Container************************/
 
