@@ -177,6 +177,7 @@ typedef struct
  * If this reference is omitted this I-PDU group does not belong to another I-PDU group.
  */
 ComIPduGroup* ComIPduGroupGroupRef;
+
 /************************ComFilter Sub-Container************************/
 
 /* This container contains the configuration parameters of the AUTOSAR
