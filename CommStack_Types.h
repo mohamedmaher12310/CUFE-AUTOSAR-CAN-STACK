@@ -27,7 +27,7 @@ typedef uint32 PduIdType;
 typedef uint32 PduLengthType;
 
 /*Structure that carries the info of the PDU*/
-typedef struct PduInfoType
+typedef struct
 {
     uint8* SduDataPtr; /*Pointer to the data*/
     uint8* MetaDataPtr; /*Pointer to the meta data*/

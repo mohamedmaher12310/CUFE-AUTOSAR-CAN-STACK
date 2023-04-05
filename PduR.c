@@ -48,7 +48,6 @@ void PduR_Init(const PduR_PBConfigType* ConfigPtr)
     PduRCurrent_State = PDUR_ONLINE;
 }
 
-
 /************************************************************************************
  * Service Name: PduR_ComTransmit
  * Service ID[hex]: 0x49
@@ -100,6 +99,8 @@ Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPt
 
     return Pdur_ComTransmitReturn;
 }
+
+
 
 
 
