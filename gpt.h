@@ -23,9 +23,13 @@
 #define GPTMICR_REG               (*((volatile unsigned long *)0x40030024))
 /* This register shows the current value of the Timer A counter */
 /* used in debugging */
-#define GPTMICR_REG               (*((volatile unsigned long *)0x40030048))
+#define GPTMTAR_REG               (*((volatile unsigned long *)0x40030048))
 
-
+#define COUNTS_NEEDED                 8000000
+#define T0CCP0                        7
+#define T0CCP0_BIT_FILED              24
+#define PERIODIC_MOOD                 0x2
+#define PERIODIC_MOOD_MASK            0x00000003
 
 void gpt_init(void);
 
