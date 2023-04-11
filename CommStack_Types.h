@@ -660,7 +660,6 @@ typedef struct
     ComIPdu ComIPdu[ComMaxIPduCnt];
 
     ComIPduGroup ComIPduGroup[ComSupportedIPduGroups];
-#define MAX_NUM_OF_SIGNAL       ComMaxIPduCnt*8
 
     ComSignal ComSignal[MAX_NUM_OF_SIGNAL];
 

@@ -69,7 +69,7 @@
 /************************ComConfig Container************************/
 
 /* Maximum number of IPdus. */
-#define ComMaxIPduCnt                           (uint64)3
+#define ComMaxIPduCnt                           (uint64)50
 
 /************************ComTimeBase Container************************/
 
@@ -100,6 +100,18 @@
 
 /************************ComIPdu Container************************/
 //#define ComIPduCallout
+
+/*******************************************************************************
+ *                      Definitions used in Module                             *
+ *******************************************************************************/
+
+#define SIG_LEN_IN_BTYES                1
+#define MAX_NUM_OF_SIGNAL       (ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES))
+
+
+
+
+
 
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_CFG_H_ */
