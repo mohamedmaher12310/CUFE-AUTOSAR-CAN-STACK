@@ -633,7 +633,7 @@ typedef struct
 
 }ComTxModeTrue;
 
-/************************ComTxModeTrue Sub-Container************************/
+/************************ComTxModeFalse Sub-Container************************/
 
 /* This container contains the configuration parameters of the AUTOSAR
  * COM module's transmission modes in the case the ComFilter evaluates to
@@ -660,8 +660,9 @@ typedef struct
     ComIPdu ComIPdu[ComMaxIPduCnt];
 
     ComIPduGroup ComIPduGroup[ComSupportedIPduGroups];
+#define MAX_NUM_OF_SIGNAL       ComMaxIPduCnt*8
 
-    ComSignal ComSignal;
+    ComSignal ComSignal[MAX_NUM_OF_SIGNAL];
 
     ComSignalGroup ComSignalGroup;
 
