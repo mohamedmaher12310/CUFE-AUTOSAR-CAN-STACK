@@ -662,7 +662,7 @@ typedef struct
     ComIPduGroup ComIPduGroup[ComSupportedIPduGroups];
 
     ComSignal ComSignal[MAX_NUM_OF_SIGNAL];
-
+    /* l mafrood bardo tub2a array of ComSignalGroup bas 3awz 2afakar l max size bata3 l array kam */
     ComSignalGroup ComSignalGroup;
 
 
