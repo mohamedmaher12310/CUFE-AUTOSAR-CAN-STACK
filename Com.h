@@ -35,6 +35,9 @@
 #define COM_AR_RELEASE_MINOR_VERSION   (3U)
 #define COM_AR_RELEASE_PATCH_VERSION   (1U)
 
+/* Include of Communication Stack Types*/
+#include "CommStack_Types.h"
+
 /*
  * Macros for Com Module Status
  */
@@ -56,9 +59,6 @@
         ||  (COM_CFG_SW_PATCH_VERSION != COM_SW_PATCH_VERSION))
 #error "The SW version of Com_Cfg.h does not match the expected version"
 #endif
-
-/*Com Types Header file*/
-#include "CommStack_Types.h"
 
 /*Including Det module for developmnet error reporting*/
 #if (STD_ON == COM_DEV_ERROR_DETECT)
@@ -94,26 +94,32 @@
  *                      DET Error Codes                                        *
  *******************************************************************************/
 /* API service called with wrong parameter */
-#define COM_E_PARAM                     0x01
+#define COM_E_PARAM                     (uint8)0x01
 
 /* Error code if any other API service, except Com_GetStatus, is
  * called before the AUTOSAR COM module was initialized with Com_Init or after a call
  * to Com_Deinit
  */
-#define COM_E_UNINIT                    0x02
+#define COM_E_UNINIT                    (uint8)0x02
 
 /* NULL pointer checking */
-#define COM_E_PARAM_POINTER             0x03
+#define COM_E_PARAM_POINTER             (uint8)0x03
 
 /* Invalid configuration set selection */
-#define COM_E_INIT_FAILED               0x04
+#define COM_E_INIT_FAILED               (uint8)0x04
 
 /*******************************************************************************
  *                     RUN TIME Error Codes                                        *
  *******************************************************************************/
 
 /* Transmission request was skipped */
-#define COM_E_SKIPPED_TRANSMISSION      0x05
+#define COM_E_SKIPPED_TRANSMISSION      (uint8)0x05
+
+
+
+/*******************************************************************************
+ *                       External Variables                                    *
+ *******************************************************************************/
 
 /*******************************************************************************
  *                      Function Prototypes                                    *

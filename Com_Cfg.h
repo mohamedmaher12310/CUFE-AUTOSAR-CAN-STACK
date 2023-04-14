@@ -27,10 +27,28 @@
 #define COM_CFG_AR_RELEASE_MINOR_VERSION    (3U)
 #define COM_CFG_AR_RELEASE_PATCH_VERSION    (1U)
 
+
+/* Include of Com Header Filer*/
+#include "Com.h"
+
+/* AUTOSAR Version checking between Com_Cfg.h and Com.h files */
+#if ((COM_CFG_AR_RELEASE_MAJOR_VERSION != COM_AR_RELEASE_MAJOR_VERSION)\
+ ||  (COM_CFG_AR_RELEASE_MINOR_VERSION != COM_AR_RELEASE_MINOR_VERSION)\
+ ||  (COM_CFG_AR_RELEASE_PATCH_VERSION != COM_AR_RELEASE_PATCH_VERSION))
+#error "The AR version of Com_Cfg.h does not match the expected version"
+#endif
+
+/* Software Version checking between Can_PBcfg.c and Can.h files */
+#if ((COM_CFG_SW_MAJOR_VERSION != COM_SW_MAJOR_VERSION)\
+ ||  (COM_CFG_SW_MINOR_VERSION != COM_SW_MINOR_VERSION)\
+ ||  (COM_CFG_SW_PATCH_VERSION != COM_SW_PATCH_VERSION))
+#error "The SW version of Com_Cfg.h does not match the expected version"
+#endif
+
 /************************ComGeneral Container************************/
 
 /* This parameter enables/disables the cancellation feature */
-#define ComCancellationSupport                  (STD_ON)
+#define ComCancellationSupport                  (STD_OFF)
 
 /*The error hook shall contain code to call the Det.
  *If this parameter is configured COM_DEV_ERROR_DETECT shall be set
@@ -69,7 +87,7 @@
 /************************ComConfig Container************************/
 
 /* Maximum number of IPdus. */
-#define ComMaxIPduCnt                           (uint64)50
+#define ComMaxIPduCnt                           (uint64)3
 
 /************************ComTimeBase Container************************/
 
@@ -98,20 +116,11 @@
  */
 #define ComTxTimeBase                           (float64)2
 
-/************************ComIPdu Container************************/
-//#define ComIPduCallout
-
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/
 
 #define SIG_LEN_IN_BTYES                1
 #define MAX_NUM_OF_SIGNAL       (ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES))
-
-
-
-
-
-
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_CFG_H_ */
