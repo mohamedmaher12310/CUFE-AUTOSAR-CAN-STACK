@@ -149,7 +149,6 @@ const ComConfigType Com = {
                                            .ComFilter = {   /* filter configurations */
                                                             .ComFilterAlgorithm = ALWAYS,
                                            }
-
                            },
                            .ComSignal[1] = {
                                             .ComBitPosition = 1,
@@ -176,8 +175,6 @@ const ComConfigType Com = {
                                             .ComFilter = {   /* filter configurations */
                                                              .ComFilterAlgorithm = ALWAYS,
                                             }
-
-
                            },
                            .ComSignal[2] ={
                                            .ComBitPosition = 2,
@@ -204,30 +201,6 @@ const ComConfigType Com = {
                                            .ComFilter = {   /* filter configurations */
                                                             .ComFilterAlgorithm = ALWAYS,
                                            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                            },
                            .ComSignal[3] = {
                                             .ComBitPosition = 3,
@@ -280,26 +253,6 @@ const ComConfigType Com = {
                                            .ComFilter = {   /* filter configurations */
                                                             .ComFilterAlgorithm = ALWAYS,
                                            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                            },
                            .ComSignal[5] = {
                                             .ComBitPosition = 5,
