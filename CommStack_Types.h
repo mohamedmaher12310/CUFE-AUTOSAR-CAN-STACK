@@ -691,23 +691,16 @@ typedef struct
 
     /*Reference to the "global" Pdu structure to allow harmonization of handle
      *IDs in the COM-Stack
-     * id in RTE think can be stoped and implemented as uint16
+     * id in RTE think can be stoped and implemented as uint16??
      */
     uint16 ComPduIdRef;
-
+//PduInfoType* ComPduIdRef;
     /*Sub-Container*/
     //    ComIPduCounter ComIPduCounter;
     //    ComIPduReplication ComIPduReplication;
         ComTxIPdu ComTxIPdu;
 
 }ComIPdu;
-
-
-
-
-
-
-
 
 /************************ComConfig Container************************/
 
