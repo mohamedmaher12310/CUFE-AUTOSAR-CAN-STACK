@@ -129,7 +129,7 @@
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
-//void Com_Init(const Com_ConfigType* config );
+void Com_Init(const Com_ConfigType* config );
 
 
 

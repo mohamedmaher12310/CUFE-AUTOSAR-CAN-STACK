@@ -341,8 +341,8 @@ typedef struct
     /* On sender side: Name of Com_CbkTxTOut callback function to be called.
      * On receiver side: Name of Com_CbkRxTOut callback function to be called.
      */
-    uint8* ComTimeoutNotification;
-
+//    uint8* ComTimeoutNotification;
+void (*ComTimeoutNotification)(void);
     /* Defines if a write access to this signal can trigger the transmission
      * of the corresponding I-PDU. If the I-PDU is triggered,
      * depends also on the transmission mode of the

@@ -69,7 +69,12 @@ void Com_Init(const Com_ConfigType* config )
     {
         PDU[counter_pdu].SduLength = 8;
 
-        PDU[counter_pdu].SduDataPtr =((config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault));
+/*refrence the ptr*/
+        0x0000000f
+        for(i;;)
+        {
+        *(PDU[counter_pdu].SduDataPtr) =((config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault));
+        }
         pdu_data = PDU[counter_pdu].SduDataPtr;
         /* clear the update-bits */
         pdu_data &=!(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu]->ComUpdateBitPosition));

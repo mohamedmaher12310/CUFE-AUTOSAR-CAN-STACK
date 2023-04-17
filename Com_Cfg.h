@@ -28,23 +28,6 @@
 #define COM_CFG_AR_RELEASE_PATCH_VERSION    (1U)
 
 
-/* Include of Com Header Filer*/
-#include "Com.h"
-
-/* AUTOSAR Version checking between Com_Cfg.h and Com.h files */
-#if ((COM_CFG_AR_RELEASE_MAJOR_VERSION != COM_AR_RELEASE_MAJOR_VERSION)\
- ||  (COM_CFG_AR_RELEASE_MINOR_VERSION != COM_AR_RELEASE_MINOR_VERSION)\
- ||  (COM_CFG_AR_RELEASE_PATCH_VERSION != COM_AR_RELEASE_PATCH_VERSION))
-#error "The AR version of Com_Cfg.h does not match the expected version"
-#endif
-
-/* Software Version checking between Can_PBcfg.c and Can.h files */
-#if ((COM_CFG_SW_MAJOR_VERSION != COM_SW_MAJOR_VERSION)\
- ||  (COM_CFG_SW_MINOR_VERSION != COM_SW_MINOR_VERSION)\
- ||  (COM_CFG_SW_PATCH_VERSION != COM_SW_PATCH_VERSION))
-#error "The SW version of Com_Cfg.h does not match the expected version"
-#endif
-
 /************************ComGeneral Container************************/
 
 /* This parameter enables/disables the cancellation feature */
