@@ -60,10 +60,12 @@ void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
  ************************************************************************************/
 void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result);
 
-/*******************************************************************************
- *                       External Variables                                    *
- *******************************************************************************/
-
+/************************PduRBswModules Container************************/
+/*
+ * Specifies if the BSW module supports the TxConfirmation API or not.
+ * Value true the API is supported.
+ */
+#define PduRTxConfirmation                              (STD_ON)
 
 
 

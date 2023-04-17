@@ -268,7 +268,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                         RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                         RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                        /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                        PduR_CanIfRxIndication(RxPDU_index,&RxPduPDUR);
                         break;
                     }
                     default:
@@ -292,7 +292,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
  *Return value: None
  *Description: This service confirms a previously successfully processed transmission of a CAN TxPDU.
  ******************************************************************************/
-
+#if (PduRTxConfirmation)
 void CanIf_TxConfirmation(PduIdType CanTxPduId)
 {
 
@@ -339,7 +339,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 #endif /*CanIfPublicReadTxPduNotifyStatusApi */
     if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
     {
-     //   PduR_CanIfTxConfirmation( id,E_OK);
+        PduR_CanIfTxConfirmation(CanTxPduId,E_OK);
     }
     else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
     {
@@ -350,6 +350,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 
     }
 }
+#endif /*PduRTxConfirmation*/
 
 /************************************************************************************
  * Service Name: CanIf_ControllerModeIndication

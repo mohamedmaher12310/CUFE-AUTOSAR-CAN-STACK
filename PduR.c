@@ -38,14 +38,20 @@ void PduR_Init(const PduR_PBConfigType* ConfigPtr)
     {
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_INIT_SID, PDUR_E_PARAM_POINTER);
     }
+    else
+    {
+        /*Do Nothing*/
+    }
     /* check if the configuration parameter is invalid */
     if(ConfigPtr != &PduR_Configuration)
     {
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_INIT_SID, PDUR_E_INIT_FAILED);
     }
-#endif
-
-    PduRCurrent_State = PDUR_ONLINE;
+    else
+#endif /*PduRDevErrorDetect*/
+    {
+        PduRCurrent_State = PDUR_ONLINE;
+    }
 }
 
 /************************************************************************************
@@ -72,31 +78,37 @@ Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPt
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_COMTRANSMIT_SID, PDUR_E_UNINIT);
         Pdur_ComTransmitReturn = E_NOT_OK;
     }
-
+    else
+    {
+        /*Do Nothing*/
+    }
     /*  [SWS_PduR_00221] If development error detection is enabled, a PDU identifier is
      * not within the specified range, and the PDU identifier is configured to be used by the
      * PDU Router module, the PDU Router module shall report the error
      * PDUR_E_PDU_ID_INVALID to the DET module, when PduRDevErrorDetect is
      * enabled.
      */
-
     if (PduR_MaxPduID < TxPduId)
     {
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_COMTRANSMIT_SID, PDUR_E_PDU_ID_INVALID);
         Pdur_ComTransmitReturn = E_NOT_OK;
     }
-
+    else
+    {
+        /*Do Nothing*/
+    }
     /* check if NULL pointer is passed as an argument */
     if (NULL_PTR == PduInfoPtr)
     {
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_COMTRANSMIT_SID, PDUR_E_PARAM_POINTER);
         Pdur_ComTransmitReturn = E_NOT_OK;
     }
-#endif
-
-    PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[TxPduId].PduRDestPdu.PduRDestPduRef->CanIfTxPduId;
-    Pdur_ComTransmitReturn = CanIf_Transmit(Pdu_ID, PduInfoPtr);
-
+    else
+#endif /*PduRDevErrorDetect*/
+    {
+        PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[TxPduId].PduRDestPdu.PduRDestPduRef->CanIfTxPduId;
+        Pdur_ComTransmitReturn = CanIf_Transmit(Pdu_ID, PduInfoPtr);
+    }
     return Pdur_ComTransmitReturn;
 }
 
