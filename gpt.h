@@ -1,9 +1,14 @@
-/*
- * gpt.h
+
+/******************************************************************************
  *
- *  Created on: 6 Apr 2023
- *      Author: owner
- */
+ * Module: GPT
+ *
+ * File Name: gpt.c
+ *
+ * Description: Source file for GPT Module.
+ *
+ * Author: CUFE 2023 Team
+ ******************************************************************************/
 
 #ifndef GPT_H_
 #define GPT_H_

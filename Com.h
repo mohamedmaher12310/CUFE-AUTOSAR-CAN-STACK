@@ -36,6 +36,7 @@
 #define COM_AR_RELEASE_PATCH_VERSION   (1U)
 
 /* Include of Communication Stack Types*/
+
 #include "CommStack_Types.h"
 
 /*
@@ -77,6 +78,9 @@
  *                      API Service Id Macros                                 *
  ******************************************************************************/
 
+
+/* Service ID for Com Init API */
+#define COM_INIT_SID                    (uint8)0x01
 
 /*the service is currently not available e.g.
  *the corresponding I-PDU group is stopped
@@ -121,9 +125,13 @@
  *                       External Variables                                    *
  *******************************************************************************/
 
+
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
+//void Com_Init(const Com_ConfigType* config );
+
+
 
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */

@@ -72,6 +72,11 @@
 /* Activate/Deactivate the signal group array access APIs */
 #define ComEnableSignalGroupArrayApi            (STD_OFF)
 
+/* If this Parameter is set to true, retry of failed transmission requests is
+ * enabled. If this Parameter is not present, the default value is assumed.
+ */
+#define ComRetryFailedTransmitRequests          (STD_OFF)
+
 /* Defines the maximum number of supported I-PDU groups. */
 #define ComSupportedIPduGroups                  (uint16)5
 
@@ -121,6 +126,6 @@
  *******************************************************************************/
 
 #define SIG_LEN_IN_BTYES                1
-#define MAX_NUM_OF_SIGNAL       (ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES))
+#define MAX_NUM_OF_SIGNAL       ((uint16)(ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES)))
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_CFG_H_ */

@@ -1,9 +1,13 @@
-/*
- * gpt.c
+/******************************************************************************
  *
- *  Created on: 6 Apr 2023
- *      Author: owner
- */
+ * Module: GPT
+ *
+ * File Name: gpt.c
+ *
+ * Description: Source file for GPT Module.
+ *
+ * Author: CUFE 2023 Team
+ ******************************************************************************/
 
 #include "gpt.h"
 void Timer0_Handler(void){

@@ -308,6 +308,13 @@ typedef struct
     /* Defines the endianness of the signal's network representation. */
     ComSignalEndianness ComSignalEndianness;
 
+    /* In case the ComSignalType is UINT8, UINT16, UINT32, UINT64, SINT8,
+     * SINT16, SINT32, SINT64 the string shall be interpreted as defined in the
+     * chapter Integer Type in the AUTOSAR EcuC specification.
+     */
+    uint8 ComSignalInitValue;
+
+
     /* For ComSignalType UINT8_N this parameter specifies the length n in
      * bytes. For ComSignalType UINT8_DYN it specifies the maximum length in
      * bytes. For all other types this parameter shall be ignored.
@@ -448,8 +455,8 @@ typedef struct
      * called.
      * If this parameter is omitted no error notification shall take place.
      */
-    uint8* ComErrorNotification;
-
+//    uint8* ComErrorNotification;
+void(*ComErrorNotification)(void);
     /* Defines the length of the first deadline monitoring timeout
      * period in seconds. This timeout is used immediately after start
      * (or restart) of the deadline monitoring service. The timeout period
@@ -481,8 +488,8 @@ typedef struct
      * On receiver side: Name of Com_CbkRxAck callback function to be called.
      * If this parameter is omitted no notification shall take place.
      */
-    uint8* ComNotification;
-
+//    uint8* ComNotification;
+void(*ComNotification)(void);
     /* This parameter defines the action performed upon expiration of the
      * reception deadline monitoring timer.
      */
@@ -727,8 +734,8 @@ typedef struct
     /* Contains the configuration parameters of the AUTOSAR COM module's signal groups. */
     ComSignalGroup ComSignalGroup;
 
-}ComConfigType;
+}Com_ConfigType;
 
-extern const ComConfigType Com;
+extern const Com_ConfigType Com;
 
 #endif /* COMMSTACK_TYPES_H_ */

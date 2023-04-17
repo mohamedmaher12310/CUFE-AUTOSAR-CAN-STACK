@@ -12,7 +12,7 @@
 /* Include of Com Header Filer*/
 #include "Com.h"
 
-const ComConfigType Com = {
+const Com_ConfigType Com = {
                            .ComIPdu[0] = {
 //                                        .ComIPduCallout = &,
 //                                        .ComIPduCancellationSupport,
@@ -31,22 +31,26 @@ const ComConfigType Com = {
                                                         .ComMinimumDelayTime = 0.005,
                                                         .ComTxIPduClearUpdateBit = Confirmation,
                                                         .ComTxIPduUnusedAreasDefault = 0xFF,
-                                                        .ComTxModeFalse.ComTxMode=
+                                                        .ComTxModeFalse={
+                                                        .ComTxMode=
                                                         {
-                                                         .ComTxModeMode = PERIODIC_Tx,
+                                                         .ComTxModeMode = NONE_Tx,
                                                          .ComTxModeNumberOfRepetitions = 0,
                                                          .ComTxModeRepetitionPeriod = 0,
                                                          .ComTxModeTimeOffset = 0,
                                                          .ComTxModeTimePeriod = 0
 
+                                                        }
                                                         },
-                                                        .ComTxModeTrue.ComTxMode =
+                                                        .ComTxModeTrue={
+                                                        .ComTxMode =
                                                         {
                                                          .ComTxModeMode = PERIODIC_Tx,
                                                          .ComTxModeNumberOfRepetitions = 0,
                                                          .ComTxModeRepetitionPeriod = 0,
                                                          .ComTxModeTimeOffset = 0,
                                                          .ComTxModeTimePeriod = 0
+                                                        }
                                                         }
                                                      }
                            },
@@ -60,7 +64,7 @@ const ComConfigType Com = {
                                           .ComIPduType = NORMAL,
 //                                        .ComIPduGroupRef,
 //                                        .ComIPduSignalGroupRef,
-                                          .ComIPduSignalRef[0] = &Com.ComSignal[8],
+                                          .ComIPduSignalRef[1] = &Com.ComSignal[8],
                                           .ComPduIdRef = 7,
 //                                        .ComIPduCounter ,
 //                                        .ComIPduReplication,
@@ -68,22 +72,26 @@ const ComConfigType Com = {
                                                         .ComMinimumDelayTime = 0.005,
                                                         .ComTxIPduClearUpdateBit = Confirmation,
                                                         .ComTxIPduUnusedAreasDefault = 0xFF,
-                                                        .ComTxModeFalse.ComTxMode=
+                                                        .ComTxModeFalse={
+                                                        .ComTxMode=
                                                         {
-                                                         .ComTxModeMode = PERIODIC_Tx,
+                                                         .ComTxModeMode = NONE_Tx,
                                                          .ComTxModeNumberOfRepetitions = 0,
                                                          .ComTxModeRepetitionPeriod = 0,
                                                          .ComTxModeTimeOffset = 0,
                                                          .ComTxModeTimePeriod = 0
 
+                                                        }
                                                         },
-                                                        .ComTxModeTrue.ComTxMode =
+                                                        .ComTxModeTrue={
+                                                        .ComTxMode =
                                                         {
                                                          .ComTxModeMode = PERIODIC_Tx,
                                                          .ComTxModeNumberOfRepetitions = 0,
                                                          .ComTxModeRepetitionPeriod = 0,
                                                          .ComTxModeTimeOffset = 0,
                                                          .ComTxModeTimePeriod = 0
+                                                        }
                                                         }
                                           }
                            },
@@ -97,7 +105,7 @@ const ComConfigType Com = {
                                           .ComIPduType = NORMAL,
 //                                        .ComIPduGroupRef,
 //                                        .ComIPduSignalGroupRef,
-                                          .ComIPduSignalRef[0] = &Com.ComSignal[16],
+                                          .ComIPduSignalRef[2] = &Com.ComSignal[16],
                                           .ComPduIdRef = 65,
 //                                        .ComIPduCounter ,
 //                                        .ComIPduReplication,
@@ -105,22 +113,26 @@ const ComConfigType Com = {
                                                         .ComMinimumDelayTime = 0.005,
                                                         .ComTxIPduClearUpdateBit = Confirmation,
                                                         .ComTxIPduUnusedAreasDefault = 0xFF,
-                                                        .ComTxModeFalse.ComTxMode=
+                                                        .ComTxModeFalse={
+                                                        .ComTxMode=
                                                         {
-                                                         .ComTxModeMode = PERIODIC_Tx,
+                                                         .ComTxModeMode = NONE_Tx,
                                                          .ComTxModeNumberOfRepetitions = 0,
                                                          .ComTxModeRepetitionPeriod = 0,
                                                          .ComTxModeTimeOffset = 0,
                                                          .ComTxModeTimePeriod = 0
 
+                                                        }
                                                         },
-                                                        .ComTxModeTrue.ComTxMode =
+                                                        .ComTxModeTrue={
+                                                        .ComTxMode =
                                                         {
                                                          .ComTxModeMode = PERIODIC_Tx,
                                                          .ComTxModeNumberOfRepetitions = 0,
                                                          .ComTxModeRepetitionPeriod = 0,
                                                          .ComTxModeTimeOffset = 0,
                                                          .ComTxModeTimePeriod = 0
+                                                        }
                                                         }
                                           }
                            },
@@ -137,7 +149,7 @@ const ComConfigType Com = {
                                            .ComRxDataTimeoutAction = NONE_Rx,
 //                                         .ComSignalDataInvalidValue,?????
                                            .ComSignalEndianness = LITTLE_ENDIAN,
-//                                         .ComSignalInitValue,?????
+                                           .ComSignalInitValue = 0,
                                            .ComSignalLength = 1,
                                            .ComSignalType = UINT8,
                                            .ComTimeout = 0.125, /*DLM in sec*/
@@ -163,7 +175,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -189,7 +201,7 @@ const ComConfigType Com = {
                                            .ComRxDataTimeoutAction = NONE_Rx,
 //                                         .ComSignalDataInvalidValue,?????
                                            .ComSignalEndianness = LITTLE_ENDIAN,
-//                                         .ComSignalInitValue,?????
+                                           .ComSignalInitValue = 0,
                                            .ComSignalLength = 1,
                                            .ComSignalType = UINT8,
                                            .ComTimeout = 0.125, /*DLM in sec*/
@@ -206,16 +218,16 @@ const ComConfigType Com = {
                                             .ComBitPosition = 3,
                                             .ComBitSize = 8,
                                             .ComDataInvalidAction = NOTIFY,
- //                                         .ComErrorNotification,
+ //                                         .ComErrorNotification(address of Com_CbkTxErr),
  //                                         .ComFirstTimeout,
                                             .ComHandleId = 3,/* index inside signal buffer */
  //                                         .ComInitialValueOnly,
  //                                         .ComInvalidNotification,
- //                                         .ComNotification,
+//                                            .ComNotification = (address of Com_CbkTxAck or Com_CbkRxAck),
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -241,7 +253,7 @@ const ComConfigType Com = {
                                            .ComRxDataTimeoutAction = NONE_Rx,
 //                                         .ComSignalDataInvalidValue,?????
                                            .ComSignalEndianness = LITTLE_ENDIAN,
-//                                         .ComSignalInitValue,?????
+                                           .ComSignalInitValue = 0,
                                            .ComSignalLength = 1,
                                            .ComSignalType = UINT8,
                                            .ComTimeout = 0.125, /*DLM in sec*/
@@ -267,7 +279,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -293,7 +305,7 @@ const ComConfigType Com = {
                                            .ComRxDataTimeoutAction = NONE_Rx,
 //                                         .ComSignalDataInvalidValue,?????
                                            .ComSignalEndianness = LITTLE_ENDIAN,
-//                                         .ComSignalInitValue,?????
+                                           .ComSignalInitValue = 0,
                                            .ComSignalLength = 1,
                                            .ComSignalType = UINT8,
                                            .ComTimeout = 0.125, /*DLM in sec*/
@@ -319,7 +331,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -346,7 +358,7 @@ const ComConfigType Com = {
                                            .ComRxDataTimeoutAction = NONE_Rx,
 //                                         .ComSignalDataInvalidValue,?????
                                            .ComSignalEndianness = LITTLE_ENDIAN,
-//                                         .ComSignalInitValue,?????
+                                           .ComSignalInitValue = 0,
                                            .ComSignalLength = 1,
                                            .ComSignalType = UINT8,
                                            .ComTimeout = 0.125, /*DLM in sec*/
@@ -372,7 +384,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -399,7 +411,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -426,7 +438,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
@@ -453,7 +465,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -480,7 +492,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
@@ -507,7 +519,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -534,7 +546,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
@@ -561,7 +573,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -588,7 +600,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
@@ -615,7 +627,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -642,7 +654,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
@@ -669,7 +681,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -696,7 +708,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
@@ -723,7 +735,7 @@ const ComConfigType Com = {
                                             .ComRxDataTimeoutAction = NONE_Rx,
  //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
- //                                         .ComSignalInitValue,?????
+                                            .ComSignalInitValue = 0,
                                             .ComSignalLength = 1,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
@@ -750,7 +762,7 @@ const ComConfigType Com = {
                                              .ComRxDataTimeoutAction = NONE_Rx,
   //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-  //                                         .ComSignalInitValue,?????
+                                             .ComSignalInitValue = 0,
                                              .ComSignalLength = 1,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
