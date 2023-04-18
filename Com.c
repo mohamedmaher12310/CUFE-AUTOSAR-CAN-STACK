@@ -63,29 +63,35 @@ void Com_Init(const Com_ConfigType* config )
 #endif
     uint8 counter_signal;
     uint8 counter_pdu;
+    uint8 byte_counter;
 
-    uint8 pdu_data;
+    /*Loop to initialize each PDU*/
     for(counter_pdu=0;counter_pdu<ComMaxIPduCnt;counter_pdu++)
     {
         PDU[counter_pdu].SduLength = 8;
-
-/*refrence the ptr*/
-        0x0000000f
-        for(i;;)
+        for(byte_counter=0;byte_counter<8;byte_counter++)
         {
-        *(PDU[counter_pdu].SduDataPtr) =((config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault));
-        }
-        pdu_data = PDU[counter_pdu].SduDataPtr;
-        /* clear the update-bits */
-        pdu_data &=!(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu]->ComUpdateBitPosition));
 
-        PDU[counter_pdu].SduDataPtr= pdu_data;
+            /* The AUTOSAR COM module shall initialize each I-PDU during
+             * execution of Com_Init (SWS_Com_00432), firstly byte wise with the
+             * ComTxIPduUnusedAreasDefault value
+             */
+            *(PDU[counter_pdu].SduDataPtr) = (config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault)<<byte_counter;
+
+            /* The AUTOSAR COM module shall clear all update-bits during
+             * initialization.
+             */
+            *(PDU[counter_pdu].SduDataPtr) &=~(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu])->ComUpdateBitPosition);
+        }
     }
     for(counter_signal=0;counter_signal<MAX_NUM_OF_SIGNAL;counter_signal++)
     {
+        /* The AUTOSAR COM module shall initialize each signal of n-bit
+         * sized signal type on sender and receiver side with the lower n-bits of its configuration
+         * parameter ComSignalInitValue
+         */
         SignalBuffer[counter_signal].ComSignalInitValue = config->ComSignal[counter_signal].ComSignalInitValue;
 
-
     }
-
+    ComCurrent_State = COM_INIT;
 }
