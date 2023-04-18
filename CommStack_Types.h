@@ -155,11 +155,11 @@ typedef enum
  */
 typedef enum
 {
-    PENDING,
+    PENDING,/*postponed the send of pdu*/
     TRIGGERED,
-    TRIGGERED_ON_CHANGE,
-    TRIGGERED_ON_CHANGE_WITHOUT_REPETITION,
-    TRIGGERED_WITHOUT_REPETITION
+//    TRIGGERED_ON_CHANGE,
+//    TRIGGERED_ON_CHANGE_WITHOUT_REPETITION,
+//    TRIGGERED_WITHOUT_REPETITION
 }ComTransferProperty;
 
 /* The available transmission modes described in [18] shall
@@ -169,8 +169,8 @@ typedef enum
  */
 typedef enum{
     DIRECT_Tx,
-    MIXED_Tx,
-    NONE_Tx,
+//    MIXED_Tx,
+//    NONE_Tx,
     PERIODIC_Tx
 }ComTxModeMode;
 

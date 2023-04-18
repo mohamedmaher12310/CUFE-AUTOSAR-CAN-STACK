@@ -81,6 +81,7 @@ void Com_Init(const Com_ConfigType* config )
             /* The AUTOSAR COM module shall clear all update-bits during
              * initialization.
              */
+            /*not needed*/
             *(PDU[counter_pdu].SduDataPtr) &=~(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu])->ComUpdateBitPosition);
         }
     }

@@ -142,7 +142,7 @@ const Com_ConfigType Com = {
                                            .ComDataInvalidAction = NOTIFY,
 //                                         .ComErrorNotification,
 //                                         .ComFirstTimeout,
-                                           .ComHandleId = 0,/* index inside signal buffer */
+                                           .ComHandleId = 0,
 //                                         .ComInitialValueOnly,
 //                                         .ComInvalidNotification,
 //                                         .ComNotification,
@@ -168,7 +168,7 @@ const Com_ConfigType Com = {
                                             .ComDataInvalidAction = NOTIFY,
  //                                         .ComErrorNotification,
  //                                         .ComFirstTimeout,
-                                            .ComHandleId = 1,/* index inside signal buffer */
+                                            .ComHandleId = 1,
  //                                         .ComInitialValueOnly,
  //                                         .ComInvalidNotification,
  //                                         .ComNotification,
@@ -194,7 +194,7 @@ const Com_ConfigType Com = {
                                            .ComDataInvalidAction = NOTIFY,
 //                                         .ComErrorNotification,
 //                                         .ComFirstTimeout,
-                                           .ComHandleId = 2,/* index inside signal buffer */
+                                           .ComHandleId = 2,
 //                                         .ComInitialValueOnly,
 //                                         .ComInvalidNotification,
 //                                         .ComNotification,
@@ -220,7 +220,7 @@ const Com_ConfigType Com = {
                                             .ComDataInvalidAction = NOTIFY,
  //                                         .ComErrorNotification(address of Com_CbkTxErr),
  //                                         .ComFirstTimeout,
-                                            .ComHandleId = 3,/* index inside signal buffer */
+                                            .ComHandleId = 3,
  //                                         .ComInitialValueOnly,
  //                                         .ComInvalidNotification,
 //                                            .ComNotification = (address of Com_CbkTxAck or Com_CbkRxAck),
