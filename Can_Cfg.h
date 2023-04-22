@@ -302,8 +302,8 @@ Description: Reference to CAN Controller to which the HOH is associated to.
 #define CAN_HOH_REF_0                           CAN0_CONTROLLER_ID
 #define CAN_HOH_REF_1                           CAN0_CONTROLLER_ID
 #define CAN_HOH_REF_2                           CAN0_CONTROLLER_ID
-#define CAN_HOH_REF_3                           CAN1_CONTROLLER_ID
-#define CAN_HOH_REF_4                           CAN1_CONTROLLER_ID
+#define CAN_HOH_REF_3                           CAN0_CONTROLLER_ID
+#define CAN_HOH_REF_4                           CAN0_CONTROLLER_ID
 
 
 /**********************************Can Hardware Filter Configurations***************************/
@@ -313,9 +313,9 @@ Parent Container: CanHwFilter
 Description: Specifies (together with the filter mask) the identifiers range that passes
              the hardware filter.
  */
-#define CAN_HW_FILTER_CODE_0                           0b00000000010
+#define CAN_HW_FILTER_CODE_0                           0b00000000001
 #define CAN_HW_FILTER_CODE_1                           0b00000000010
-#define CAN_HW_FILTER_CODE_2                           0b00000000000
+#define CAN_HW_FILTER_CODE_2                           0b00000000011
 #define CAN_HW_FILTER_CODE_3                           0b00000000000
 #define CAN_HW_FILTER_CODE_4                           0b00000000000
 

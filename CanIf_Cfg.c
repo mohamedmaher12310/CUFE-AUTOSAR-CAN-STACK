@@ -134,7 +134,7 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIfRxPduId = CanIfRxPduId_0,
     .CanIfRxPduDataLength=CanIfRxPduDataLength_0,
 #if(STD_ON == CanIfPublicReadRxPduDataApi)
-    .CanIf_RxPduReadData=FALSE,
+    .CanIf_RxPduReadData=TRUE,
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduUserRxIndicationName=CanIfRxPduUserRxIndicationName_0
    },
@@ -149,7 +149,7 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIfRxPduId = CanIfRxPduId_1,
     .CanIfRxPduDataLength=CanIfRxPduDataLength_1,
 #if(STD_ON == CanIfPublicReadRxPduDataApi)
-    .CanIf_RxPduReadData=FALSE,
+    .CanIf_RxPduReadData=TRUE,
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduUserRxIndicationName=CanIfRxPduUserRxIndicationName_1
    }

@@ -196,8 +196,8 @@ typedef enum
  */
 typedef enum
 {
-    UINT16,
-    UINT8
+    UINT16_IF,
+    UINT8_IF
 } CanIfPublicHandleTypeEnum;
 
 

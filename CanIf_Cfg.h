@@ -158,8 +158,8 @@
  * CAN Identifier of transmit CAN L-PDUs used by the CAN Driver for
  * CAN L-PDU transmission.
  */
-#define CanIfTxPduCanId_0       0x0
-#define CanIfTxPduCanId_1       0x1
+#define CanIfTxPduCanId_0       (0b00000000001)
+#define CanIfTxPduCanId_1       (0b00000000000)
 
 /*
  * Identifier mask which denotes relevant bits in the CAN Identifier. This
@@ -225,8 +225,8 @@
  * Identifier is assigned to the Pdu. If a range is assigned then the
  * CanIfRxPduCanIdRange parameter shall be used.
  */
-#define CanIfRxPduCanId_0       (0b00000000000)
-#define CanIfRxPduCanId_1       (0b00000000000)
+#define CanIfRxPduCanId_0       (0b00000000001)
+#define CanIfRxPduCanId_1       (0b00000000011)
 
 /*This parameter defines the name of the <User_RxIndication>.*/
 #define CanIfRxPduUserRxIndicationName_0          (CanIfUser)(PDUR)

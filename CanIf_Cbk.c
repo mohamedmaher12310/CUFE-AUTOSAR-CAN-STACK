@@ -22,7 +22,8 @@ CanIf_NotifStatusType CanIf_TxNotificationFlag[CanIfMaxTxPduCfg];
 
 /*CanIf Recieve Buffer (ReadAPI)*/
 #if (STD_ON == CanIfPublicReadRxPduDataApi)
-Can_PduType CanIf_RxBuffer[CanIfMaxRxPduCfg];
+Can_PduType CanIf_RxBuffer[CanIfMaxRxPduCfg]={0};
+Can_PduType Temp_Buffer;
 #endif /*CanIfPublicReadRxPduDataApi*/
 
 /************************************************************************************
@@ -43,7 +44,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     /*Variables to store the needed Data*/
     CanIfRxPduCfg* RxPDU = NULL_PTR;
     CanIfHrhRangeCfg* RxPDU_Range = NULL_PTR;
-    CanIfHrhCfg* HRH_Ptr = NULL_PTR;
+    const CanIfHrhCfg* HRH_Ptr = NULL_PTR;
     uint8 RxPDU_index;
     uint8 HOH_index ;
     uint8 HRH_index ;
@@ -99,11 +100,19 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     {
         /* Store the addresses to pointers*/
         /* CanIfRxPduCfg Container*/
-        RxPDU = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
+        RxPDU = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
         /*Index of Pdu*/
-        RxPDU_index = RxPDU->CanIfRxPduId;
+        uint8 i ;
+        for( i=0; i< CanIfMaxRxPduCfg ;i++)
+        {
+            if (Mailbox->CanId == CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[i].CanIfRxPduCanId)
+            {
+                RxPDU_index = i;
+                break;
+            }
+        }
         /* CanIfHrhCfg Container*/
-        HRH_Ptr = &CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
+        HRH_Ptr = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg[RxPDU_index].CanIfRxPduHrhIdRef;
         /*Index of Hoh*/
         HOH_index = (HRH_Ptr->CanIfHrhIdSymRef->CanObjectId);
         /*Index of Hrh*/
@@ -113,6 +122,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
             if (HOH_HRH_MAP[iter] == HOH_index)
             {
                 HRH_index = iter;
+                break;
             }
             else
             {
@@ -160,9 +170,8 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 #if (STD_ON == CanIfPublicReadRxPduDataApi)
                         if (RxPDU->CanIf_RxPduReadData == TRUE)
                         {
-                            uint8 ControllerId = HRH_Ptr->CanIfHrhCanCtrlIdRef->CanIfCtrlId;
                             /* Store the message in the Rx Buffer*/
-                            Can_MessageReceive(ControllerId, HOH_index, &CanIf_RxBuffer[RxPDU_index]);
+                            CanIf_RxBuffer[RxPDU_index]=Temp_Buffer;
                         }
                         else
                         {
@@ -231,9 +240,8 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 #if (STD_ON == CanIfPublicReadRxPduDataApi)
                     if (RxPDU->CanIf_RxPduReadData == TRUE)
                     {
-                        uint8 ControllerId = HRH_Ptr->CanIfHrhCanCtrlIdRef->CanIfCtrlId;
                         /* Store the message in the Rx Buffer*/
-                        Can_MessageReceive(ControllerId, HOH_index, &CanIf_RxBuffer[RxPDU_index]);
+                        CanIf_RxBuffer[RxPDU_index]=Temp_Buffer;
                     }
                     else
                     {
@@ -260,7 +268,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                         RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                         RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                         RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                        /*PDUR_RxIndication(RxPDU_index,&RxPduPDUR);*/
+                        PduR_CanIfRxIndication(RxPDU_index,&RxPduPDUR);
                         break;
                     }
                     default:
@@ -284,7 +292,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
  *Return value: None
  *Description: This service confirms a previously successfully processed transmission of a CAN TxPDU.
  ******************************************************************************/
-
+#if (PduRTxConfirmation)
 void CanIf_TxConfirmation(PduIdType CanTxPduId)
 {
 
@@ -331,7 +339,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 #endif /*CanIfPublicReadTxPduNotifyStatusApi */
     if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == PDUR)
     {
-        /* PDUR_TxConfirmation(E_OK); */
+        PduR_CanIfTxConfirmation(CanTxPduId,E_OK);
     }
     else if(TxPDU_ptr->CanIfTxPduUserTxConfirmationUL == CAN_TP)
     {
@@ -342,6 +350,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 
     }
 }
+#endif /*PduRTxConfirmation*/
 
 /************************************************************************************
  * Service Name: CanIf_ControllerModeIndication
@@ -383,14 +392,14 @@ void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType C
     }
 
     /* Check If parameter ControllerMode has an invalid value*/
-       if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
-       {
-           Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CTRLMODE );
-       }
+    if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
+    {
+        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CTRLMODE );
+    }
 #endif
 
     /* [SWS_CANIF_00711] When callback CanIf_ControllerModeIndication(ControllerId,ControllerMode)
      *  is called, CanIf shall call CanSm_ControllerModeIndication(ControllerId,ControllerMode) of the CanSm
      */
-/*    CanSm_ControllerModeIndication(ControllerId,ControllerMode); */
+    /*    CanSm_ControllerModeIndication(ControllerId,ControllerMode); */
 }
