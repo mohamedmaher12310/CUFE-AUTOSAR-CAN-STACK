@@ -136,7 +136,7 @@ typedef enum
  */
 typedef enum
 {
-    PENDING,/*postponed the send of pdu*/
+    PENDING,/*postponed the send of pdu if all signals within the pdu is PENDING*/
     TRIGGERED,
     //    TRIGGERED_ON_CHANGE,
     //    TRIGGERED_ON_CHANGE_WITHOUT_REPETITION,
@@ -149,10 +149,10 @@ typedef enum
  * ComTxMode object.
  */
 typedef enum{
-    DIRECT_Tx,
+    DIRECT_Tx,      /* on trigger when specific signal 7asalaha trigger with Com_SendSignal() */
     //    MIXED_Tx,
     //    NONE_Tx,
-    PERIODIC_Tx
+    PERIODIC_Tx     /* periodic kol 2ad eih all tansfere property is not needed now*/
 }ComTxModeMode;
 
 
@@ -219,7 +219,7 @@ typedef struct
      * number of configured characters. An empty string "" shall be interpreted as
      * 0-sized dynamic signal.
      */
-   uint8 ComSignalInitValue;
+    uint8 ComSignalInitValue;
 
     /* The AUTOSAR type of the signal. Whether or not the signal is signed or unsigned
      * can be found by examining the value of this attribute.
@@ -325,6 +325,15 @@ typedef struct
      * or update-bits were set.
      */
     uint8 ComTxIPduUnusedAreasDefault;
+
+    /*Sub-Contianer*/
+
+    /* This container contains the configuration parameters of the AUTOSAR
+     * COM module's transmission modes.
+     */
+    ComTxMode ComTxMode;
+
+
 
 }ComTxIPdu;
 

@@ -26,6 +26,11 @@ const Com_ConfigType Com = {
                                                          .ComMinimumDelayTime = 0.005,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
                                                          .ComTxIPduUnusedAreasDefault = 0xFF,
+                                                         .ComTxMode = {
+                                                                       .ComTxModeMode = PERIODIC_Tx,
+                                                                       .ComTxModeTimePeriod = 0.125
+
+                                                         }
 
                                            }
                             },
@@ -42,6 +47,11 @@ const Com_ConfigType Com = {
                                                          .ComMinimumDelayTime = 0.005,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
                                                          .ComTxIPduUnusedAreasDefault = 0xFF,
+                                                         .ComTxMode = {
+                                                                       .ComTxModeMode = PERIODIC_Tx,
+                                                                       .ComTxModeTimePeriod = 0.125
+
+                                                         }
 
                                            }
                             },
@@ -58,6 +68,11 @@ const Com_ConfigType Com = {
                                                          .ComMinimumDelayTime = 0.005,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
                                                          .ComTxIPduUnusedAreasDefault = 0xFF,
+                                                         .ComTxMode = {
+                                                                       .ComTxModeMode = PERIODIC_Tx,
+                                                                       .ComTxModeTimePeriod = 0.125
+
+                                                         }
 
                                            }
                             },
