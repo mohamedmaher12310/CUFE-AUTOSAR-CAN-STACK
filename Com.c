@@ -24,8 +24,7 @@ STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 
 STATIC uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
-STATIC PduInfoType PDU[ComMaxIPduCnt];
-
+PduInfoType PDU[ComMaxIPduCnt];
 /************************************************************************************
  * Service Name: Com_Init
  * Service ID[hex]: 0x01
@@ -128,8 +127,6 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
     return E_OK;
 }
 
-
-
 /************************************************************************************
  * Service Name: Com_MainFunctionTx
  * Service ID[hex]: 0x19
@@ -209,7 +206,51 @@ void Com_MainFunctionTx(void)
 
         }
     }
+}
 
+/************************************************************************************
+ * Service Name: Com_MainFunctionRx
+ * Service ID[hex]: 0x18
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR COM module's receive
+ *              processing that are not directly handled within the COM's functions invoked by the
+ *              PDU-R, for example Com_RxIndication.
+ ************************************************************************************/
+void Com_MainFunctionRx(void)
+{
+    uint8 pdu_counter,i;
+    if(COM_UNINIT == ComCurrent_State)
+    {
+        return;
+    }
+    else
+    {
+        if( 1 == check_flag)
+        {
+            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+            {
+                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
+                {
+                    if( DEFERRED == Com.ComIPdu[pdu_counter].ComIPduSignalProcessing)
+                    {
+                        for(i=0;i<32;i++){
+                            /*check the update bit*/
+                            /*Com_ReceiveSignal(Com.ComIPdu[i].ComIPduHandleId,&)*/
+
+                        }
+                    }
+
+
+                }
+
+            }
+        }
+        else
+        {
+
+        }
+
+    }
 
 
 

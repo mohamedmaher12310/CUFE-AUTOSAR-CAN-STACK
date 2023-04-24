@@ -176,5 +176,21 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr);
  ************************************************************************************/
 void Com_MainFunctionTx(void);
 
+/************************************************************************************
+ * Service Name: Com_MainFunctionRx
+ * Service ID[hex]: 0x18
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR COM module's receive
+ *              processing that are not directly handled within the COM's functions invoked by the
+ *              PDU-R, for example Com_RxIndication.
+ ************************************************************************************/
+
+void Com_MainFunctionRx(void);
+
+/*******************************************************************************
+ *                       External Variables                                    *
+ *******************************************************************************/
+extern  const Com_ConfigType Com ;
+extern  PduInfoType PDU[ComMaxIPduCnt];
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */

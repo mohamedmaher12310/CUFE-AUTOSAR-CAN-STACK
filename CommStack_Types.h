@@ -416,6 +416,6 @@ typedef struct
 
 }Com_ConfigType;
 
-extern const Com_ConfigType Com;
+//extern const Com_ConfigType Com;
 
 #endif /* COMMSTACK_TYPES_H_ */
