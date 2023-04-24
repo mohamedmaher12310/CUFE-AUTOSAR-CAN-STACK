@@ -22,6 +22,8 @@ Com_StatusType ComCurrent_State = COM_UNINIT;
 
 STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 
+STATIC uint8 SignalObject[MAX_NUM_OF_SIGNAL];
+
 STATIC PduInfoType PDU[ComMaxIPduCnt];
 
 /************************************************************************************
@@ -93,6 +95,122 @@ void Com_Init(const Com_ConfigType* config )
          */
         SignalBuffer[counter_signal].ComSignalInitValue = config->ComSignal[counter_signal].ComSignalInitValue;
 
+        /* initialize the data signal buffer with the configured initial values. */
+        SignalObject[counter_signal] = SignalBuffer[counter_signal].ComSignalInitValue;
+
     }
     ComCurrent_State = COM_INIT;
+}
+
+/************************************************************************************
+ * Service Name: Com_SendSignal
+ * Service ID[hex]: 0x0a
+ * Sync/Async: Asynchronous
+ * Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
+ * Parameters (in): SignalId; Id of signal to be sent.
+ *                  SignalDataPtr; Reference to the signal data to be transmitted.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: uint8 E_OK: service has been accepted
+ *                           COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
+ *                           was stopped (or service failed due to development error)
+ *                           COM_BUSY: in case the TP-Buffer is locked for large data types
+ *                           handling
+ * Description: The service Com_SendSignal updates the signal object identified by SignalId with
+ *              the signal referenced by the SignalDataPtr parameter.
+ *
+ ************************************************************************************/
+uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
+{
+    SignalObject[SignalId] = *((uint8*)SignalDataPtr);
+
+
+    return E_OK;
+}
+
+
+
+/************************************************************************************
+ * Service Name: Com_MainFunctionTx
+ * Service ID[hex]: 0x19
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR
+ * COM module's transmission activities that are not directly handled
+ * within the COM's function invoked by
+ * the RTE, for example Com_SendSignal.
+ ************************************************************************************/
+void Com_MainFunctionTx(void)
+{
+    uint8 signal_counter,pdu_counter;
+    if(COM_UNINIT == ComCurrent_State)
+    {
+        return;
+    }
+    else
+    {
+
+        for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+        {
+            /*check this signal needed to be concatenated with the PDU or not*/
+            //            if( (Com.ComSignal[i].ComUpdateBitPosition) )
+            //            {
+            if(TRIGGERED == Com.ComSignal[signal_counter].ComTransferProperty)
+            {
+                /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+                (PDU[Com.ComSignal[signal_counter].ComSystemTemplateSystemSignalRef].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+            }
+
+            else
+            {
+                /*Do Nothing*/
+            }
+            //            }
+            //            else
+            //            {
+            //                /*Do Nothing*/
+            //            }
+        }
+
+        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        {
+            if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
+            {
+                if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                {
+                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+
+                }
+                /*else if direct transmission done in context of irq*/
+                else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                {
+                    for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL ;signal_counter++)
+                    {
+                        if(PENDING == Com.ComSignal[signal_counter].ComTransferProperty)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+
+                        }
+                    }
+                }
+                else
+                {
+                    /*Do Nothing*/
+                }
+            }
+            else
+            {
+                /*Do Nothing*/
+            }
+
+
+        }
+    }
+
+
+
+
 }

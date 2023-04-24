@@ -251,7 +251,7 @@ typedef struct
     uint8 ComUpdateBitPosition;
 
     /*refrence to which lpdu this signal belong*/
-    uint8* ComSystemTemplateSystemSignalRef;
+    uint8 ComSystemTemplateSystemSignalRef;
 
 }ComSignal;
 
