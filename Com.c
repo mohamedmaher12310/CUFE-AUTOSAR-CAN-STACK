@@ -22,6 +22,8 @@ Com_StatusType ComCurrent_State = COM_UNINIT;
 
 STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 
+STATIC uint8 SignalObject[MAX_NUM_OF_SIGNAL];
+
 STATIC PduInfoType PDU[ComMaxIPduCnt];
 
 /************************************************************************************
@@ -169,7 +171,9 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
         /* update the Signal buffer with the signal data */   //i assumed that we store the signal in index= id
-        SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
+      //  SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
+
+        SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
 
         Com_SendSignal_Return=E_OK;
         /*  switch( SignalBuffer[Signal_ID].ComTransferProperty )
@@ -256,6 +260,7 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
         uint8 PDU_INDEX ;
         uint8  SIGNAL_INDEX;
         ComIPdu *IPdu;
+
         /* find the signal of SignalId */   //i assumed that we store the signal in index= id
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
         for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX ++)
@@ -280,8 +285,8 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
         {
 
             /* update the Signal buffer with the signal data */   //i assumed that we store the signal in index= id
-            SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
-
+      //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
+            SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
             Com_ReceiveSignal_Return=E_OK;
 
         }
