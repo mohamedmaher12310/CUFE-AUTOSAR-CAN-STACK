@@ -61,6 +61,7 @@ extern void CAN0_Handler (void);
 extern void CAN1_Handler (void);
 extern void SysTick_Handler(void);
 extern void Timer0_Handler(void);
+extern void SVC_Handler(void);
 //*****************************************************************************
 //
 // The vector table.  Note that the proper constructs must be placed on this to
@@ -83,7 +84,7 @@ void (* const g_pfnVectors[])(void) =
     0,                                      // Reserved
     0,                                      // Reserved
     0,                                      // Reserved
-    IntDefaultHandler,                      // SVCall handler
+    SVC_Handler,                            // SVCall handler
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler

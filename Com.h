@@ -119,13 +119,6 @@
 /* Transmission request was skipped */
 #define COM_E_SKIPPED_TRANSMISSION      (uint8)0x05
 
-
-
-/*******************************************************************************
- *                       External Variables                                    *
- *******************************************************************************/
-
-
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
@@ -166,6 +159,27 @@ void Com_Init(const Com_ConfigType* config );
 uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr);
 
 /************************************************************************************
+ * Service Name: Com_ReceiveSignal
+ * Service ID[hex]: 0x0b
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
+ * Parameters (in): SignalId; Id of signal to be received.
+ * Parameters (inout): None
+ * Parameters (out): SignalDataPtr Reference to the location where the received signal data shall be
+ *                                 stored.
+ * Return value: uint8 E_OK: service has been accepted
+ *                           COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
+ *                           was stopped (or service failed due to development error)
+ *                           COM_BUSY: in case the TP-Buffer is locked for large data types
+ *                           handling
+ * Description: Com_ReceiveSignal copies the data of the signal identified by SignalId to the
+ *              location specified by SignalDataPtr.
+ *
+ ************************************************************************************/
+uint8 Com_ReceiveSignal(Com_SignalIdType SignalId,void* SignalDataPtr);
+
+
+/************************************************************************************
  * Service Name: Com_MainFunctionTx
  * Service ID[hex]: 0x19
  * Return value: None
@@ -192,5 +206,6 @@ void Com_MainFunctionRx(void);
  *******************************************************************************/
 extern  const Com_ConfigType Com ;
 extern  PduInfoType PDU[ComMaxIPduCnt];
+extern  uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */

@@ -13,6 +13,11 @@
 #include "Os.h"
 #include "Can.h"
 #include "CanIf_Cbk.h"
+/*Include the module header file*/
+#include "Com.h"
+
+/*Include other modules header file*/
+#include "PduR_Com.h"
 
 volatile boolean MSG_Object_INT_Flag = 0; /* flag to indicate occurrence of interrupt due to message object */
 volatile uint8 MSG_Number_INT[32] = {0};  /* variable to store the message object number that caused the interrupt */
@@ -180,3 +185,46 @@ void CAN1_Handler(void)
     //        Error_Flag =0;  /* nullify the error flag after successful transmission or reception of message */
     //    }
 }
+
+
+void SVC_Handler(void)
+{
+    uint8 pdu_counter;
+    uint8 signal_counter;
+    uint8 return_value;
+
+    /*unpacking the LPDU*/
+
+    for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+    {
+        if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
+        {
+
+            for(signal_counter=0;signal_counter<32;signal_counter++)
+            {
+                /*i think if we implemented the update bits will free me from this for loop*/
+                /*check the update bit which will ease it for me to update the specific needed signals*/
+
+                  return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
+                if( E_OK == return_value )
+                {
+
+                    /*void Com_CbkRxAck(void);*/
+                }
+                else
+                {
+                    /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
+                }
+
+            }
+        }
+        else    /*not RECEIVE LPDU*/
+        {
+            /*DO NOTHING*/
+        }
+
+    }
+}
+
+
+

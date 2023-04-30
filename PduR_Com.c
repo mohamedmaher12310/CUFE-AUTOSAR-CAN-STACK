@@ -15,6 +15,17 @@
 #include "PduR_Com.h"
 
 uint8 check_flag=0;
+
+/* Initialize and Setup SVC Exception Priority */
+void SVC_Init(void)
+{
+    /* Assign priority level 0 to the SVC Interrupt */
+    NVIC_SYSTEM_PRI2_REG = (NVIC_SYSTEM_PRI2_REG & SVC_PRIORITY_MASK) | (SVC_PRIORITY << SVC_PRIORITY_BITS_POS);
+}
+
+
+
+
 /************************************************************************************
  * Service Name: Com_RxIndication
  * Service ID[hex]: 0x42
@@ -33,18 +44,15 @@ uint8 check_flag=0;
  ************************************************************************************/
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
 {
-    uint8 pdu_counter;
+
     uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;
 
     if( RECEIVE== Com.ComIPdu[pdu_id].ComIPduDirection)
     {
-
         /* Copy data */
         PDU[pdu_id].SduLength = PduInfoPtr->SduLength;
         PDU[pdu_id].SduDataPtr = PduInfoPtr->SduDataPtr;
         PDU[pdu_id].MetaDataPtr = PduInfoPtr->MetaDataPtr;
-
-
     }
     else
     {
@@ -54,15 +62,11 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
     {
         check_flag = 1;
     }
-    else
+    else    /*immediate*/
     {
+        /*generate software interrupt*/
+        SVC_Init();
+        Trigger_SVC_Exception();
 
     }
-
-
-
-
-
-
-
 }
