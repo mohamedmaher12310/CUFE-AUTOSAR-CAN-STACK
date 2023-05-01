@@ -16,16 +16,6 @@
 
 uint8 check_flag=0;
 
-/* Initialize and Setup SVC Exception Priority */
-void SVC_Init(void)
-{
-    /* Assign priority level 0 to the SVC Interrupt */
-    NVIC_SYSTEM_PRI2_REG = (NVIC_SYSTEM_PRI2_REG & SVC_PRIORITY_MASK) | (SVC_PRIORITY << SVC_PRIORITY_BITS_POS);
-}
-
-
-
-
 /************************************************************************************
  * Service Name: Com_RxIndication
  * Service ID[hex]: 0x42
@@ -64,9 +54,7 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
     }
     else    /*immediate*/
     {
-        /*generate software interrupt*/
-        SVC_Init();
-        Trigger_SVC_Exception();
+
 
     }
 }

@@ -70,7 +70,7 @@ void Com_Init(const Com_ConfigType* config )
     for(counter_pdu=0;counter_pdu<ComMaxIPduCnt;counter_pdu++)
     {
         PDU[counter_pdu].SduLength = PDU_LEN_IN_BYTES;
-        for(byte_counter=0;byte_counter<8;byte_counter++)
+        for(byte_counter=0;byte_counter<PDU_LEN_IN_BYTES;byte_counter++)
         {
 
             /* The AUTOSAR COM module shall initialize each I-PDU during
@@ -161,36 +161,33 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId,void* SignalDataPtr){
  ************************************************************************************/
 void Com_MainFunctionTx(void)
 {
-    uint8 signal_counter,pdu_counter;
+    uint8 signal_counter,pdu_counter,signal_counter_per_pdu;
     if(COM_UNINIT == ComCurrent_State)
     {
         return;
     }
     else
     {
+        /***************************************PDU CONCATINATION****************************************************/
 
-        for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
         {
-            /*check this signal needed to be concatenated with the PDU or not*/
-            //            if( (Com.ComSignal[i].ComUpdateBitPosition) )
-            //            {
-            if(TRIGGERED == Com.ComSignal[signal_counter].ComTransferProperty)
+            signal_counter=0;
+            for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
             {
-                /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                (PDU[Com.ComSignal[signal_counter].ComSystemTemplateSystemSignalRef].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+                (PDU[pdu_counter].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+                signal_counter++;
             }
 
-            else
-            {
-                /*Do Nothing*/
-            }
-            //            }
-            //            else
-            //            {
-            //                /*Do Nothing*/
-            //            }
         }
 
+//        for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+//        {
+//
+//            /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+//            (PDU[Com.ComSignal[signal_counter].ComSystemTemplateSystemSignalRef].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+//
+//        }
         for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
         {
             if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
@@ -202,15 +199,17 @@ void Com_MainFunctionTx(void)
                 }
                 else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                 {
-                    for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL ;signal_counter++)
+                    for(signal_counter=0 ; signal_counter<MAX_NUM_OF_SIGNAL ;signal_counter++)
                     {
                         if(PENDING == Com.ComSignal[signal_counter].ComTransferProperty)
                         {
-                            continue;
+
                         }
                         else
                         {
                             PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                            /*end the request of this direct lpdu as it is done and sent*/
+                            break;
 
                         }
                     }

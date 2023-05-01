@@ -52,14 +52,6 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
  *                      Definitions used in Module                             *
  *******************************************************************************/
 
-/* Trigger SVC Exception ... This Macro use the SVC instruction to make SW Interrupt */
-/*to trigger software interrupt in case of immediate unpacking of LPDU*/
-#define Trigger_SVC_Exception()      __asm(" SVC #0")
-#define SVC_PRIORITY_MASK        0x1FFFFFFF
-#define SVC_PRIORITY                 0
-#define SVC_PRIORITY_BITS_POS        29
-/* Assign priority level 0 to the SVC Interrupt */
-#define NVIC_SYSTEM_PRI2_REG      (*((volatile unsigned long *)0xE000ED1C))
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
