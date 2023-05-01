@@ -178,7 +178,6 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr);
  ************************************************************************************/
 uint8 Com_ReceiveSignal(Com_SignalIdType SignalId,void* SignalDataPtr);
 
-
 /************************************************************************************
  * Service Name: Com_MainFunctionTx
  * Service ID[hex]: 0x19

@@ -176,6 +176,9 @@ void Com_MainFunctionTx(void)
             for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
             {
                 (PDU[pdu_counter].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+              /*is this will give me the same result as the above line?*/
+//                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
+
                 signal_counter++;
             }
 
@@ -205,7 +208,7 @@ void Com_MainFunctionTx(void)
                         {
 
                         }
-                        else
+                        else    /*triggered*/
                         {
                             PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
                             /*end the request of this direct lpdu as it is done and sent*/

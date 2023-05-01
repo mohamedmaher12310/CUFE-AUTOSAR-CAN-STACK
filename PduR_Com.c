@@ -41,20 +41,22 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
     {
         /* Copy data */
         PDU[pdu_id].SduLength = PduInfoPtr->SduLength;
-        PDU[pdu_id].SduDataPtr = PduInfoPtr->SduDataPtr;
-        PDU[pdu_id].MetaDataPtr = PduInfoPtr->MetaDataPtr;
+        *(PDU[pdu_id].SduDataPtr) = *(PduInfoPtr->SduDataPtr);
+        *(PDU[pdu_id].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
+        if( DEFERRED == Com.ComIPdu[pdu_id].ComIPduSignalProcessing)
+        {
+            check_flag = 1;
+        }
+        else    /*immediate*/
+        {
+
+    /*MUST BE DONE IN THE IRQ CONTEXT IN THE PAST*/
+
+        }
     }
     else
     {
         /*Do Nothing*/
     }
-    if( DEFERRED == Com.ComIPdu[pdu_id].ComIPduSignalProcessing)
-    {
-        check_flag = 1;
-    }
-    else    /*immediate*/
-    {
 
-
-    }
 }
