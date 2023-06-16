@@ -264,8 +264,8 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
         if(IPdu->ComIPduDirection == RECEIVE)
         {
 
-            /* update the Signal buffer with the signal data */   //i assumed that we store the signal in index= id
-            //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
+            /* update the Signal buffer with the signal data */   
+            //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;
             SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
             Com_ReceiveSignal_Return=E_OK;
 
