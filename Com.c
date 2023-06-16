@@ -22,10 +22,9 @@ Com_StatusType ComCurrent_State = COM_UNINIT;
 
 STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 
-STATIC uint8 SignalObject[MAX_NUM_OF_SIGNAL];
+uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
-STATIC PduInfoType PDU[ComMaxIPduCnt];
-
+PduInfoType PDU[ComMaxIPduCnt];
 /************************************************************************************
  * Service Name: Com_Init
  * Service ID[hex]: 0x01
@@ -71,7 +70,7 @@ void Com_Init(const Com_ConfigType* config )
     for(counter_pdu=0;counter_pdu<ComMaxIPduCnt;counter_pdu++)
     {
         PDU[counter_pdu].SduLength = PDU_LEN_IN_BYTES;
-        for(byte_counter=0;byte_counter<8;byte_counter++)
+        for(byte_counter=0;byte_counter<PDU_LEN_IN_BYTES;byte_counter++)
         {
 
             /* The AUTOSAR COM module shall initialize each I-PDU during
@@ -87,7 +86,6 @@ void Com_Init(const Com_ConfigType* config )
             *(PDU[counter_pdu].SduDataPtr) &=~(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu])->ComUpdateBitPosition);
         }
     }
-
     for(counter_signal=0;counter_signal<MAX_NUM_OF_SIGNAL;counter_signal++)
     {
         /* The AUTOSAR COM module shall initialize each signal of n-bit
@@ -96,28 +94,30 @@ void Com_Init(const Com_ConfigType* config )
          */
         SignalBuffer[counter_signal].ComSignalInitValue = config->ComSignal[counter_signal].ComSignalInitValue;
 
+        /* initialize the data signal buffer with the configured initial values. */
+        SignalObject[counter_signal] = SignalBuffer[counter_signal].ComSignalInitValue;
+
     }
     ComCurrent_State = COM_INIT;
 }
 
-
-
 /************************************************************************************
- *Service name: Com_SendSignal
- *Syntax: uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
- *Service ID[hex]: 0x0a
- *Sync/Async: Asynchronous
- *Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
- *Parameters (in): -SignalId Id of signal to be sent.
-                  -SignalDataPtr Reference to the signal data to be transmitted.
- *Parameters (inout):None
- *Parameters (out): None
- *Return value: uint8 E_OK: service has been accepted
-                COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
-                was stopped (or service failed due to development error)
-                COM_BUSY: in case the TP-Buffer is locked for large data types handling
- *Description: The service Com_SendSignal updates the signal object identified by SignalId with
-               the signal referenced by the SignalDataPtr parameter.
+ * Service Name: Com_SendSignal
+ * Service ID[hex]: 0x0a
+ * Sync/Async: Asynchronous
+ * Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
+ * Parameters (in): SignalId; Id of signal to be sent.
+ *                  SignalDataPtr; Reference to the signal data to be transmitted.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: uint8 E_OK: service has been accepted
+ *                           COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
+ *                           was stopped (or service failed due to development error)
+ *                           COM_BUSY: in case the TP-Buffer is locked for large data types
+ *                           handling
+ * Description: The service Com_SendSignal updates the signal object identified by SignalId with
+ *              the signal referenced by the SignalDataPtr parameter.
+ *
  ************************************************************************************/
 uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 {
@@ -159,66 +159,46 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 
         /*flow:1-find the id of the signal
          *     2-update the data of the signal with the new data
-         *     3-
+         *     3-Return OK
          */
     {
 
         uint8 PDU_INDEX ;
-
         uint8 SIGNAL_INDEX ;
 
         /* find the signal of SignalId */   //i assumed that we store the signal in index= id
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
-        /* update the Signal buffer with the signal data */   //i assumed that we store the signal in index= id
-      //  SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
-
+        /* update the Signal buffer with the signal data */
+        //  SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;
         SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
 
         Com_SendSignal_Return=E_OK;
-        /*  switch( SignalBuffer[Signal_ID].ComTransferProperty )
-
-        {
-
-        case:PENDING
-
-        break;
-
-        case:TRIGGERED
-
-        break;
-
-        default:
-            break;
-
-
-        }*/
-
-
 
     }
-
     return Com_SendSignal_Return;
-
 }
 
 
 
 /************************************************************************************
- *Service name: Com_ReceiveSignal
- *Syntax: uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
- *Service ID[hex]: 0x0b
- *Sync/Async: Synchronous
- *Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
- *Parameters (in): SignalId Id of signal to be received.
- *Parameters (inout):None
- *Parameters (out): SignalDataPtr Reference to the location where the received signal data shall be stored
- *Return value: -uint8 E_OK: service has been accepted
-               -COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group was stopped (or service failed due to development error)
-                -COM_BUSY: in case the TP-Buffer is locked for large data types handling
- *Description: Com_ReceiveSignal copies the data of the signal identified by SignalId to the location specified by SignalDataPtr.
+ * Service Name: Com_ReceiveSignal
+ * Service ID[hex]: 0x0b
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
+ * Parameters (in): SignalId; Id of signal to be received.
+ * Parameters (inout): None
+ * Parameters (out): SignalDataPtr Reference to the location where the received signal data shall be
+ *                                 stored.
+ * Return value: uint8 E_OK: service has been accepted
+ *                           COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
+ *                           was stopped (or service failed due to development error)
+ *                           COM_BUSY: in case the TP-Buffer is locked for large data types
+ *                           handling
+ * Description: Com_ReceiveSignal copies the data of the signal identified by SignalId to the
+ *              location specified by SignalDataPtr.
+ *
  ************************************************************************************/
-
 uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 {
 
@@ -261,7 +241,7 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
         uint8  SIGNAL_INDEX;
         ComIPdu *IPdu;
 
-        /* find the signal of SignalId */   //i assumed that we store the signal in index= id
+        /* find the signal of SignalId */
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
         for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX ++)
         {
@@ -285,7 +265,7 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
         {
 
             /* update the Signal buffer with the signal data */   //i assumed that we store the signal in index= id
-      //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
+            //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;  //is that right????  do we need casting??
             SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
             Com_ReceiveSignal_Return=E_OK;
 
@@ -302,3 +282,144 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
     return Com_ReceiveSignal_Return;
 }
 
+
+
+/************************************************************************************
+ * Service Name: Com_MainFunctionTx
+ * Service ID[hex]: 0x19
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR
+ * COM module's transmission activities that are not directly handled
+ * within the COM's function invoked by
+ * the RTE, for example Com_SendSignal.
+ ************************************************************************************/
+void Com_MainFunctionTx(void)
+{
+    uint8 signal_counter,pdu_counter,signal_counter_per_pdu;
+    if(COM_UNINIT == ComCurrent_State)
+    {
+        return;
+    }
+    else
+    {
+        /***************************************PDU CONCATINATION****************************************************/
+
+        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        {
+            signal_counter=0;
+            for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
+            {
+                (PDU[pdu_counter].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+                /*is this will give me the same result as the above line?*/
+                //                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
+
+                signal_counter++;
+            }
+
+        }
+
+        //        for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+        //        {
+        //
+        //            /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+        //            (PDU[Com.ComSignal[signal_counter].ComSystemTemplateSystemSignalRef].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+        //
+        //        }
+        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        {
+            if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
+            {
+                if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                {
+                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+
+                }
+                else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                {
+                    for(signal_counter=0 ; signal_counter<MAX_NUM_OF_SIGNAL ;signal_counter++)
+                    {
+                        if(PENDING == Com.ComSignal[signal_counter].ComTransferProperty)
+                        {
+
+                        }
+                        else    /*triggered*/
+                        {
+                            PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                            /*end the request of this direct lpdu as it is done and sent*/
+                            break;
+
+                        }
+                    }
+                }
+                else
+                {
+                    /*Do Nothing*/
+                }
+            }
+            else
+            {
+                /*Do Nothing*/
+            }
+
+
+        }
+    }
+}
+
+/************************************************************************************
+ * Service Name: Com_MainFunctionRx
+ * Service ID[hex]: 0x18
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR COM module's receive
+ *              processing that are not directly handled within the COM's functions invoked by the
+ *              PDU-R, for example Com_RxIndication.
+ ************************************************************************************/
+void Com_MainFunctionRx(void)
+{
+    uint8 pdu_counter,signal_counter,return_value;
+    if(COM_UNINIT == ComCurrent_State)
+    {
+        return;
+    }
+    else
+    {
+        if( 1 == check_flag)
+        {
+            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+            {
+                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
+                {
+
+                    for(signal_counter=0;signal_counter<32;signal_counter++)
+                    {
+                        /*i think if we implemented the update bits will free me from this for loop*/
+                        /*check the update bit which will ease it for me to update the specific needed signals*/
+
+                        return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
+                        if( E_OK == return_value )
+                        {
+
+                            /*void Com_CbkRxAck(void);*/
+                        }
+                        else
+                        {
+                            /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
+                        }
+
+                    }
+                }
+                else    /*not RECEIVE LPDU*/
+                {
+                    /*DO NOTHING*/
+                }
+
+            }
+            check_flag = 0;
+        }
+        else    /*CHECK FLAG NOT SET*/
+        {
+
+        }
+
+    }
+}

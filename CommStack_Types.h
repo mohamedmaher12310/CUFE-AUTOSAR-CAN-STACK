@@ -138,7 +138,7 @@ typedef enum
 {
     PENDING,/*postponed the send of pdu if all signals within the pdu is PENDING*/
     TRIGGERED,
-    //    TRIGGE RED_ON_CHANGE,
+    //    TRIGGERED_ON_CHANGE,
     //    TRIGGERED_ON_CHANGE_WITHOUT_REPETITION,
     //    TRIGGERED_WITHOUT_REPETITION
 }ComTransferProperty;
@@ -251,7 +251,7 @@ typedef struct
     uint8 ComUpdateBitPosition;
 
     /*refrence to which lpdu this signal belong*/
-    void* ComSystemTemplateSystemSignalRef;  //updated
+    uint8 ComSystemTemplateSystemSignalRef;
 
 }ComSignal;
 
@@ -416,6 +416,6 @@ typedef struct
 
 }Com_ConfigType;
 
-extern const Com_ConfigType Com;
+//extern const Com_ConfigType Com;
 
 #endif /* COMMSTACK_TYPES_H_ */

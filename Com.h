@@ -122,13 +122,6 @@
 /* Transmission request was skipped */
 #define COM_E_SKIPPED_TRANSMISSION      (uint8)0x05
 
-
-
-/*******************************************************************************
- *                       External Variables                                    *
- *******************************************************************************/
-
-
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
@@ -148,42 +141,73 @@
  ************************************************************************************/
 void Com_Init(const Com_ConfigType* config );
 
-
 /************************************************************************************
-*Service name: Com_SendSignal
-*Syntax: uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
-*Service ID[hex]: 0x0a
-*Sync/Async: Asynchronous
-*Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
-*Parameters (in): -SignalId Id of signal to be sent.
-                  -SignalDataPtr Reference to the signal data to be transmitted.
-*Parameters (inout):None
-*Parameters (out): None
-*Return value: uint8 E_OK: service has been accepted
-                COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
-                was stopped (or service failed due to development error)
-                COM_BUSY: in case the TP-Buffer is locked for large data types handling
-*Description: The service Com_SendSignal updates the signal object identified by SignalId with
-               the signal referenced by the SignalDataPtr parameter.
-************************************************************************************/
+ * Service Name: Com_SendSignal
+ * Service ID[hex]: 0x0a
+ * Sync/Async: Asynchronous
+ * Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
+ * Parameters (in): SignalId; Id of signal to be sent.
+ *                  SignalDataPtr; Reference to the signal data to be transmitted.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: uint8 E_OK: service has been accepted
+ *                           COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
+ *                           was stopped (or service failed due to development error)
+ *                           COM_BUSY: in case the TP-Buffer is locked for large data types
+ *                           handling
+ * Description: The service Com_SendSignal updates the signal object identified by SignalId with
+ *              the signal referenced by the SignalDataPtr parameter.
+ *
+ ************************************************************************************/
 uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr);
 
+/************************************************************************************
+ * Service Name: Com_ReceiveSignal
+ * Service ID[hex]: 0x0b
+ * Sync/Async: Synchronous
+ * Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
+ * Parameters (in): SignalId; Id of signal to be received.
+ * Parameters (inout): None
+ * Parameters (out): SignalDataPtr Reference to the location where the received signal data shall be
+ *                                 stored.
+ * Return value: uint8 E_OK: service has been accepted
+ *                           COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group
+ *                           was stopped (or service failed due to development error)
+ *                           COM_BUSY: in case the TP-Buffer is locked for large data types
+ *                           handling
+ * Description: Com_ReceiveSignal copies the data of the signal identified by SignalId to the
+ *              location specified by SignalDataPtr.
+ *
+ ************************************************************************************/
+uint8 Com_ReceiveSignal(Com_SignalIdType SignalId,void* SignalDataPtr);
 
 /************************************************************************************
-*Service name: Com_ReceiveSignal
-*Syntax: uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
-*Service ID[hex]: 0x0b
-*Sync/Async: Synchronous
-*Reentrancy: Non Reentrant for the same signal. Reentrant for different signals.
-*Parameters (in): SignalId Id of signal to be received.
-*Parameters (inout):None
-*Parameters (out): SignalDataPtr Reference to the location where the received signal data shall be stored
-*Return value: -uint8 E_OK: service has been accepted
-               -COM_SERVICE_NOT_AVAILABLE: corresponding I-PDU group was stopped (or service failed due to development error)
-                -COM_BUSY: in case the TP-Buffer is locked for large data types handling
-*Description: Com_ReceiveSignal copies the data of the signal identified by SignalId to the location specified by SignalDataPtr.
-************************************************************************************/
-uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr);
+ * Service Name: Com_MainFunctionTx
+ * Service ID[hex]: 0x19
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR
+ * COM module's transmission activities that are not directly handled
+ * within the COM's function invoked by
+ * the RTE, for example Com_SendSignal.
+ ************************************************************************************/
+void Com_MainFunctionTx(void);
 
+/************************************************************************************
+ * Service Name: Com_MainFunctionRx
+ * Service ID[hex]: 0x18
+ * Return value: None
+ * Description: This function performs the processing of the AUTOSAR COM module's receive
+ *              processing that are not directly handled within the COM's functions invoked by the
+ *              PDU-R, for example Com_RxIndication.
+ ************************************************************************************/
+
+void Com_MainFunctionRx(void);
+
+/*******************************************************************************
+ *                       External Variables                                    *
+ *******************************************************************************/
+extern  const Com_ConfigType Com ;
+extern  PduInfoType PDU[ComMaxIPduCnt];
+extern  uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */
