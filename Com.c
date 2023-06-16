@@ -271,6 +271,7 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 
         }
 
+
         else
         {
             Com_ReceiveSignal_Return=COM_SERVICE_NOT_AVAILABLE;
