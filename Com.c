@@ -25,6 +25,8 @@ STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 PduInfoType PDU[ComMaxIPduCnt];
+
+uint8  Com_TransmissionFlag[MAX_NUM_OF_SIGNAL] ={0};
 /************************************************************************************
  * Service Name: Com_Init
  * Service ID[hex]: 0x01
@@ -162,7 +164,6 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
          *     3-Return OK
          */
     {
-      uint8  Com_TransmissionFlag[MAX_NUM_OF_SIGNAL] ={0};
         /* find the signal of SignalId */
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
