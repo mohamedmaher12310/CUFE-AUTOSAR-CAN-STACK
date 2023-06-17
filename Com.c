@@ -25,9 +25,6 @@ STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 PduInfoType PDU[ComMaxIPduCnt];
-
-static void Pdu_Concatnate(void);
-
 /************************************************************************************
  * Service Name: Com_Init
  * Service ID[hex]: 0x01
@@ -162,19 +159,17 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 
         /*flow:1-find the id of the signal
          *     2-update the data of the signal with the new data
-         *     3-Return OK
          */
     {
-
-        uint8 PDU_INDEX ;
-        uint8 SIGNAL_INDEX ;
-
-        /* find the signal of SignalId */   //i assumed that we store the signal in index= id
+      uint8  Com_TransmissionFlag[MAX_NUM_OF_SIGNAL] ={0};
+        /* find the signal of SignalId */
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
         /* update the Signal buffer with the signal data */
-        //  SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;
         SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
+
+        /* Update the signal transmission flag */
+        Com_TransmissionFlag[SignalId] = 1;
 
         Com_SendSignal_Return=E_OK;
 
@@ -240,83 +235,21 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
     else
 #endif
     {
-        uint8 PDU_INDEX ;
-        uint8  SIGNAL_INDEX;
-        ComIPdu *IPdu;
 
-        /* find the signal of SignalId */
-        Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
-        for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX++)
-        {
-            for ( SIGNAL_INDEX =0; SIGNAL_INDEX < ComMaxIPduCnt  ; SIGNAL_INDEX++)
-            {
-                if( Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[SIGNAL_INDEX]->ComHandleId == Signal_ID)
-                {
-                    IPdu=&Com.ComIPdu[PDU_INDEX];
-                }
-                else
-                {
-                    /*MISRA*/
-                }
+        uint8  *Signal_Value;
+        /* Get the byte value of the signal from the signal buffer */
+        Signal_Value = &SignalObject[SignalId];
 
-            }
-
-
-        }
-
-        if(IPdu->ComIPduDirection == RECEIVE)
-        {
-
-            /* update the Signal buffer with the signal data */   
-            //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;
-            SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
-            Com_ReceiveSignal_Return=E_OK;
-
-        }
-
-
-        else
-        {
-            Com_ReceiveSignal_Return=COM_SERVICE_NOT_AVAILABLE;
-        }
-
-
+        /* Copy the signal byte value to the output signal data pointer */
+        *((uint8*)SignalDataPtr) = *Signal_Value;
+        Com_ReceiveSignal_Return=E_OK;
+        return Com_ReceiveSignal_Return;
     }
 
-    return Com_ReceiveSignal_Return;
+
 }
 
-static void Pdu_Concatnate(void)
-{
-    /*signal number sequentially*/
-    uint8 signal_counter;
-    /*pdu number i have*/
-    uint8 pdu_counter;
-    /*counts signals in each pdu ,range 0:8*/
-    uint8 signal_counter_per_pdu;
-    /***************************************PDU CONCATINATION****************************************************/
-    signal_counter=0;
-    for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
-    {
-        for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
-        {
-            if(LITTLE_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
-                /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                (PDU[pdu_counter].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
-                /*is this will give me the same result as the above line?*/
-                //                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
-            }
-            else if(BIG_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
-                /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                (PDU[pdu_counter].SduDataPtr)[(8)-((uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8))-1] = SignalObject[signal_counter];
-                /*is this will give me the same result as the above line?*/
-                //                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
-            }
-            signal_counter++;
-        }
 
-    }
-}
 
 /************************************************************************************
  * Service Name: Com_MainFunctionTx
@@ -329,12 +262,7 @@ static void Pdu_Concatnate(void)
  ************************************************************************************/
 void Com_MainFunctionTx(void)
 {
-    /*signal number sequentially*/
-    uint8 signal_counter;
-    /*pdu number i have*/
-    uint8 pdu_counter;
-    /*counts signals in each pdu ,range 0:8*/
-    uint8 signal_counter_per_pdu;
+    uint8 signal_counter,pdu_counter,signal_counter_per_pdu;
     if(COM_UNINIT == ComCurrent_State)
     {
         return;
@@ -342,30 +270,35 @@ void Com_MainFunctionTx(void)
     else
     {
         /***************************************PDU CONCATINATION****************************************************/
-        Pdu_Concatnate();
 
+        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        {
+            signal_counter=0;
+            for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
+            {
+                (PDU[pdu_counter].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+                /*is this will give me the same result as the above line?*/
+                //                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
 
+                signal_counter++;
+            }
 
+        }
+
+        //        for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+        //        {
+        //
+        //            /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+        //            (PDU[Com.ComSignal[signal_counter].ComSystemTemplateSystemSignalRef].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+        //
+        //        }
         for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
         {
             if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
             {
                 if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                 {
-                    /*am i need to check the (time calculated> ComTxModeTimePeriod)
-                     * if true : call PduR_ComTransmit
-                     * else donot call
-                     * or it will be handled by OS
-                     * */
-//                    if(sw_timer>Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)
-//                    {
-                        PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
-
-//                    }
-//                    else
-//                    {
-//
-//                    }
+                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
 
                 }
                 else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
@@ -421,11 +354,10 @@ void Com_MainFunctionRx(void)
         {
             for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
             {
-                /*this check is done before in Com_RxIndication*/
-//                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
-//                {
+                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
+                {
 
-                    for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+                    for(signal_counter=0;signal_counter<32;signal_counter++)
                     {
                         /*i think if we implemented the update bits will free me from this for loop*/
                         /*check the update bit which will ease it for me to update the specific needed signals*/
@@ -442,11 +374,11 @@ void Com_MainFunctionRx(void)
                         }
 
                     }
-//                }
-//                else    /*not RECEIVE LPDU*/
-//                {
-//                    /*DO NOTHING*/
-//                }
+                }
+                else    /*not RECEIVE LPDU*/
+                {
+                    /*DO NOTHING*/
+                }
 
             }
             check_flag = 0;
