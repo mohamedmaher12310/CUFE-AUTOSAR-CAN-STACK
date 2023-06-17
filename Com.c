@@ -172,9 +172,9 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
         Com_TransmissionFlag[SignalId] = 1;
 
         Com_SendSignal_Return=E_OK;
-
+   return Com_SendSignal_Return;
     }
-    return Com_SendSignal_Return;
+ 
 }
 
 
