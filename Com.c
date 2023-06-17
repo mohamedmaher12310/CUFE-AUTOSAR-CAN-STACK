@@ -246,9 +246,9 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 
         /* find the signal of SignalId */
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
-        for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX ++)
+        for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX++)
         {
-            for ( SIGNAL_INDEX =0; SIGNAL_INDEX < ComMaxIPduCnt  ; SIGNAL_INDEX ++)
+            for ( SIGNAL_INDEX =0; SIGNAL_INDEX < ComMaxIPduCnt  ; SIGNAL_INDEX++)
             {
                 if( Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[SIGNAL_INDEX]->ComHandleId == Signal_ID)
                 {
@@ -357,7 +357,15 @@ void Com_MainFunctionTx(void)
                      * else donot call
                      * or it will be handled by OS
                      * */
-                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+//                    if(sw_timer>Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)
+//                    {
+                        PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+
+//                    }
+//                    else
+//                    {
+//
+//                    }
 
                 }
                 else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
@@ -413,10 +421,11 @@ void Com_MainFunctionRx(void)
         {
             for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
             {
-                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
-                {
+                /*this check is done before in Com_RxIndication*/
+//                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
+//                {
 
-                    for(signal_counter=0;signal_counter<32;signal_counter++)
+                    for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
                     {
                         /*i think if we implemented the update bits will free me from this for loop*/
                         /*check the update bit which will ease it for me to update the specific needed signals*/
@@ -433,11 +442,11 @@ void Com_MainFunctionRx(void)
                         }
 
                     }
-                }
-                else    /*not RECEIVE LPDU*/
-                {
-                    /*DO NOTHING*/
-                }
+//                }
+//                else    /*not RECEIVE LPDU*/
+//                {
+//                    /*DO NOTHING*/
+//                }
 
             }
             check_flag = 0;
