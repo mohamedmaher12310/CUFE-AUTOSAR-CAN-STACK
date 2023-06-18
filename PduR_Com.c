@@ -34,7 +34,9 @@ uint8 check_flag=0;
  ************************************************************************************/
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
 {
-    uint8 pdu_counter,signal_counter,return_value;
+    uint8 pdu_counter,signal_counter,return_value,i;
+    void (*NotficationAdress)(void);
+    ComSignal* signal_per_pdu;
     //    uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;
 
     if( RECEIVE== Com.ComIPdu[RxPduId].ComIPduDirection)
@@ -45,30 +47,35 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
         *(PDU[RxPduId].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
         if( DEFERRED == Com.ComIPdu[RxPduId].ComIPduSignalProcessing)
         {
-            check_flag = 1;
+            check_flag = RxPduId;
         }
         else    /*immediate*/
         {
+            signal_per_pdu=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId];
+            for(i=0;i<PDU[RxPduId].SduLength;i++){
+                NotficationAdress= signal_per_pdu->ComNotification;
+                signal_per_pdu++;
+            }
             /*i reached here during context of my ISR so do the unpacking here ;)*/
             /*check flow of receiving*/
-                for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
-                {
-                    /*i think if we implemented the update bits will free me from this for loop*/
-                    /*check the update bit which will ease it for me to update the specific needed signals*/
-                    /**/
-                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
-                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
-                    if( E_OK == return_value )
-                    {
-
-                        /*void Com_CbkRxAck(void);*/
-                    }
-                    else
-                    {
-                        /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
-                    }
-
-                }
+            //                for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+            //                {
+            //                    /*i think if we implemented the update bits will free me from this for loop*/
+            //                    /*check the update bit which will ease it for me to update the specific needed signals*/
+            //                    /**/
+            //                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
+            //                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
+            //                    if( E_OK == return_value )
+            //                    {
+            //
+            //                        /*void Com_CbkRxAck(void);*/
+            //                    }
+            //                    else
+            //                    {
+            //                        /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
+            //                    }
+            //
+            //                }
 
 
 

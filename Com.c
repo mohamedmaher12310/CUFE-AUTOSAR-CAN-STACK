@@ -177,10 +177,10 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
         Com_Trigger_Flag[SignalId] = 1;
 
         Com_SendSignal_Return=E_OK;
-        
+
         return Com_SendSignal_Return;
     }
-    
+
 }
 
 
@@ -242,7 +242,7 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 #endif
     {
 
-        uint8  *Signal_Value;
+        uint8* Signal_Value;
 
         /* Get the byte value of the signal from the signal buffer */
         Signal_Value = &SignalObject[SignalId];
@@ -268,10 +268,7 @@ static void Pdu_Concatnate(void)
     uint8 signal_counter_per_pdu;
     /***************************************PDU CONCATINATION****************************************************/
     signal_counter=0;
-    uint8* ptr;
-    int arr[5];
-    ptr=arr;
-    ptr[0];
+
     for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
     {
         for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
@@ -334,15 +331,15 @@ void Com_MainFunctionTx(void)
                      * else donot call
                      * or it will be handled by OS
                      * */
-//                    if(sw_timer>Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)
-//                    {
-                        PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                    //                    if(sw_timer>Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)
+                    //                    {
+                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
 
-//                    }
-//                    else
-//                    {
-//
-//                    }
+                    //                    }
+                    //                    else
+                    //                    {
+                    //
+                    //                    }
 
                 }
                 else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
@@ -388,52 +385,72 @@ void Com_MainFunctionTx(void)
 void Com_MainFunctionRx(void)
 {
     uint8 pdu_counter,signal_counter,return_value;
+    void (*NotficationAdress)(void);
+    ComSignal* signal_per_pdu;
+    uint8 i;
     if(COM_UNINIT == ComCurrent_State)
     {
         return;
     }
     else
     {
-        if( 1 == check_flag)
-        {
-            /*array of check flag*/
 
-            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
-            {
-                /*this check is done before in Com_RxIndication*/
-//                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
-//                {
-                /*check ture*/
-                    for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
-                    {
-                        /*i think if we implemented the update bits will free me from this for loop*/
-                        /*check the update bit which will ease it for me to update the specific needed signals*/
+        if(check_flag = 1){
 
-                        return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
-                        if( E_OK == return_value )
-                        {
 
-                            /*void Com_CbkRxAck(void);*/
-                        }
-                        else
-                        {
-                            /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
-                        }
-
-                    }
-//                }
-//                else    /*not RECEIVE LPDU*/
-//                {
-//                    /*DO NOTHING*/
-//                }
-
+            signal_per_pdu=Com.ComIPdu[check_flag].ComIPduSignalRef[check_flag];
+            for(i=0;i<PDU[check_flag].SduLength;i++){
+                NotficationAdress= signal_per_pdu->ComNotification;
+                signal_per_pdu++;
             }
-            check_flag = 0;
+
+            check_flag=0;
         }
         else    /*CHECK FLAG NOT SET*/
         {
 
         }
+
+//        if( 1 == check_flag)
+//        {
+//            /*array of check flag*/
+//
+//            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+//            {
+//                /*this check is done before in Com_RxIndication*/
+//                //                if( RECEIVE== Com.ComIPdu[pdu_counter].ComIPduDirection)
+//                //                {
+//                /*check ture*/
+//                for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+//                {
+//                    /*i think if we implemented the update bits will free me from this for loop*/
+//                    /*check the update bit which will ease it for me to update the specific needed signals*/
+//
+//                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
+//                    if( E_OK == return_value )
+//                    {
+//
+//                        /*void Com_CbkRxAck(void);*/
+//                    }
+//                    else
+//                    {
+//                        /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
+//                    }
+//
+//                }
+//                //                }
+//                //                else    /*not RECEIVE LPDU*/
+//                //                {
+//                //                    /*DO NOTHING*/
+//                //                }
+//
+//            }
+//            check_flag = 0;
+//        }
+//        else    /*CHECK FLAG NOT SET*/
+//        {
+//
+//        }
 
     }
 }

@@ -39,6 +39,8 @@
 
 #include "CommStack_Types.h"
 
+
+#include "Com_Cbk.h"
 /*
  * Macros for Com Module Status
  */
@@ -200,8 +202,8 @@ void Com_MainFunctionTx(void);
  *              processing that are not directly handled within the COM's functions invoked by the
  *              PDU-R, for example Com_RxIndication.
  ************************************************************************************/
-
 void Com_MainFunctionRx(void);
+
 
 /*******************************************************************************
  *                       External Variables                                    *
