@@ -26,8 +26,11 @@ uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 PduInfoType PDU[ComMaxIPduCnt];
 
+<<<<<<< HEAD
 uint8  Com_Trigger_Flag[MAX_NUM_OF_SIGNAL] ={0};
 
+=======
+>>>>>>> 381079935467f2cc6a62c587a00291aeb9554d39
 static void Pdu_Concatnate(void);
 
 /************************************************************************************
@@ -242,7 +245,24 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 #endif
     {
 
+<<<<<<< HEAD
         uint8  *Signal_Value;
+=======
+        /* find the signal of SignalId */
+        Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
+        for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX++)
+        {
+            for ( SIGNAL_INDEX =0; SIGNAL_INDEX < ComMaxIPduCnt  ; SIGNAL_INDEX++)
+            {
+                if( Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[SIGNAL_INDEX]->ComHandleId == Signal_ID)
+                {
+                    IPdu=&Com.ComIPdu[PDU_INDEX];
+                }
+                else
+                {
+                    /*MISRA*/
+                }
+>>>>>>> 381079935467f2cc6a62c587a00291aeb9554d39
 
         /* Get the byte value of the signal from the signal buffer */
         Signal_Value = &SignalObject[SignalId];
