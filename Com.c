@@ -25,6 +25,8 @@ STATIC ComSignal SignalBuffer[MAX_NUM_OF_SIGNAL];
 uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 PduInfoType PDU[ComMaxIPduCnt];
+
+uint8  Com_Trigger_Flag[MAX_NUM_OF_SIGNAL] ={0};
 /************************************************************************************
  * Service Name: Com_Init
  * Service ID[hex]: 0x01
@@ -159,9 +161,9 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 
         /*flow:1-find the id of the signal
          *     2-update the data of the signal with the new data
+         *     3-return
          */
     {
-      uint8  Com_TransmissionFlag[MAX_NUM_OF_SIGNAL] ={0};
         /* find the signal of SignalId */
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
@@ -169,12 +171,13 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
         SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
 
         /* Update the signal transmission flag */
-        Com_TransmissionFlag[SignalId] = 1;
+        Com_Trigger_Flag[SignalId] = 1;
 
         Com_SendSignal_Return=E_OK;
-   return Com_SendSignal_Return;
+        
+        return Com_SendSignal_Return;
     }
- 
+    
 }
 
 
@@ -237,12 +240,15 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
     {
 
         uint8  *Signal_Value;
+
         /* Get the byte value of the signal from the signal buffer */
         Signal_Value = &SignalObject[SignalId];
 
         /* Copy the signal byte value to the output signal data pointer */
         *((uint8*)SignalDataPtr) = *Signal_Value;
+
         Com_ReceiveSignal_Return=E_OK;
+
         return Com_ReceiveSignal_Return;
     }
 

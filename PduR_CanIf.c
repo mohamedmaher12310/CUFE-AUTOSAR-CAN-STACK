@@ -134,9 +134,9 @@ void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
          * [SWS_PduR_00621] When the PduR_<Lo>RxIndication is called the PDU Router
          * module shall call <Up>_RxIndication for each destination upper module.
          */
-
-          PduIdType Com_ID = PduR_Configuration.PduRRoutingPaths[RxPduId].PduRRoutingPath.PduRSrcPduRRef->PduRSrcPduRef->ComIPduHandleId;
-          Com_RxIndication(Com_ID,PduInfoPtr);
-
+        /*
+         * PduIdType Com_ID = PduR_Configuration.PduRRoutingPaths[RxPduId].PduRRoutingPath.PduRSrcPduRRef->PduRSrcPduRef.Com_ID;
+         * Com_RxIndication(Com_ID,PduInfoPtr);
+         * */
     }
 }
