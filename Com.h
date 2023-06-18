@@ -211,5 +211,5 @@ void Com_MainFunctionRx(void);
 extern  const Com_ConfigType Com ;
 extern  PduInfoType PDU[ComMaxIPduCnt];
 extern  uint8 SignalObject[MAX_NUM_OF_SIGNAL];
-
+extern uint8 PDU_INDEX;
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */

@@ -43,44 +43,25 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
     {
         /* Copy data */
         PDU[RxPduId].SduLength = PduInfoPtr->SduLength;
-        *(PDU[RxPduId].SduDataPtr) = *(PduInfoPtr->SduDataPtr);
+        *(PDU[RxPduId].SduDataPtr)  = *(PduInfoPtr->SduDataPtr);
         *(PDU[RxPduId].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
         if( DEFERRED == Com.ComIPdu[RxPduId].ComIPduSignalProcessing)
         {
-            check_flag = RxPduId;
+            PDU_INDEX=RxPduId;
+            check_flag = 1;
         }
         else    /*immediate*/
         {
+            uint8 signal_index_in_signal_buffer=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId]->ComHandleId;
             signal_per_pdu=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId];
-            for(i=0;i<PDU[RxPduId].SduLength;i++){
+            /*i reached here during context of my ISR so do the unpacking here ;)*/
+            for(i=0;i<PDU[RxPduId].SduLength;i++)
+            {
+                SignalObject[signal_index_in_signal_buffer+i]=(PDU[RxPduId].SduDataPtr)[i];
                 NotficationAdress= signal_per_pdu->ComNotification;
+                NotficationAdress();
                 signal_per_pdu++;
             }
-            /*i reached here during context of my ISR so do the unpacking here ;)*/
-            /*check flow of receiving*/
-            //                for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
-            //                {
-            //                    /*i think if we implemented the update bits will free me from this for loop*/
-            //                    /*check the update bit which will ease it for me to update the specific needed signals*/
-            //                    /**/
-            //                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
-            //                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
-            //                    if( E_OK == return_value )
-            //                    {
-            //
-            //                        /*void Com_CbkRxAck(void);*/
-            //                    }
-            //                    else
-            //                    {
-            //                        /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
-            //                    }
-            //
-            //                }
-
-
-
-
-
         }
     }
     else
