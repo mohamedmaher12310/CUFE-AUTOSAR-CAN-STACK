@@ -50,15 +50,13 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
         else    /*immediate*/
         {
             /*i reached here during context of my ISR so do the unpacking here ;)*/
-
-            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
-            {
-
+            /*check flow of receiving*/
                 for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
                 {
                     /*i think if we implemented the update bits will free me from this for loop*/
                     /*check the update bit which will ease it for me to update the specific needed signals*/
-
+                    /**/
+                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
                     return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
                     if( E_OK == return_value )
                     {
@@ -73,7 +71,7 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
                 }
 
 
-            }
+
 
 
         }
