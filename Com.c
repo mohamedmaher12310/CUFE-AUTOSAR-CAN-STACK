@@ -26,6 +26,8 @@ uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 
 PduInfoType PDU[ComMaxIPduCnt];
 
+uint8  Com_Trigger_Flag[MAX_NUM_OF_SIGNAL] ={0};
+
 static void Pdu_Concatnate(void);
 
 /************************************************************************************
@@ -162,24 +164,23 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 
         /*flow:1-find the id of the signal
          *     2-update the data of the signal with the new data
-         *     3-Return OK
+         *     3-return
          */
     {
-
-        uint8 PDU_INDEX ;
-        uint8 SIGNAL_INDEX ;
-
-        /* find the signal of SignalId */   //i assumed that we store the signal in index= id
+        /* find the signal of SignalId */
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
         /* update the Signal buffer with the signal data */
-        //  SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;
         SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
 
-        Com_SendSignal_Return=E_OK;
+        /* Update the signal transmission flag */
+        Com_Trigger_Flag[SignalId] = 1;
 
+        Com_SendSignal_Return=E_OK;
+        
+        return Com_SendSignal_Return;
     }
-    return Com_SendSignal_Return;
+    
 }
 
 
@@ -240,50 +241,21 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
     else
 #endif
     {
-        uint8 PDU_INDEX ;
-        uint8  SIGNAL_INDEX;
-        ComIPdu *IPdu;
 
-        /* find the signal of SignalId */
-        Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
-        for (  PDU_INDEX =0 ; PDU_INDEX < ComMaxIPduCnt  ; PDU_INDEX++)
-        {
-            for ( SIGNAL_INDEX =0; SIGNAL_INDEX < ComMaxIPduCnt  ; SIGNAL_INDEX++)
-            {
-                if( Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[SIGNAL_INDEX]->ComHandleId == Signal_ID)
-                {
-                    IPdu=&Com.ComIPdu[PDU_INDEX];
-                }
-                else
-                {
-                    /*MISRA*/
-                }
+        uint8  *Signal_Value;
 
-            }
+        /* Get the byte value of the signal from the signal buffer */
+        Signal_Value = &SignalObject[SignalId];
 
+        /* Copy the signal byte value to the output signal data pointer */
+        *((uint8*)SignalDataPtr) = *Signal_Value;
 
-        }
+        Com_ReceiveSignal_Return=E_OK;
 
-        if(IPdu->ComIPduDirection == RECEIVE)
-        {
-
-            /* update the Signal buffer with the signal data */   
-            //      SignalBuffer[Signal_ID].ComSystemTemplateSystemSignalRef=  SignalDataPtr;
-            SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
-            Com_ReceiveSignal_Return=E_OK;
-
-        }
-
-
-        else
-        {
-            Com_ReceiveSignal_Return=COM_SERVICE_NOT_AVAILABLE;
-        }
-
-
+        return Com_ReceiveSignal_Return;
     }
 
-    return Com_ReceiveSignal_Return;
+
 }
 
 static void Pdu_Concatnate(void)
