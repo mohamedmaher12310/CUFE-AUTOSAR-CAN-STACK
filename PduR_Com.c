@@ -34,23 +34,47 @@ uint8 check_flag=0;
  ************************************************************************************/
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
 {
+    uint8 pdu_counter,signal_counter,return_value;
+    //    uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;
 
-    uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;
-
-    if( RECEIVE== Com.ComIPdu[pdu_id].ComIPduDirection)
+    if( RECEIVE== Com.ComIPdu[RxPduId].ComIPduDirection)
     {
         /* Copy data */
-        PDU[pdu_id].SduLength = PduInfoPtr->SduLength;
-        *(PDU[pdu_id].SduDataPtr) = *(PduInfoPtr->SduDataPtr);
-        *(PDU[pdu_id].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
-        if( DEFERRED == Com.ComIPdu[pdu_id].ComIPduSignalProcessing)
+        PDU[RxPduId].SduLength = PduInfoPtr->SduLength;
+        *(PDU[RxPduId].SduDataPtr) = *(PduInfoPtr->SduDataPtr);
+        *(PDU[RxPduId].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
+        if( DEFERRED == Com.ComIPdu[RxPduId].ComIPduSignalProcessing)
         {
             check_flag = 1;
         }
         else    /*immediate*/
         {
+            /*i reached here during context of my ISR so do the unpacking here ;)*/
 
-    /*MUST BE DONE IN THE IRQ CONTEXT IN THE PAST*/
+            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+            {
+
+                for(signal_counter=0;signal_counter<MAX_NUM_OF_SIGNAL;signal_counter++)
+                {
+                    /*i think if we implemented the update bits will free me from this for loop*/
+                    /*check the update bit which will ease it for me to update the specific needed signals*/
+
+                    return_value=  Com_ReceiveSignal(Com.ComSignal[signal_counter].ComHandleId,&SignalObject[signal_counter]);
+                    if( E_OK == return_value )
+                    {
+
+                        /*void Com_CbkRxAck(void);*/
+                    }
+                    else
+                    {
+                        /*handling the COM_SERVICE_NOT_AVAILABLE and COM_BUSY cases*/
+                    }
+
+                }
+
+
+            }
+
 
         }
     }
