@@ -140,7 +140,7 @@ typedef enum
     TRIGGERED,
     //    TRIGGERED_ON_CHANGE,
     //    TRIGGERED_ON_CHANGE_WITHOUT_REPETITION,
-    //    TRIGGERED_WITHOUT_REPETITION
+        TRIGGERED_WITHOUT_REPETITION
 }ComTransferProperty;
 
 /* The available transmission modes described in [18] shall
@@ -220,6 +220,17 @@ typedef struct
      * 0-sized dynamic signal.
      */
     uint8 ComSignalInitValue;
+
+    /* For ComSignalType UINT8_N this parameter specifies the length n in
+     * bytes. For ComSignalType UINT8_DYN it specifies the maximum length in
+     * bytes. For all other types this parameter shall be ignored.
+     * The supported maximum length is restricted by the used transportation
+     * system. For non TP-PDUs the maximum size of a PDU, and therefore also
+     * of any included signal, is limited by the concrete bus characteristic. For
+     * example, the limit is 8 bytes for CAN and LIN, 64 bytes for CAN FD and
+     * 254 for FlexRay.
+     * */
+    uint32 ComSignalLength;
 
     /* The AUTOSAR type of the signal. Whether or not the signal is signed or unsigned
      * can be found by examining the value of this attribute.

@@ -63,50 +63,48 @@ void Com_Init(const Com_ConfigType* config )
 
     }
     else
-    {
-        /* Do Nothing*/
-    }
-
 #endif
-    uint8 counter_signal;
-    uint8 counter_pdu;
-    uint8 byte_counter;
-
-    /*Loop to initialize each PDU*/
-    for(counter_pdu=0;counter_pdu<ComMaxIPduCnt;counter_pdu++)
     {
-        PDU[counter_pdu].SduLength = PDU_LEN_IN_BYTES;
-        for(byte_counter=0;byte_counter<PDU_LEN_IN_BYTES;byte_counter++)
+        uint8 counter_signal;
+        uint8 counter_pdu;
+        uint8 byte_counter;
+
+        /*Loop to initialize each PDU*/
+        for(counter_pdu=0;counter_pdu<ComMaxIPduCnt;counter_pdu++)
         {
+            PDU[counter_pdu].SduLength = PDU_LEN_IN_BYTES;
+            PDU[counter_pdu].SduDataPtr = &(config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault);
+            for(byte_counter=0;byte_counter<PDU_LEN_IN_BYTES;byte_counter++)
+            {
 
-            /* The AUTOSAR COM module shall initialize each I-PDU during
-             * execution of Com_Init (SWS_Com_00432), firstly byte wise with the
-             * ComTxIPduUnusedAreasDefault value
-             */
-            *(PDU[counter_pdu].SduDataPtr) = (config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault)<<byte_counter;
+                /* The AUTOSAR COM module shall initialize each I-PDU during
+                 * execution of Com_Init (SWS_Com_00432), firstly byte wise with the
+                 * ComTxIPduUnusedAreasDefault value
+                 */
+                PDU[counter_pdu].SduDataPtr[byte_counter] = (config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault)<<byte_counter;
 
-            /* The AUTOSAR COM module shall clear all update-bits during
-             * initialization.
-             */
-            /*not needed*/
-            *(PDU[counter_pdu].SduDataPtr) &=~(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu])->ComUpdateBitPosition);
+                /* The AUTOSAR COM module shall clear all update-bits during
+                 * initialization.
+                 */
+                /*not needed*/
+                //            *(PDU[counter_pdu].SduDataPtr) &=~(1<<(config->ComIPdu[counter_pdu].ComIPduSignalRef[counter_pdu])->ComUpdateBitPosition);
+            }
         }
-    }
-    for(counter_signal=0;counter_signal<MAX_NUM_OF_SIGNAL;counter_signal++)
-    {
-        /* The AUTOSAR COM module shall initialize each signal of n-bit
-         * sized signal type on sender and receiver side with the lower n-bits of its configuration
-         * parameter ComSignalInitValue
-         */
-        SignalBuffer[counter_signal].ComSignalInitValue = config->ComSignal[counter_signal].ComSignalInitValue;
+        for(counter_signal=0;counter_signal<MAX_NUM_OF_SIGNAL;counter_signal++)
+        {
+            /* The AUTOSAR COM module shall initialize each signal of n-bit
+             * sized signal type on sender and receiver side with the lower n-bits of its configuration
+             * parameter ComSignalInitValue
+             */
+            SignalBuffer[counter_signal].ComSignalInitValue = config->ComSignal[counter_signal].ComSignalInitValue;
 
-        /* initialize the data signal buffer with the configured initial values. */
-        SignalObject[counter_signal] = SignalBuffer[counter_signal].ComSignalInitValue;
+            /* initialize the data signal buffer with the configured initial values. */
+            SignalObject[counter_signal] = SignalBuffer[counter_signal].ComSignalInitValue;
 
+        }
+        ComCurrent_State = COM_INIT;
     }
-    ComCurrent_State = COM_INIT;
 }
-
 /************************************************************************************
  * Service Name: Com_SendSignal
  * Service ID[hex]: 0x0a
@@ -172,9 +170,15 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
         Com_SignalIdType Signal_ID = Com.ComSignal[SignalId].ComHandleId  ;
 
         /* update the Signal buffer with the signal data */
-        SignalObject[Signal_ID]= *((uint8 *)SignalDataPtr);
+        //check this
+        uint8 iter;
+        for (iter=0;iter<Com.ComSignal[Signal_ID].ComSignalLength;iter++)
+        {
+            SignalObject[Signal_ID+iter]= ((uint8 *)SignalDataPtr)[iter];
+        }
 
         /* Update the signal transmission flag */
+        //nes2al 3l update bits wel implementation bta3na
         Com_Trigger_Flag[SignalId] = 1;
 
         Com_SendSignal_Return=E_OK;
@@ -245,10 +249,13 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
         Signal_Value = &SignalObject[SignalId];
 
         /* Copy the signal byte value to the output signal data pointer */
-        *((uint8*)SignalDataPtr) = *Signal_Value;
-
+        //check this
+        uint8 iter;
+        for (iter=0;iter<Com.ComSignal[SignalId].ComSignalLength;iter++)
+        {
+            ((uint8*)SignalDataPtr)[iter]  = Signal_Value[iter];
+        }
         Com_ReceiveSignal_Return=E_OK;
-
         return Com_ReceiveSignal_Return;
     }
 
@@ -268,20 +275,18 @@ static void Pdu_Concatnate(void)
 
     for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
     {
+        PDU[pdu_counter].SduDataPtr = &SignalObject[signal_counter];
         for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
         {
             if(LITTLE_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
                 /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+                PDU[pdu_counter].SduDataPtr[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
 
-                (PDU[pdu_counter].SduDataPtr)[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
-                /*is this will give me the same result as the above line?*/
-                //                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
             }
             else if(BIG_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
                 /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
                 (PDU[pdu_counter].SduDataPtr)[(8)-((uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8))-1] = SignalObject[signal_counter];
-                /*is this will give me the same result as the above line?*/
-                //                (PDU[pdu_counter].SduDataPtr)[signal_counter_per_pdu] = SignalObject[signal_counter];
+
             }
             signal_counter++;
         }
@@ -320,7 +325,7 @@ void Com_MainFunctionTx(void)
             {
                 if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                 {
-                    /*am i need to check the (time calculated> ComTxModeTimePeriod)
+                    /*do i need to check the (time calculated> ComTxModeTimePeriod)
                      * if true : call PduR_ComTransmit
                      * else donot call
                      * or it will be handled by OS
@@ -340,6 +345,7 @@ void Com_MainFunctionTx(void)
                         }
                         else
                         {
+
                             PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
                             /*end the request of this direct lpdu as it is done and sent*/
                             break;

@@ -15,8 +15,8 @@
 const Com_ConfigType Com = {
                             .ComIPdu[0] = {
                                            //                                        .ComIPduCallout = &,
-                                           .ComIPduDirection = RECEIVE,
-                                           .ComIPduHandleId = 0,
+                                           .ComIPduDirection = SEND,
+                                           .ComIPduHandleId = 1,
                                            .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
@@ -38,7 +38,7 @@ const Com_ConfigType Com = {
                                            //                                        .ComIPduCallout = &,
                                            .ComIPduDirection = RECEIVE,
                                            .ComIPduHandleId = 1,
-                                           .ComIPduSignalProcessing = DEFERRED,
+                                           .ComIPduSignalProcessing = IMMEDIATE,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
                                            .ComIPduSignalRef[1] = &Com.ComSignal[8],
@@ -82,6 +82,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_0,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -98,6 +100,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_1,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -114,6 +118,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_2,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -130,6 +136,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_3,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -146,6 +154,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_4,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -162,6 +172,7 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_5,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -178,6 +189,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_6,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -194,6 +207,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_7,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -210,6 +225,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_8,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -226,6 +243,8 @@ const Com_ConfigType Com = {
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_9,
                                             .ComRxDataTimeoutAction = NONE_Rx,
+                                            .ComSignalLength=1,
+
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
                                             .ComSignalInitValue = 0,
@@ -242,6 +261,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_10,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -258,6 +279,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_11,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -274,6 +297,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_12,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -290,6 +315,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_13,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -306,6 +333,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_14,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -322,6 +351,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_15,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -338,6 +369,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_16,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -354,6 +387,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_17,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -370,6 +405,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_18,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -386,6 +423,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_19,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -402,6 +441,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_20,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -418,6 +459,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_21,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -434,6 +477,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_22,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,
@@ -450,6 +495,8 @@ const Com_ConfigType Com = {
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_23,
                                              .ComRxDataTimeoutAction = NONE_Rx,
+                                             .ComSignalLength=1,
+
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
                                              .ComSignalInitValue = 0,

@@ -58,23 +58,25 @@ void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result)
     else
 #endif /*PduRDevErrorDetect*/
     {
-        if (PduR_Configuration.PduRRoutingPaths[id].PduRSrcPdu.PduRSrcPduUpTxConf == STD_ON)
+        /*
+         * [SWS_PduR_00627] When the communication interface module calls
+         * PduR_<Lo>TxConfirmation the PDU Router shall call <Up>_TxConfirmation in the
+         * upper module and forward the transmission result from the lower to the upper layer
+         * interface.
+         */
+        uint8 iter=ZERO;
+        for (iter = ZERO; iter < PduRMaxRoutingPathCnt ; iter ++)
         {
-            /*
-             * [SWS_PduR_00627] When the communication interface module calls
-             * PduR_<Lo>TxConfirmation the PDU Router shall call <Up>_TxConfirmation in the
-             * upper module and forward the transmission result from the lower to the upper layer
-             * interface.
-             */
-            /* PduIdType Com_ID = PduR_Configuration.PduRRoutingPaths[id].PduRRoutingPath.PduRSrcPduRRef->PduRSrcPduRef.Com_ID;
-             * */
-            // Com_TxConfirmation(Com_ID,E_OK);
+            if (id == PduR_Configuration.PduRRoutingPaths[iter].PduRDestPdu.PduRDestPduHandleId)
+            {
+                PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[iter].PduRSrcPdu.PduRSrcPduRef->ComIPduHandleId;
+                // result = Com_TxConfirmation(Pdu_ID, PduInfoPtr);
+            }
+            else
+            {
+                /*Do Nothing*/
+            }
         }
-        else
-        {
-            /*Do Nothing*/
-        }
-
     }
 }
 #endif /* PduRTransmissionConfirmation */
@@ -134,9 +136,21 @@ void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
          * [SWS_PduR_00621] When the PduR_<Lo>RxIndication is called the PDU Router
          * module shall call <Up>_RxIndication for each destination upper module.
          */
+        uint8 iter=ZERO;
+        for (iter = ZERO; iter < PduRMaxRoutingPathCnt ; iter ++)
+        {
+            if (RxPduId == PduR_Configuration.PduRRoutingPaths[iter].PduRDestPdu.PduRDestPduHandleId)
+            {
+                PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[iter].PduRSrcPdu.PduRSrcPduRef->ComIPduHandleId;
+                Com_RxIndication(Pdu_ID, &PduInfoPtr);
+            }
+            else
+            {
+                /*Do Nothing*/
+            }
+        }
 
-          PduIdType Com_ID = PduR_Configuration.PduRRoutingPaths[RxPduId].PduRRoutingPath.PduRSrcPduRRef->PduRSrcPduRef->ComIPduHandleId;
-          Com_RxIndication(Com_ID,PduInfoPtr);
+
 
     }
 }

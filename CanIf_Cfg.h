@@ -148,7 +148,7 @@
  * Maximum number of Pdus. This parameter is needed only in case of
  * post-build loadable implementation using static memory allocation.
  */
-#define CanIfMaxTxPduCfg                   (2U)
+#define CanIfMaxTxPduCfg                   (3U)
 
 /*ECU wide unique, symbolic handle for transmit CAN L-SDU.*/
 #define CanIfTxPduId_0          (0U)
@@ -199,7 +199,7 @@
  * Maximum number of Pdus. This parameter is needed only in case of
  * post-build loadable implementation using static memory allocation.
  */
-#define CanIfMaxRxPduCfg                         (2U)
+#define CanIfMaxRxPduCfg                         (3U)
 
 /*
  * ECU wide unique, symbolic handle for receive CAN L-SDU. It shall

@@ -87,6 +87,9 @@
 /* Service ID for Com_SendSignal API */
 #define COM_SEND_SIGNAL_SID                    (uint8)0x0A
 
+/* Service ID for Com_RxIndication API */
+#define Com_RxIndication_SID                    (uint8)0x42
+
 /*the service is currently not available e.g.
  *the corresponding I-PDU group is stopped
  *(or a development error has been detected)
@@ -212,4 +215,5 @@ extern  const Com_ConfigType Com ;
 extern  PduInfoType PDU[ComMaxIPduCnt];
 extern  uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 extern uint8 PDU_INDEX;
+extern Com_StatusType ComCurrent_State;
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */

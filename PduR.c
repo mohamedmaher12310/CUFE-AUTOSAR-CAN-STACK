@@ -106,8 +106,19 @@ Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPt
     else
 #endif /*PduRDevErrorDetect*/
     {
-        PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[TxPduId].PduRDestPdu.PduRDestPduRef->CanIfTxPduId;
-        Pdur_ComTransmitReturn = CanIf_Transmit(Pdu_ID, PduInfoPtr);
+        uint8 iter=ZERO;
+        for (iter = ZERO; iter < PduRMaxRoutingPathCnt ; iter ++)
+        {
+            if (TxPduId == PduR_Configuration.PduRRoutingPaths[iter].PduRSrcPdu.PduRSrcPduHandleId)
+            {
+                PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[iter].PduRDestPdu.PduRDestPduRef->CanIfTxPduId;
+                Pdur_ComTransmitReturn = CanIf_Transmit(Pdu_ID, PduInfoPtr);
+            }
+            else
+            {
+                /*Do Nothing*/
+            }
+        }
     }
     return Pdur_ComTransmitReturn;
 }
