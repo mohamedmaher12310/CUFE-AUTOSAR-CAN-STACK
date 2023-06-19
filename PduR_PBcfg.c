@@ -19,7 +19,8 @@ const PduR_PBConfigType PduR_Configuration =
    .PduRConfigurationId = PduR_Configuration_ID1,
    .PduRDestPdu =
    { .PduRDestPduDataProvision = PduR_DestData_Provision,
-     .PduRDestPduRef = &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[ZERO]
+     .PduRDestPduRef = &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[ZERO],
+     .PduRDestPduHandleId = 42
    },
    .PduRRoutingPath =
    { .PduRQueueDepth = PduR_Queue_Depth,
@@ -27,8 +28,9 @@ const PduR_PBConfigType PduR_Configuration =
      .PduRSrcPduRRef = (PduRSrcPdu*)&PduR_Configuration.PduRRoutingPaths[ZERO].PduRSrcPdu
    },
    .PduRSrcPdu=
-   { .PduRSrcPduUpTxConf = PduR_SrcPduUp_TxConfirmation
-     //.PduRSrcPduRef = &
+   { .PduRSrcPduUpTxConf = PduR_SrcPduUp_TxConfirmation,
+     .PduRSrcPduRef = &Com.ComIPdu[ZERO],
+     .PduRSrcPduHandleId = 11
    }
   }
  }

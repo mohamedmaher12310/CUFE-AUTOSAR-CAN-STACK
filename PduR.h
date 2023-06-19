@@ -68,6 +68,22 @@
 
 #endif
 
+/* Include of Com Header file */
+#include "Com.h"
+/* AUTOSAR Version checking between Com.h and PduR.h files */
+#if ((COM_AR_RELEASE_MAJOR_VERSION != PDUR_AR_RELEASE_MAJOR_VERSION)\
+        ||  (COM_AR_RELEASE_MINOR_VERSION != PDUR_AR_RELEASE_MINOR_VERSION)\
+        ||  (COM_AR_RELEASE_PATCH_VERSION != PDUR_AR_RELEASE_PATCH_VERSION))
+#error "The AR version of Com.h does not match the expected version"
+#endif
+
+/* Software Version checking between PduR.h and Com.h files */
+#if ((COM_SW_MAJOR_VERSION != PDUR_SW_MAJOR_VERSION)\
+        ||  (COM_SW_MINOR_VERSION != PDUR_SW_MINOR_VERSION)\
+        ||  (COM_SW_PATCH_VERSION != PDUR_SW_PATCH_VERSION))
+#error "The SW version of Com.h does not match the expected version"
+#endif
+
 
 /******************************************************************************
  *                      API Service Id Macros                                 *
