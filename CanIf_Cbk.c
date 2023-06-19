@@ -198,7 +198,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                             RxPduPDUR.SduLength = PduInfoPtr->SduLength;
                             RxPduPDUR.SduDataPtr = PduInfoPtr->SduDataPtr;
                             RxPduPDUR.MetaDataPtr = PduInfoPtr->MetaDataPtr;
-                            /*PduR_CanIfRxIndication(RxPDU_index,&RxPduPDUR);*/
+                            PduR_CanIfRxIndication(RxPDU_index,&RxPduPDUR);
                             break;
                         }
                         default:

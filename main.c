@@ -18,6 +18,7 @@
 #include "UART.h"
 #include "Os.h"
 #include "CanIf.h"
+#include "PduR.h"
 
 #define EIGHT_BYTES     (8U)
 Can_PduType Temp_Buffer;
@@ -40,6 +41,7 @@ int main(void)
 
     CanIf_Init(&CanIf_Configuration);
 
+    PduR_Init(&PduR_Configuration);
     /***************************************************************************************
      * Initialize the SysTick Timer
      ****************************************************************************************/
@@ -82,12 +84,6 @@ int main(void)
     uint32 x;
     while(1)
     {
-        //        x = GetCounterValue();
-        //        if (( x % (uint32)CAN_MAIN_FUNCTION_PERIOD) == 0)
-        //        {
-        //            Can_MainFunction_Write();
-        //        }
-
         while (RecievedChar == 0)
         {
             UART1_SendString("You turned off the Network\nTo Re-Establish the Network press the Space bar\n");
@@ -107,7 +103,8 @@ int main(void)
                 Tx_Message_Data_Buffer[i] = RecievedString[i];
             }
             Can_Message_Tx.id=2;
-            CanIf_Transmit(CanIfTxPduId_0, &Tx_Pdu);
+            PduR_ComTransmit(20, &Tx_Pdu);
+            //CanIf_Transmit(CanIfTxPduId_0, &Tx_Pdu);
             //Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);
             for ( i=0;i<8;i++)
             {

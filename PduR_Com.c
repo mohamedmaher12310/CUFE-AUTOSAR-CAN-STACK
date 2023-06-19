@@ -34,39 +34,69 @@ uint8 check_flag=0;
  ************************************************************************************/
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
 {
-    uint8 pdu_counter,signal_counter,return_value,i;
-    void (*NotficationAdress)(void);
-    ComSignal* signal_per_pdu;
-    //    uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;
-
-    if( RECEIVE== Com.ComIPdu[RxPduId].ComIPduDirection)
+#if(COM_DEV_ERROR_DETECT == STD_ON)
+    /* Check if the module is initialized or not*/
+    if ( ComCurrent_State ==  COM_UNINIT)
     {
-        /* Copy data */
-        PDU[RxPduId].SduLength = PduInfoPtr->SduLength;
-        *(PDU[RxPduId].SduDataPtr)  = *(PduInfoPtr->SduDataPtr);
-        *(PDU[RxPduId].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
-        if( DEFERRED == Com.ComIPdu[RxPduId].ComIPduSignalProcessing)
-        {
-            PDU_INDEX=RxPduId;
-            check_flag = 1;
-        }
-        else    /*immediate*/
-        {
-            uint8 signal_index_in_signal_buffer=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId]->ComHandleId;
-            signal_per_pdu=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId];
-            /*i reached here during context of my ISR so do the unpacking here ;)*/
-            for(i=0;i<PDU[RxPduId].SduLength;i++)
-            {
-                SignalObject[signal_index_in_signal_buffer+i]=(PDU[RxPduId].SduDataPtr)[i];
-                NotficationAdress= signal_per_pdu->ComNotification;
-                NotficationAdress();
-                signal_per_pdu++;
-            }
-        }
+        Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, Com_RxIndication_SID, COM_E_UNINIT);
     }
     else
     {
-        /*Do Nothing*/
+        /* MISRA*/
     }
 
+    if(RxPduId>ComMaxIPduCnt)
+    {
+        Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, Com_RxIndication_SID, COM_E_PARAM);
+    }
+
+    else
+    {
+        /* MISRA*/
+    }
+
+    /* check if the input configuration pointer is not a NULL_PTR */
+    if ( PduInfoPtr == NULL_PTR )
+    {
+        Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, Com_RxIndication_SID, COM_E_PARAM_POINTER);
+
+    }
+    else
+#endif
+    {
+        uint8 pdu_counter,signal_counter,return_value,i;
+        void (*NotficationAdress)(void);
+        ComSignal* signal_per_pdu;
+        //    uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;
+
+        if( RECEIVE== Com.ComIPdu[RxPduId].ComIPduDirection)
+        {
+            /* Copy data */
+            PDU[RxPduId].SduLength = PduInfoPtr->SduLength;
+            *(PDU[RxPduId].SduDataPtr)  = *(PduInfoPtr->SduDataPtr);
+            *(PDU[RxPduId].MetaDataPtr) = *(PduInfoPtr->MetaDataPtr);
+            if( DEFERRED == Com.ComIPdu[RxPduId].ComIPduSignalProcessing)
+            {
+                PDU_INDEX=RxPduId;
+                check_flag = 1;
+            }
+            else    /*immediate*/
+            {
+                uint8 signal_index_in_signal_buffer=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId]->ComHandleId;
+                signal_per_pdu=Com.ComIPdu[RxPduId].ComIPduSignalRef[RxPduId];
+                /*i reached here during context of my ISR so do the unpacking here ;)*/
+                for(i=0;i<PDU[RxPduId].SduLength;i++)
+                {
+                    SignalObject[signal_index_in_signal_buffer+i]=(PDU[RxPduId].SduDataPtr)[i];
+                    NotficationAdress= signal_per_pdu->ComNotification;
+                    NotficationAdress();
+                    signal_per_pdu++;
+                }
+            }
+        }
+        else
+        {
+            /*Do Nothing*/
+        }
+    }
 }
