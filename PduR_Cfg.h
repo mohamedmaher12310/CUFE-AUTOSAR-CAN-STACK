@@ -94,7 +94,7 @@
      * needed only in case of post-build loadable implementation using static
      * memory allocation.
      */
-#define     PduRMaxRoutingPathCnt   (uint16)1
+#define     PduRMaxRoutingPathCnt   (uint16)3
 
 
 /************************PduRDestPdu subContainer************************/
@@ -132,7 +132,9 @@
 
 
 
-#define PduR_Configuration_ID1    (uint16) 1
+#define PduR_Configuration_ID1    (uint16)1
+#define PduR_Configuration_ID2    (uint16)2
+#define PduR_Configuration_ID3    (uint16)3
 
 #define PduR_DestData_Provision    PDUR_DIRECT
 
