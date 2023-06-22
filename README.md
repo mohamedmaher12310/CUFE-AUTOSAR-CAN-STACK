@@ -76,7 +76,7 @@ This repository contains the implementation of a Communication Stack based on th
 
 
 <!-- Layeres -->
-### :space_invader: Layered AUTOSAR Architecture
+### 📥: Layered AUTOSAR Architecture
 
 <details>
   <summary>Basic Software (BSW) Layer</summary>
@@ -102,12 +102,12 @@ This repository contains the implementation of a Communication Stack based on th
 </details>
 
 <!-- ASW -->
-### :dart: ASW
+### 💻: ASW
 
 - The Communication Stack is our Graduation Project and is implemented using Embedded C.
 
 <!--Implemented Modules -->
-### :art: Implemented Modules
+### 🎯 : Implemented Modules
 
 | Layer             | Module                                                             |
 | ----------------- | ------------------------------------------------------------------ |
