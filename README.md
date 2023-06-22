@@ -51,9 +51,8 @@
 
 - [About the Project](#star2-about-the-project)
   * [Layered AUTOSAR Architecture](#stack-layeres )
-  * [Features](#dart-features)
-  * [Color Reference](#art-color-reference)
-  * [Environment Variables](#key-environment-variables)
+  * [ASW](#ASW)
+  * [Implemented Modules](#Modules)
 - [Getting Started](#toolbox-getting-started)
   * [Prerequisites](#bangbang-prerequisites)
   * [Installation](#gear-installation)
@@ -77,7 +76,7 @@ This repository contains the implementation of a Communication Stack based on th
 
 
 <!-- Layeres -->
-### :space_invader:Layered AUTOSAR Architecture
+### :space_invader: Layered AUTOSAR Architecture
 
 <details>
   <summary>Basic Software (BSW) Layer</summary>
@@ -102,23 +101,19 @@ This repository contains the implementation of a Communication Stack based on th
 <summary>Application Layer</summary>
 </details>
 
-<!-- Features -->
-### :dart: Features
+<!-- ASW -->
+### :dart: ASW
 
-- Feature 1
-- Feature 2
-- Feature 3
+- The Communication Stack is our Graduation Project and is implemented using Embedded C.
 
-<!-- Color Reference -->
-### :art: Color Reference
+<!--Implemented Modules -->
+### :art: Implemented Modules
 
-| Color             | Hex                                                                |
+| Layer             | Module                                                             |
 | ----------------- | ------------------------------------------------------------------ |
-| Primary Color | ![#222831](https://via.placeholder.com/10/222831?text=+) #222831 |
-| Secondary Color | ![#393E46](https://via.placeholder.com/10/393E46?text=+) #393E46 |
-| Accent Color | ![#00ADB5](https://via.placeholder.com/10/00ADB5?text=+) #00ADB5 |
-| Text Color | ![#EEEEEE](https://via.placeholder.com/10/EEEEEE?text=+) #EEEEEE |
-
+| Services Layer | [#COM Module]()- [#PDUR Module]() |
+| ECU Abstraction Layer | ![#CANIF Module]()|
+|  MCAL Layer | ![#CAN Driver]()|
 
 <!-- Env Variables -->
 ### :key: Environment Variables
