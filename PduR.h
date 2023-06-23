@@ -38,7 +38,7 @@
 
 /* PduR Pre-Compile Configuration Header file */
 #include "PduR_Cfg.h"
-/* AUTOSAR Version checking between CanIf_Cfg.h and CanIf.h files */
+/* AUTOSAR Version checking between PduR_Cfg.h and PduR.h files */
 #if ((PDUR_CFG_AR_RELEASE_MAJOR_VERSION != PDUR_AR_RELEASE_MAJOR_VERSION)\
         ||  (PDUR_CFG_AR_RELEASE_MINOR_VERSION != PDUR_AR_RELEASE_MINOR_VERSION)\
         ||  (PDUR_CFG_AR_RELEASE_PATCH_VERSION != PDUR_AR_RELEASE_PATCH_VERSION))
@@ -59,7 +59,7 @@
 #if (STD_ON == PduRDevErrorDetect)
 #include "Det.h"
 
-/* AUTOSAR Version checking between Det and CanIf Modules */
+/* AUTOSAR Version checking between Det and PduR Modules */
 #if ((DET_AR_MAJOR_VERSION != PDUR_AR_RELEASE_MAJOR_VERSION)\
         || (DET_AR_MINOR_VERSION != PDUR_AR_RELEASE_MINOR_VERSION)\
         || (DET_AR_PATCH_VERSION != PDUR_AR_RELEASE_PATCH_VERSION))
