@@ -107,11 +107,11 @@ int main(void)
             }
             Can_Message_Tx.id=2;
             /*done ;)*/
-//            Com_MainFunctionTx();
+            Com_MainFunctionTx();
             /*done ;)*/
-            Com_RxIndication(2,&Tx_Pdu);
+//            Com_RxIndication(2,&Tx_Pdu);
             /*done ;)*/
-            Com_MainFunctionRx();
+//            Com_MainFunctionRx();
 //           PduR_ComTransmit(1, &Tx_Pdu);
             //CanIf_Transmit(CanIfTxPduId_0, &Tx_Pdu);
             //Can_Write(CAN_HOH_ID_1,&Can_Message_Tx);

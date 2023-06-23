@@ -108,7 +108,13 @@
  *                      Definitions used in Module                             *
  *******************************************************************************/
 
-#define SIG_LEN_IN_BTYES                (uint8)1
-#define MAX_NUM_OF_SIGNAL       ((uint16)(ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES)))
-#define PDU_LEN_IN_BYTES                (uint8)8
+#define SIG_LEN_IN_BTYES                              (uint8)1
+#define MAX_NUM_OF_SIGNAL                             ((uint16)(ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES)))
+#define PDU_LEN_IN_BYTES                              (uint8)8
+#define ComMinimumDelayTime_Value                     (float32)0.005
+#define ComTxIPduUnusedAreasDefault_Value             (uint8)0xFF
+#define ComTxModeTimePeriod_Value                     (float32)0.125
+#define ComTimeout_Value                              (float32)0.125
+
+
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_CFG_H_ */
