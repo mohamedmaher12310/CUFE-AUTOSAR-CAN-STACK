@@ -30,10 +30,10 @@
 # :notebook_with_decorative_cover: Table of Contents
 
 - [About the Project](#star2-about-the-project)
-  * [Layered AUTOSAR Architecture](#stack-layeres )
-  * [ASW](#ASW)
-  * [Implemented Modules](#Modules)
-- [Environment Variables](#toolbox-getting-started)
+  * [Layered AUTOSAR Architecture](##📥Layered-AUTOSAR-Architecture)
+  * [ASW](##💻ASWASW)
+  * [Implemented Modules](##🎯Implemented-Modules)
+- [Environment Variables](#key-Environment-Variables)
 - [Contributing](#wave-contributing)
 - [License](#warning-license)
 - [Contact](#handshake-contact)
