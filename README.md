@@ -89,101 +89,31 @@ This repository contains the implementation of a Communication Stack based on th
 
 | Layer             | Module                                                             |
 | ----------------- | ------------------------------------------------------------------ |
-| Services Layer | [#COM Module]()- [#PDUR Module]() |
-| ECU Abstraction Layer | [#CANIF Module]()|
-|  MCAL Layer | [#CAN Driver]()|
+| Services Layer | [#COM Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Com)- [#PDUR Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/PduR) [#OS](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Os) [#Det](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Det)|
+| ECU Abstraction Layer | [#CANIF Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/ECUAL/CanIf)|
+|  MCAL Layer | [#CAN Driver](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/MCAL/CanDrv)|
 
 <!-- Env Variables -->
 ### :key: Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
-
-`API_KEY`
-
-`ANOTHER_API_KEY`
-
-<!-- Getting Started -->
-## 	:toolbox: Getting Started
-
-<!-- Prerequisites -->
-### :bangbang: Prerequisites
-
-This project uses Yarn as a package manager
-
-```bash
- npm install --global yarn
-```
-
-<!-- Installation -->
-### :gear: Installation
-
-Install my-project with npm
-
-```bash
-  yarn install my-project
-  cd my-project
-```
-
-
-<!-- Run Locally -->
-### :running: Run Locally
-
-Clone the project
-
-```bash
-  git clone https://github.com/Louis3797/awesome-readme-template.git
-```
-
-Go to the project directory
-
-```bash
-  cd my-project
-```
-
-Install dependencies
-
-```bash
-  yarn install
-```
-
-Start the server
-
-```bash
-  yarn start
-```
-
-
-<!-- Usage -->
-## :eyes: Usage
-
-Use this space to tell a little more about your project and how it can be used. Show additional screenshots, code samples, demos or link to other resources.
-
-
-```javascript
-import Component from 'my-project'
-
-function App() {
-  return <Component />
-}
-```
-
+To run this project, you will need to add the following environment variables to
+- 3 Tiva C Series TM4C123G and read [Manual](https://www.ti.com/lit/pdf/spmu296)
+- Read SWS AUTOSAR CP Release 4.3.1
+   * [#CAN Driver](https://www.autosar.org/fileadmin/standards/R4-3/CP/AUTOSAR_SWS_CANDriver.pdf)
+   * [#CANIF Module](https://www.autosar.org/fileadmin/standards/R4-3/CP/AUTOSAR_SWS_CANDriver.pdf)
+   * [#PDUR Module](https://www.autosar.org/fileadmin/standards/R4-3/CP/AUTOSAR_SWS_PDURouter.pdf)
+   * [#COM Module](https://www.autosar.org/fileadmin/standards/R4-3/CP/AUTOSAR_SWS_COMManager.pdf) 
+- Understand the RX and TX Flow
 <!-- Roadmap -->
 ## :compass: Roadmap
-
-* [x] Todo 1
-* [ ] Todo 2
+<div align="center"> 
+  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
+</div>
 
 <!-- Contributing -->
 ## :wave: Contributing
 Contributions to this project are welcome! 
 If you find any issues or would like to suggest improvements, please open an issue or submit a pull request.
-
-
-<!-- Code of Conduct -->
-### :scroll: Code of Conduct
-
-Please read the [Code of Conduct](https://github.com/Louis3797/awesome-readme-template/blob/master/CODE_OF_CONDUCT.md)
-
 
 <!-- License -->
 ## :warning: License
@@ -195,8 +125,9 @@ Copyright © 2023, [Faculty of Engineering Ciro University](https://www.linkedin
 ## :handshake: Contact
 
 - Project Supervisors
-   - [Dr.Omar Nasr](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - mhmd.a.elhay@gmail.com
+   - [Dr.Omar Nasr](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - omaranasr@cu.edu.eg
    - [Eng.Mohamed Abdelhay](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - mhmd.a.elhay@gmail.com
+   - [Mohamed El-Khouly](https://www.linkedin.com/in/mohamed-el-khouly-70b05326/) - mohamed.elkhouly@brightskiesinc.com
 - Team
   - [Omar Khedr](https://www.linkedin.com/in/omar-khedr-0a6559219/) - omaradelkhedr@gmail.com
   - [Omar Ahmed El-Shemy](https://www.linkedin.com/in/omar-el-shemy-463248235/) - omar.elshemy196@gmail.com
