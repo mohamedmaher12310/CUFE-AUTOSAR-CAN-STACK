@@ -33,12 +33,8 @@
   * [Layered AUTOSAR Architecture](#stack-layeres )
   * [ASW](#ASW)
   * [Implemented Modules](#Modules)
-- [Getting Started](#toolbox-getting-started)
-  * [Prerequisites](#bangbang-prerequisites)
-  * [Installation](#gear-installation)
-  * [Run Locally](#running-run-locally)
+- [Environment Variables](#toolbox-getting-started)
 - [Contributing](#wave-contributing)
-  * [Code of Conduct](#scroll-code-of-conduct)
 - [License](#warning-license)
 - [Contact](#handshake-contact)
 - [Acknowledgements](#gem-acknowledgements)
@@ -127,7 +123,7 @@ Copyright © 2023, [Faculty of Engineering Ciro University](https://www.linkedin
 - Project Supervisors
    - [Dr.Omar Nasr](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - omaranasr@cu.edu.eg
    - [Eng.Mohamed Abdelhay](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - mhmd.a.elhay@gmail.com
-   - [Mohamed El-Khouly](https://www.linkedin.com/in/mohamed-el-khouly-70b05326/) - mohamed.elkhouly@brightskiesinc.com
+   - [Eng.Mohamed El-Khouly](https://www.linkedin.com/in/mohamed-el-khouly-70b05326/) - mohamed.elkhouly@brightskiesinc.com
 - Team
   - [Omar Khedr](https://www.linkedin.com/in/omar-khedr-0a6559219/) - omaradelkhedr@gmail.com
   - [Omar Ahmed El-Shemy](https://www.linkedin.com/in/omar-el-shemy-463248235/) - omar.elshemy196@gmail.com
