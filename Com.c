@@ -257,12 +257,13 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
             ((uint8*)SignalDataPtr)[iter]  = Signal_Value[iter];
         }
         Com_ReceiveSignal_Return=E_OK;
-        return Com_ReceiveSignal_Return;
+
     }
 
-
+    return Com_ReceiveSignal_Return;
 }
 
+/* LOCAL STATIC FUNCTION USED TO CONCATINATE THE PDUs. */
 static void Pdu_Concatnate(void)
 {
     /*signal number sequentially*/
