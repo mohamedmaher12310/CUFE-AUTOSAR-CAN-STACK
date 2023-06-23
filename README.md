@@ -76,7 +76,7 @@ This repository contains the implementation of a Communication Stack based on th
 
 
 <!-- Layeres -->
-### 📥: Layered AUTOSAR Architecture
+### 📥 Layered AUTOSAR Architecture
 
 <details>
   <summary>Basic Software (BSW) Layer</summary>
@@ -102,18 +102,18 @@ This repository contains the implementation of a Communication Stack based on th
 </details>
 
 <!-- ASW -->
-### 💻: ASW
+### 💻 ASW
 
 - The Communication Stack is our Graduation Project and is implemented using Embedded C.
 
 <!--Implemented Modules -->
-### 🎯 : Implemented Modules
+### 🎯  Implemented Modules
 
 | Layer             | Module                                                             |
 | ----------------- | ------------------------------------------------------------------ |
 | Services Layer | [#COM Module]()- [#PDUR Module]() |
-| ECU Abstraction Layer | ![#CANIF Module]()|
-|  MCAL Layer | ![#CAN Driver]()|
+| ECU Abstraction Layer | [#CANIF Module]()|
+|  MCAL Layer | [#CAN Driver]()|
 
 <!-- Env Variables -->
 ### :key: Environment Variables
