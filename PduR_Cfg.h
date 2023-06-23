@@ -99,12 +99,15 @@
 
 /************************PduRDestPdu subContainer************************/
 
-///* PDU identifier assigned by PDU Router. Used by communication interface
-// * and transport protocol modules for confirmation
-// *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
-// *(PduR_<Lo>TriggerTransmit)
-// */
-//#define     PduRDestPduHandleId_0   (uint16)0
+/* PDU identifier assigned by PDU Router. Used by communication interface
+ * and transport protocol modules for confirmation
+ *(PduR_<Lo>TxConfirmation) and for TriggerTransmit
+ *(PduR_<Lo>TriggerTransmit)
+ */
+#define     PduRDestPduHandleId_0   (uint16)0
+#define     PduRDestPduHandleId_1   (uint16)1
+#define     PduRDestPduHandleId_2   (uint16)2
+
 
 
 
@@ -118,10 +121,10 @@
 
 /************************PduRSrcPdu subContainer************************/
 
-///* PDU identifier assigned by PDU Router */
-//#define     PduRSrcPduHandleId_0   (uint16)0
-//#define     PduRSrcPduHandleId_1   (uint16)1
-//#define     PduRSrcPduHandleId_2   (uint16)2
+/* PDU identifier assigned by PDU Router */
+#define     PduRSrcPduHandleId_0   (uint16)0
+#define     PduRSrcPduHandleId_1   (uint16)1
+#define     PduRSrcPduHandleId_2   (uint16)2
 
 
 
@@ -130,18 +133,31 @@
  /* Length of the Tx buffer in bytes. This parameter limits the size of buffered routed PDUs.*/
 #define     PduRPduMaxLength   (uint32)2
 
+/* Identification of the configuration of the PduR configuration.
+ * This identification can be read using the PduR API.
+ */
+#define PduR_Configuration_ID_0    (uint16)0
+#define PduR_Configuration_ID_1    (uint16)1
+#define PduR_Configuration_ID_2    (uint16)2
 
-
-#define PduR_Configuration_ID1    (uint16)1
-#define PduR_Configuration_ID2    (uint16)2
-#define PduR_Configuration_ID3    (uint16)3
-
+/* Specifies how data are provided: direct (as part of the Transmit call) or via
+ *  the TriggerTransmit callback function. Only required for non-TP gatewayed
+ *  I-PDUs.
+ */
 #define PduR_DestData_Provision    PDUR_DIRECT
 
-#define PduR_Queue_Depth    (uint8) 1
+/* This parameter defines the queue depth for the routing path */
+#define PduR_Queue_Depth_0    (uint8) 1
+#define PduR_Queue_Depth_1    (uint8) 1
+#define PduR_Queue_Depth_2    (uint8) 1
 
+/* When enabled, the TxConfirmation will be
+ *  forwarded to the upper layer. Prerequisites: Lower layer and upper layer
+ *  support TxConfirmation.
+ */
 #define PduR_SrcPduUp_TxConfirmation (STD_ON)
 
+/* Maximum PDU ID that Can be routed */
 #define PduR_MaxPduID           (uint8) 255
 
 #endif /* PDUR_CFG_H_ */

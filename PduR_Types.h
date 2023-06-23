@@ -90,10 +90,10 @@ typedef struct
     uint8 PduRQueueDepth;
 
     /* Reference to [ PduRDestPdu ] */
-    PduRDestPdu* PduRDestPduRRef;
+    PduRDestPdu* PduRDestPduRef;
 
     /* Reference to [ PduRSrcPdu ] */
-    PduRSrcPdu* PduRSrcPduRRef;
+    PduRSrcPdu* PduRSrcPduRef;
 
 } PduRRoutingPath ;
 
