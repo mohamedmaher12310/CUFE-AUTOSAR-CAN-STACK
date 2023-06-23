@@ -1,9 +1,13 @@
-/*
- * Com_Cbk.c
+/******************************************************************************
  *
- *  Created on: 18 Jun. 2023
- *      Author: owner
- */
+ * Module: COM
+ *
+ * File Name: Com_Cbk.c
+ *
+ * Description: Source file for Com Callback
+ *
+ * Author: CUFE 2023 Team
+ ******************************************************************************/
 
 
 void Com_CbkRxAck_0(void){

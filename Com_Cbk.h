@@ -1,9 +1,13 @@
-/*
- * Com_Cbk.h
+/******************************************************************************
  *
- *  Created on: 18 Jun. 2023
- *      Author: owner
- */
+ * Module: COM
+ *
+ * File Name: Com_Cbk.h
+ *
+ * Description: Header file for Com Callback
+ *
+ * Author: CUFE 2023 Team
+ ******************************************************************************/
 
 #ifndef CUFE_AUTOSAR_CAN_STACK_COM_CBK_H_
 #define CUFE_AUTOSAR_CAN_STACK_COM_CBK_H_

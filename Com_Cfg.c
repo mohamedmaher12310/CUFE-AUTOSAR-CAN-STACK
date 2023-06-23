@@ -4,7 +4,7 @@
  *
  * File Name: Com_Cfg.c
  *
- * Description: Source file for CanIf Pre-Compile Configurations.
+ * Description: Source file for Com Configurations.
  *
  * Author: CUFE 2023 Team
  ******************************************************************************/
@@ -12,37 +12,44 @@
 /* Include of Com Header Filer*/
 #include "Com.h"
 
+/*
+ * Module Version 1.0.0
+ */
+#define COM_PBCFG_SW_MAJOR_VERSION              (1U)
+#define COM_PBCFG_SW_MINOR_VERSION              (0U)
+#define COM_PBCFG_SW_PATCH_VERSION              (0U)
+
+/*
+ * AUTOSAR Version 4.3.1
+ */
+#define COM_PBCFG_AR_RELEASE_MAJOR_VERSION     (4U)
+#define COM_PBCFG_AR_RELEASE_MINOR_VERSION     (3U)
+#define COM_PBCFG_AR_RELEASE_PATCH_VERSION     (1U)
+
+/* AUTOSAR Version checking between COM_Cfg.c and Com.h files */
+#if ((COM_PBCFG_AR_RELEASE_MAJOR_VERSION != COM_AR_RELEASE_MAJOR_VERSION)\
+        ||  (COM_PBCFG_AR_RELEASE_MINOR_VERSION != COM_AR_RELEASE_MINOR_VERSION)\
+        ||  (COM_PBCFG_AR_RELEASE_PATCH_VERSION != COM_AR_RELEASE_PATCH_VERSION))
+#error "The AR version of PBcfg.c does not match the expected version"
+#endif
+
+/* Software Version checking between Com_Cfg.c and Com.h files */
+#if ((COM_PBCFG_SW_MAJOR_VERSION != COM_SW_MAJOR_VERSION)\
+        ||  (COM_PBCFG_SW_MINOR_VERSION != COM_SW_MINOR_VERSION)\
+        ||  (COM_PBCFG_SW_PATCH_VERSION != COM_SW_PATCH_VERSION))
+#error "The SW version of PBcfg.c does not match the expected version"
+#endif
+
+/* PB structure used with Can_Init API */
 const Com_ConfigType Com = {
-                            .ComIPdu[0] = {
+                            .ComIPdu[ZERO] = {
                                            //                                        .ComIPduCallout = &,
                                            .ComIPduDirection = SEND,
-                                           .ComIPduHandleId = 1,
-                                           .ComIPduSignalProcessing = DEFERRED,
-                                           //                                        .ComIPduTriggerTransmitCallout,
-                                           .ComIPduType = NORMAL,
-                                           .ComIPduSignalRef[0] = &Com.ComSignal[0],
-                                           .ComPduIdRef = 13,
-                                           .ComTxIPdu = {
-                                                         .ComMinimumDelayTime = 0.005,
-                                                         .ComTxIPduClearUpdateBit = Confirmation,
-                                                         .ComTxIPduUnusedAreasDefault = 0xFF,
-                                                         .ComTxMode = {
-                                                                       .ComTxModeMode = PERIODIC_Tx,
-                                                                       .ComTxModeTimePeriod = 0.125
-
-                                                         }
-
-                                           }
-                            },
-                            .ComIPdu[1] = {
-                                           //                                        .ComIPduCallout = &,
-                                           .ComIPduDirection = RECEIVE,
-                                           .ComIPduHandleId = 1,
+                                           .ComIPduHandleId = ONE,
                                            .ComIPduSignalProcessing = IMMEDIATE,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
-                                           .ComIPduSignalRef[1] = &Com.ComSignal[8],
-                                           .ComPduIdRef = 54,
+                                           .ComIPduSignalRef[ZERO] = &Com.ComSignal[ZERO],
                                            .ComTxIPdu = {
                                                          .ComMinimumDelayTime = 0.005,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
@@ -55,15 +62,34 @@ const Com_ConfigType Com = {
 
                                            }
                             },
-                            .ComIPdu[2] = {
+                            .ComIPdu[ONE] = {
                                            //                                        .ComIPduCallout = &,
                                            .ComIPduDirection = RECEIVE,
-                                           .ComIPduHandleId = 2,
+                                           .ComIPduHandleId = ONE,
+                                           .ComIPduSignalProcessing = IMMEDIATE,
+                                           //                                        .ComIPduTriggerTransmitCallout,
+                                           .ComIPduType = NORMAL,
+                                           .ComIPduSignalRef[ONE] = &Com.ComSignal[EIGHT],
+                                           .ComTxIPdu = {
+                                                         .ComMinimumDelayTime = 0.005,
+                                                         .ComTxIPduClearUpdateBit = Confirmation,
+                                                         .ComTxIPduUnusedAreasDefault = 0xFF,
+                                                         .ComTxMode = {
+                                                                       .ComTxModeMode = PERIODIC_Tx,
+                                                                       .ComTxModeTimePeriod = 0.125
+
+                                                         }
+
+                                           }
+                            },
+                            .ComIPdu[TWO] = {
+                                           //                                        .ComIPduCallout = &,
+                                           .ComIPduDirection = RECEIVE,
+                                           .ComIPduHandleId = TWO,
                                            .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
-                                           .ComIPduSignalRef[2] = &Com.ComSignal[16],
-                                           .ComPduIdRef = 66,
+                                           .ComIPduSignalRef[TWO] = &Com.ComSignal[SIXTEEN],
                                            .ComTxIPdu = {
                                                          .ComMinimumDelayTime = 0.005,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
@@ -76,368 +102,348 @@ const Com_ConfigType Com = {
 
                                            }
                             },
-                            .ComSignal[0] ={
-                                            .ComBitPosition = 0,
-                                            .ComHandleId = 0,
+                            .ComSignal[ZERO] ={
+                                            .ComBitPosition = ZERO,
+                                            .ComHandleId = ZERO,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_0,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[1] ={
-                                            .ComBitPosition = 8,
-                                            .ComHandleId = 1,
+                            .ComSignal[ONE] ={
+                                            .ComBitPosition = EIGHT,
+                                            .ComHandleId = ONE,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_1,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[2] ={
-                                            .ComBitPosition = 16,
-                                            .ComHandleId = 2,
+                            .ComSignal[TWO] ={
+                                            .ComBitPosition = SIXTEEN,
+                                            .ComHandleId = TWO,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_2,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[3] ={
-                                            .ComBitPosition = 24,
-                                            .ComHandleId = 3,
+                            .ComSignal[THREE] ={
+                                            .ComBitPosition = TWENTY_FOUR,
+                                            .ComHandleId = THREE,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_3,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[4] ={
-                                            .ComBitPosition = 32,
-                                            .ComHandleId = 4,
+                            .ComSignal[FOUR] ={
+                                            .ComBitPosition = THIRTY_TWO,
+                                            .ComHandleId = FOUR,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_4,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[5] ={
-                                            .ComBitPosition = 40,
-                                            .ComHandleId = 5,
+                            .ComSignal[FIVE] ={
+                                            .ComBitPosition = FOURTY,
+                                            .ComHandleId = FIVE,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_5,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[6] ={
-                                            .ComBitPosition = 48,
-                                            .ComHandleId = 6,
+                            .ComSignal[SIX] ={
+                                            .ComBitPosition = FOURTY_EIGHT,
+                                            .ComHandleId = SIX,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_6,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[7] ={
-                                            .ComBitPosition = 56,
-                                            .ComHandleId = 7,
+                            .ComSignal[SEVEN] ={
+                                            .ComBitPosition = FIFTY_SIX,
+                                            .ComHandleId = SEVEN,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_7,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=0
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[8] ={
-                                            .ComBitPosition = 0,
-                                            .ComHandleId = 8,
+                            .ComSignal[EIGHT] ={
+                                            .ComBitPosition = ZERO,
+                                            .ComHandleId = EIGHT,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_8,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=1
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[9] ={
-                                            .ComBitPosition = 8,
-                                            .ComHandleId = 9,
+                            .ComSignal[NINE] ={
+                                            .ComBitPosition = EIGHT,
+                                            .ComHandleId = NINE,
                                             .ComInitialValueOnly=TRUE,
                                             .ComNotification=Com_CbkRxAck_9,
                                             .ComRxDataTimeoutAction = NONE_Rx,
-                                            .ComSignalLength=1,
+                                            .ComSignalLength=ONE,
 
                                             //                                         .ComSignalDataInvalidValue,?????
                                             .ComSignalEndianness = LITTLE_ENDIAN,
-                                            .ComSignalInitValue = 0,
+                                            .ComSignalInitValue = ZERO,
                                             .ComSignalType = UINT8,
                                             .ComTimeout = 0.125, /*DLM in sec*/
                                             .ComTransferProperty = TRIGGERED,
-                                            .ComUpdateBitPosition = 0,
-                                            .ComSystemTemplateSystemSignalRef=1
+                                            .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[10] ={
-                                             .ComBitPosition = 16,
-                                             .ComHandleId = 10,
+                            .ComSignal[TEN] ={
+                                             .ComBitPosition = SIXTEEN,
+                                             .ComHandleId = TEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_10,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=1
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[11] ={
-                                             .ComBitPosition = 24,
-                                             .ComHandleId = 11,
+                            .ComSignal[ELEVEN] ={
+                                             .ComBitPosition = TWENTY_FOUR,
+                                             .ComHandleId = ELEVEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_11,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=1
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[12] ={
-                                             .ComBitPosition = 32,
-                                             .ComHandleId = 12,
+                            .ComSignal[TWELVE] ={
+                                             .ComBitPosition = THIRTY_TWO,
+                                             .ComHandleId = TWELVE,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_12,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=1
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[13] ={
-                                             .ComBitPosition = 40,
-                                             .ComHandleId = 13,
+                            .ComSignal[THIRTEEN] ={
+                                             .ComBitPosition = FOURTY
+                                             .ComHandleId = THIRTEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_13,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=1
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[14] ={
-                                             .ComBitPosition = 48,
-                                             .ComHandleId = 14,
+                            .ComSignal[FOURTEEN] ={
+                                             .ComBitPosition = FOURTY_EIGHT,
+                                             .ComHandleId = FOURTEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_14,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=1
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[15] ={
-                                             .ComBitPosition = 56,
-                                             .ComHandleId = 15,
+                            .ComSignal[FIFTEEN] ={
+                                             .ComBitPosition = FIFTY_SIX,
+                                             .ComHandleId = FIFTEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_15,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=1
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[16] ={
-                                             .ComBitPosition = 0,
-                                             .ComHandleId = 16,
+                            .ComSignal[SIXTEEN] ={
+                                             .ComBitPosition = ZERO,
+                                             .ComHandleId = SIXTEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_16,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=2
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[17] ={
-                                             .ComBitPosition = 8,
-                                             .ComHandleId = 17,
+                            .ComSignal[SEVENTEEN] ={
+                                             .ComBitPosition = EIGHT,
+                                             .ComHandleId = SEVENTEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_17,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=2
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[18] ={
-                                             .ComBitPosition = 16,
-                                             .ComHandleId = 18,
+                            .ComSignal[EIGHTEEN] ={
+                                             .ComBitPosition = SIXTEEN,
+                                             .ComHandleId = EIGHTEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_18,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=2
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[19] ={
-                                             .ComBitPosition = 24,
-                                             .ComHandleId = 19,
+                            .ComSignal[NINETEEN] ={
+                                             .ComBitPosition = TWENTY_FOUR,
+                                             .ComHandleId = NINETEEN,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_19,
                                              .ComRxDataTimeoutAction = NONE_Rx,
-                                             .ComSignalLength=1,
+                                             .ComSignalLength=ONE,
 
                                              //                                         .ComSignalDataInvalidValue,?????
                                              .ComSignalEndianness = LITTLE_ENDIAN,
-                                             .ComSignalInitValue = 0,
+                                             .ComSignalInitValue = ZERO,
                                              .ComSignalType = UINT8,
                                              .ComTimeout = 0.125, /*DLM in sec*/
                                              .ComTransferProperty = TRIGGERED,
-                                             .ComUpdateBitPosition = 0,
-                                             .ComSystemTemplateSystemSignalRef=2
+                                             .ComUpdateBitPosition = ZERO
 
                             },
-                            .ComSignal[20] ={
-                                             .ComBitPosition = 32,
-                                             .ComHandleId = 20,
+                            .ComSignal[TWENTY] ={
+                                             .ComBitPosition = THIRTY_TWO,
+                                             .ComHandleId = TWENTY,
                                              .ComInitialValueOnly=TRUE,
                                              .ComNotification=Com_CbkRxAck_20,
                                              .ComRxDataTimeoutAction = NONE_Rx,

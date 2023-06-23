@@ -4,7 +4,7 @@
  *
  * File Name: Com.c
  *
- * Description: Source file for Com Module.
+ * Description: Source file for COM Module.
  *
  * Author: CUFE 2023 Team
  ******************************************************************************/
@@ -29,6 +29,7 @@ PduInfoType PDU[ComMaxIPduCnt];
 uint8 PDU_INDEX=0;
 uint8 Com_Trigger_Flag[MAX_NUM_OF_SIGNAL] ={0};
 
+/* LOCAL STATIC FUNCTION USED TO CONCATINATE THE PDUs. */
 static void Pdu_Concatnate(void);
 
 /************************************************************************************
