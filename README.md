@@ -12,35 +12,15 @@
 
   
 <!-- Badges -->
-<p>
-  <a href="https://github.com/Louis3797/awesome-readme-template/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/Louis3797/awesome-readme-template" alt="contributors" />
-  </a>
-  <a href="">
-    <img src="https://img.shields.io/github/last-commit/Louis3797/awesome-readme-template" alt="last update" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/network/members">
-    <img src="https://img.shields.io/github/forks/Louis3797/awesome-readme-template" alt="forks" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/stargazers">
-    <img src="https://img.shields.io/github/stars/Louis3797/awesome-readme-template" alt="stars" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/issues/">
-    <img src="https://img.shields.io/github/issues/Louis3797/awesome-readme-template" alt="open issues" />
-  </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/Louis3797/awesome-readme-template.svg" alt="license" />
-  </a>
-</p>
-   
+
 <h4>
     <a href="https://github.com/Louis3797/awesome-readme-template/">View Demo</a>
   <span> · </span>
     <a href="https://github.com/Louis3797/awesome-readme-template">Documentation</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Report Bug</a>
+    <a href="https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/issues">Report Bug</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Request Feature</a>
+    <a href="https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/issues">Request Feature</a>
   </h4>
 </div>
 
@@ -57,8 +37,6 @@
   * [Prerequisites](#bangbang-prerequisites)
   * [Installation](#gear-installation)
   * [Run Locally](#running-run-locally)
-- [Usage](#eyes-usage)
-- [Roadmap](#compass-roadmap)
 - [Contributing](#wave-contributing)
   * [Code of Conduct](#scroll-code-of-conduct)
 - [License](#warning-license)
@@ -130,7 +108,7 @@ To run this project, you will need to add the following environment variables to
 <!-- Prerequisites -->
 ### :bangbang: Prerequisites
 
-This project uses Yarn as package manager
+This project uses Yarn as a package manager
 
 ```bash
  npm install --global yarn
@@ -203,9 +181,8 @@ function App() {
 </a>
 
 
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
+Contributions to this project are welcome! 
+If you find any issues or would like to suggest improvements, please open an issue or submit a pull request.
 
 
 <!-- Code of Conduct -->
@@ -217,22 +194,28 @@ Please read the [Code of Conduct](https://github.com/Louis3797/awesome-readme-te
 <!-- License -->
 ## :warning: License
 
-Distributed under the no License. See LICENSE.txt for more information.
+Copyright © 2023, [Faculty of Engineering Ciro University](https://www.linkedin.com/in/omaranasr-ai/). Released under the [apache license v2.0](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/blob/main/LICENSE).
 
 
 <!-- Contact -->
 ## :handshake: Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+- Project Supervisors
+   - [Dr.Omar Nasr](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - mhmd.a.elhay@gmail.com
+   - [Eng.Mohamed Abdelhay](https://www.linkedin.com/in/mohamed-abdelhay-727ab63a/) - mhmd.a.elhay@gmail.com
+- Team
+  - [Omar Khedr](https://www.linkedin.com/in/omar-khedr-0a6559219/) - omaradelkhedr@gmail.com
+  - [Omar Ahmed El-Shemy](https://www.linkedin.com/in/omar-el-shemy-463248235/) - omar.elshemy196@gmail.com
+  - [Mohamed Maher Ahmed](https://www.linkedin.com/in/mohamed-maher-b58a8616b/) - Mohamedmaher12310@gmail.com
+  - [Ahmed Abdelhamid Shokry](https://www.linkedin.com/in/ahmed-abdelhamid-b273b8240/) - asag99@gmail.com
+  - [Nada Mohamed Moharram](https://www.linkedin.com/in/nada-mohamed-19164520a/) - nada.moharram1@gmail.com
+  - [Shaimaa Mahmoud El-Saadi](https://www.linkedin.com/in/shaimaa-mahmoud-elsaadi-23690919b/) -shaimaaelsaadi@gmail.com
 
-Project Link: [https://github.com/Louis3797/awesome-readme-template](https://github.com/Louis3797/awesome-readme-template)
+- Project Link: [https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK)
 
 <!-- Acknowledgments -->
 ## :gem: Acknowledgements
-
-Use this section to mention useful resources and libraries that you have used in your projects.
-
- - [Shields.io](https://shields.io/)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [Emoji Cheat Sheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#travel--places)
- - [Readme Template](https://github.com/othneildrew/Best-README-Template)
+We would like to acknowledge the following resources and references that helped in the development of this Communication Stack:
+- [AUTOSAR Layered Software Architecture Specification](https://www.autosar.org/).
+- Embedded C programming guides and best practices.
+- CAN communication protocol specifications.
