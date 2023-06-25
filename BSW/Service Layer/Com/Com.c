@@ -27,10 +27,14 @@ uint8 SignalObject[MAX_NUM_OF_SIGNAL];
 PduInfoType PDU[ComMaxIPduCnt];
 
 uint8 PDU_INDEX=0;
-uint8 Com_Trigger_Flag[MAX_NUM_OF_SIGNAL] ={0};
+
+uint8 Com_Trigger_Flag[ComMaxIPduCnt] ={0};
+
+/* global variable contain the ticks count of the Com_MainFunctionTx calls */
+uint8 g_tick = 0;
 
 /* LOCAL STATIC FUNCTION USED TO CONCATINATE THE PDUs. */
-static void Pdu_Concatnate(void);
+static void Pdu_Concatnate(PduIdType PduId);
 
 /************************************************************************************
  * Service Name: Com_Init
@@ -47,24 +51,21 @@ static void Pdu_Concatnate(void);
  ************************************************************************************/
 void Com_Init(const Com_ConfigType* config )
 {
-#if(COM_DEV_ERROR_DETECT == STD_ON)
+
     /* check if the input configuration pointer is not a NULL_PTR */
     if (NULL_PTR == config)
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_INIT_SID, COM_E_PARAM_POINTER);
-    }
-    else
-    {
-        /* Do Nothing*/
-    }
-
-    if(config != &Com)
-    {
-        Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_INIT_SID, COM_E_INIT_FAILED);
-
-    }
-    else
 #endif
+    }
+    else if(config != &Com)
+    {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_INIT_SID, COM_E_INIT_FAILED);
+#endif
+    }
+    else
     {
         uint8 counter_signal;
         uint8 counter_pdu;
@@ -129,11 +130,12 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 
     uint8  Com_SendSignal_Return;
 
-#if(COM_DEV_ERROR_DETECT == STD_ON)
     /* Check if the module is initialized or not*/
     if ( ComCurrent_State ==  COM_UNINIT)
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_SEND_SIGNAL_SID, COM_E_UNINIT);
+#endif
         Com_SendSignal_Return=COM_SERVICE_NOT_AVAILABLE;
     }
     else
@@ -143,7 +145,9 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
 
     if(SignalId>MAX_NUM_OF_SIGNAL)
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_SEND_SIGNAL_SID, COM_E_PARAM);
+#endif
         Com_SendSignal_Return=COM_SERVICE_NOT_AVAILABLE;
     }
 
@@ -155,12 +159,14 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
     /* check if the input configuration pointer is not a NULL_PTR */
     if ( SignalDataPtr == NULL_PTR )
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_SEND_SIGNAL_SID, COM_E_PARAM_POINTER);
+#endif
         Com_SendSignal_Return=COM_SERVICE_NOT_AVAILABLE;
 
     }
     else
-#endif
+
 
         /*flow:1-find the id of the signal
          *     2-update the data of the signal with the new data
@@ -179,13 +185,12 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId,const void* SignalDataPtr)
         }
 
         /* Update the signal transmission flag */
-        //nes2al 3l update bits wel implementation bta3na
-        Com_Trigger_Flag[SignalId] = 1;
+        Com_Trigger_Flag[(Com.ComSignal[SignalId].ComHandleId)/PDU_LEN_IN_BYTES] = 1;
 
         Com_SendSignal_Return=E_OK;
 
-        return Com_SendSignal_Return;
     }
+    return Com_SendSignal_Return;
 
 }
 
@@ -212,11 +217,12 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 
     uint8 Com_ReceiveSignal_Return;
 
-#if(COM_DEV_ERROR_DETECT == STD_ON)
     /* Check if the module is initialized or not*/
     if ( ComCurrent_State ==  COM_UNINIT)
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_SEND_SIGNAL_SID, COM_E_UNINIT);
+#endif
         Com_ReceiveSignal_Return=COM_SERVICE_NOT_AVAILABLE;
     }
     else
@@ -226,7 +232,9 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 
     if(SignalId>MAX_NUM_OF_SIGNAL)
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_SEND_SIGNAL_SID, COM_E_PARAM);
+#endif
         Com_ReceiveSignal_Return=COM_SERVICE_NOT_AVAILABLE;
     }
 
@@ -238,12 +246,13 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
     /* check if the input configuration pointer is not a NULL_PTR */
     if ( SignalDataPtr == NULL_PTR )
     {
+#if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, COM_SEND_SIGNAL_SID, COM_E_PARAM_POINTER);
+#endif
         Com_ReceiveSignal_Return=COM_SERVICE_NOT_AVAILABLE;
 
     }
     else
-#endif
     {
         uint8* Signal_Value;
         /* Get the byte value of the signal from the signal buffer */
@@ -264,36 +273,27 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 }
 
 /* LOCAL STATIC FUNCTION USED TO CONCATINATE THE PDUs. */
-static void Pdu_Concatnate(void)
+static void Pdu_Concatnate(PduIdType PduId)
 {
-    /*signal number sequentially*/
-    uint8 signal_counter;
-    /*pdu number i have*/
-    uint8 pdu_counter;
     /*counts signals in each pdu ,range 0:7*/
-    uint8 signal_counter_per_pdu;
+    uint8 signal_counter_per_pdu=0;
     /***************************************PDU CONCATINATION****************************************************/
-    signal_counter=0;
-
-    for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+    PDU[PduId].SduDataPtr = &SignalObject[Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId];
+    for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
     {
-        PDU[pdu_counter].SduDataPtr = &SignalObject[signal_counter];
-        for(signal_counter_per_pdu=0;signal_counter_per_pdu<PDU_LEN_IN_BYTES;signal_counter_per_pdu++)
-        {
-            if(LITTLE_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
-                /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                PDU[pdu_counter].SduDataPtr[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/EIGHT)] = SignalObject[signal_counter];
+        if(LITTLE_ENDIAN ==Com.ComSignal[(Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId) +signal_counter_per_pdu].ComSignalEndianness){
+            /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+            PDU[PduId].SduDataPtr[(uint8)((Com.ComSignal[(Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId) +signal_counter_per_pdu].ComBitPosition)/EIGHT)] = SignalObject[(Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId) +signal_counter_per_pdu];
 
-            }
-            else if(BIG_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
-                /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                (PDU[pdu_counter].SduDataPtr)[(EIGHT)-((uint8)((Com.ComSignal[signal_counter].ComBitPosition)/EIGHT))-ONE] = SignalObject[signal_counter];
-
-            }
-            signal_counter++;
         }
+        else if(BIG_ENDIAN ==Com.ComSignal[(Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId) +signal_counter_per_pdu].ComSignalEndianness){
+            /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
+            (PDU[PduId].SduDataPtr)[(EIGHT)-((uint8)((Com.ComSignal[(Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId) +signal_counter_per_pdu].ComBitPosition)/EIGHT))-ONE] = SignalObject[(Com.ComIPdu[PduId].ComIPduSignalRef[PduId]->ComHandleId) +signal_counter_per_pdu];
 
+        }
     }
+
+
 }
 
 /************************************************************************************
@@ -307,8 +307,7 @@ static void Pdu_Concatnate(void)
  ************************************************************************************/
 void Com_MainFunctionTx(void)
 {
-    /*signal number sequentially*/
-    uint8 signal_counter;
+
     /*pdu number i have*/
     uint8 pdu_counter;
     /*counts signals in each pdu ,range 0:7*/
@@ -319,42 +318,71 @@ void Com_MainFunctionTx(void)
     }
     else
     {
-        /***************************************PDU CONCATINATION****************************************************/
-        Pdu_Concatnate();
+        g_tick++;
         for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
         {
+
             if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
             {
+                /***************************************PDU CONCATINATION****************************************************/
+                if(1 == Com_Trigger_Flag[pdu_counter])
+                {
+                    Pdu_Concatnate(pdu_counter);
+                    if(DIRECT_Tx != Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                    {
+                        Com_Trigger_Flag[pdu_counter]=0;
+                    }
+                    else
+                    {
+                        /*Do Nothing*/
+                    }
+                }
+                else
+                {
+                    /*Do Nothing*/
+                }
+
                 if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                 {
-                    /*do i need to check the (time calculated> ComTxModeTimePeriod)
-                     * if true : call PduR_ComTransmit
-                     * else donot call
-                     * or it will be handled by OS
-                     * */
-                    //                    if(sw_timer>Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)
-                    //                    {
-                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+
+
+
+                    if((g_tick*ComTxTimeBase*1000) >= ((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*1000))
+                    {
+                        PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                    }
+                    else
+                    {
+                        /*Do Nothing*/
+                    }
+
+
                 }
                 else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                 {
                     /*loop on signals of this pdu*/
-                    for(signal_counter_per_pdu=0;signal_counter_per_pdu<8;signal_counter_per_pdu++)
+                    for(signal_counter_per_pdu=0;signal_counter_per_pdu<EIGHT;signal_counter_per_pdu++)
                     {
                         if(PENDING == Com.ComSignal[Com.ComIPdu[pdu_counter].ComIPduSignalRef[pdu_counter]->ComHandleId + signal_counter_per_pdu].ComTransferProperty)
                         {
 
                         }
-                        else    /*TRIGGERED*/
+                        else    /*TRIGGERED and updated*/
                         {
-
-                            PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
-                            /*end the request of this direct lpdu as it is done and sent*/
-                            break;
+                            /*check flag of this signal*/
+                            if(Com_Trigger_Flag[pdu_counter] == 1)
+                            {
+                                Com_Trigger_Flag[pdu_counter]=0;
+                                PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                                /*end the request of this direct lpdu as it is done and sent*/
+                                break;
+                            }
+                            else
+                            {
+                                /*Do Nothing*/
+                            }
                         }
-
                     }
-
                 }
                 else
                 {
@@ -379,10 +407,9 @@ void Com_MainFunctionTx(void)
  ************************************************************************************/
 void Com_MainFunctionRx(void)
 {
-    uint8 pdu_counter,signal_counter,return_value;
     void (*NotficationAdress)(void);
     ComSignal* signal_per_pdu;
-    uint8 i;
+    uint8 iter;
     if(COM_UNINIT == ComCurrent_State)
     {
         return;
@@ -395,8 +422,8 @@ void Com_MainFunctionRx(void)
             check_flag=0;
             uint8 signal_index_in_signal_buffer=Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[PDU_INDEX]->ComHandleId;
             signal_per_pdu=Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[PDU_INDEX];
-            for(i=0;i<PDU[PDU_INDEX].SduLength;i++){
-                SignalObject[signal_index_in_signal_buffer+i]=(PDU[PDU_INDEX].SduDataPtr)[i];
+            for(iter=0;iter<PDU[PDU_INDEX].SduLength;iter++){
+                SignalObject[signal_index_in_signal_buffer+iter]=(PDU[PDU_INDEX].SduDataPtr)[iter];
                 NotficationAdress= signal_per_pdu->ComNotification;
                 NotficationAdress();
                 signal_per_pdu++;

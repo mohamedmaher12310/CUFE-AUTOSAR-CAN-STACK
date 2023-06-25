@@ -45,7 +45,7 @@ const Com_ConfigType Com = {
                             .ComIPdu[ZERO] = {
                                            //                                        .ComIPduCallout = &,
                                            .ComIPduDirection = SEND,
-                                           .ComIPduHandleId = ONE,
+                                           .ComIPduHandleId = ZERO,
                                            .ComIPduSignalProcessing = IMMEDIATE,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
@@ -56,7 +56,7 @@ const Com_ConfigType Com = {
                                                          .ComTxIPduUnusedAreasDefault = ComTxIPduUnusedAreasDefault_Value,
                                                          .ComTxMode = {
                                                                        .ComTxModeMode = PERIODIC_Tx,
-                                                                       .ComTxModeTimePeriod = ComTxModeTimePeriod_Value
+                                                                       .ComTxModeTimePeriod = ComTxModeTimePeriod_Value_0
 
                                                          }
 
@@ -76,7 +76,7 @@ const Com_ConfigType Com = {
                                                          .ComTxIPduUnusedAreasDefault = ComTxIPduUnusedAreasDefault_Value,
                                                          .ComTxMode = {
                                                                        .ComTxModeMode = PERIODIC_Tx,
-                                                                       .ComTxModeTimePeriod = ComTxModeTimePeriod_Value
+                                                                       .ComTxModeTimePeriod = ComTxModeTimePeriod_Value_1
 
                                                          }
 
@@ -96,7 +96,7 @@ const Com_ConfigType Com = {
                                                          .ComTxIPduUnusedAreasDefault = ComTxIPduUnusedAreasDefault_Value,
                                                          .ComTxMode = {
                                                                        .ComTxModeMode = PERIODIC_Tx,
-                                                                       .ComTxModeTimePeriod = ComTxModeTimePeriod_Value
+                                                                       .ComTxModeTimePeriod = ComTxModeTimePeriod_Value_2
 
                                                          }
 
