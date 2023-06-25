@@ -494,25 +494,23 @@ uint8 Can_MessageReceive(uint32 Controller_ID, Can_HwHandleType MessageObj_Num, 
  ************************************************************************************/
 void Can_Init(const Can_ConfigType* Config)
 {
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
+
     /* Check if the input configuration pointer is not a NULL_PTR */
     if (NULL_PTR == Config)
     {
+        #if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_INIT_SID,CAN_E_PARAM_POINTER);
+        #endif /*CAN_DEV_ERROR_DETECT*/
     }
-    else
+    else if(&Can_Configuration != Config)
     {
-        /* Do Nothing*/
-    }
-    /* Check for Invalid configuration set selection */
-    if(&Can_Configuration != Config)
-    {
+        #if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_INIT_SID,CAN_E_INIT_FAILED);
+        #endif /*CAN_DEV_ERROR_DETECT*/
     }
     else
-#endif /*CAN_DEV_ERROR_DETECT*/
     {
-#if(CAN0_CONTROLLER_ACTIVATION == STD_ON)
+      #if(CAN0_CONTROLLER_ACTIVATION == STD_ON)
         /**************CAN0**************/
         volatile uint8 delay=INIT_VAL_ZERO;
         /* Enable Clock to CAN Peripheral*/
@@ -1066,23 +1064,20 @@ void Can_Init(const Can_ConfigType* Config)
 void Can_DeInit(void)
 {
     /* The function Can_DeInit shall raise the error CAN_E_TRANSITION if the driver is not in state CAN_READY*/
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
     if(Can_Status != CAN_READY)
     {
+        #if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DE_INIT_SID, CAN_E_TRANSITION);
+        #endif /* CAN_DEV_ERROR_DETECT*/
     }
-    else
-    {
-        /* Do nothing*/
-    }
-
     /* The function Can_DeInit shall raise the error CAN_E_TRANSITION if any of the CAN controllers is in state STARTED.*/
-    if(  (Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED ) || (Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED ) )
+    else if(  (Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED ) || (Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED ) )
     {
+        #if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DE_INIT_SID, CAN_E_TRANSITION);
+        #endif /* CAN_DEV_ERROR_DETECT*/
     }
     else
-#endif /* CAN_DEV_ERROR_DETECT*/
     {
         /* Change the driver state to UNINT state*/
         Can_Status = CAN_UNINIT;
@@ -1164,31 +1159,28 @@ void Can_DeInit(void)
 Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType Transition)
 {
     Std_ReturnType Return_Value;
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
+
     /* Check if the Controller ID is greater than the number of configured controllers*/
     if (Controller >= CAN_CONTROLLERS_NUMBER)
     {
+        #if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_PARAM_CONTROLLER);
         Return_Value = E_NOT_OK;
-    }
-    else
-    {
-        /* Do nothing*/
+        #endif /*CAN_DEV_ERROR_DETECT*/
     }
     /* Check if the module is initialized*/
-    if (Can_Status == CAN_UNINIT)
+    else if (Can_Status == CAN_UNINIT)
     {
+        #if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_UNINIT);
         Return_Value = E_NOT_OK;
+        #endif /*CAN_DEV_ERROR_DETECT*/
     }
-    else
-    {
-        /* Do Nothing*/
-    }
-#endif /*CAN_DEV_ERROR_DETECT*/
     /* Switch on the transition state value to perform specific
      * function depending on the transition
      */
+    else
+    {
     switch (Transition)
     {
     case CAN_CS_STARTED:
@@ -1216,9 +1208,10 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType 
     }
     /*Indicate a mode transition to the user (CanIf)*/
     CanIf_ControllerModeIndication(Controller,Transition);
+
+    }
     return Return_Value;
 }
-
 /*************************************************************************************
  * Service name: Can_DisableControllerInterrupts
  * Service ID[hex]: 0x04
@@ -1232,24 +1225,27 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType 
  **************************************************************************************/
 void Can_DisableControllerInterrupts( uint8 Controller )
 {
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
     /*implementation of the DET*/
     if(Can_Status == CAN_UNINIT)
     {
-
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DISABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
-
+        #endif
     }
     else if(Controller >= CAN_CONTROLLERS_NUMBER)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DISABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_PARAM_CONTROLLER);
+        #endif
     }
-#endif
     /*
      * [SWS_Can_00202] When Can_DisableControllerInterrupts has been called several times,
      * Can_EnableControllerInterrupts must be called as many times before
      * the interrupts are re-enabled..
      */
+    else
+    {
     Interrupts_Disable_Flag =FLAG_HIGH;
     Interrupts_Enable_Disable_Counter ++ ;
 
@@ -1273,8 +1269,8 @@ void Can_DisableControllerInterrupts( uint8 Controller )
         }
     }
 #endif /*CAN1_CONTROLLER_ACTIVATION*/
+    }
 }
-
 /**************************************************************************************
 /* Service name: Can_EnableControllerInterrupts
  * Service ID[hex]: 0x05
@@ -1292,60 +1288,66 @@ void Can_EnableControllerInterrupts( uint8 Controller )
     /*
      * Check on the errors if the DET is ON
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
     /*implementation of the DET*/
     if(Can_Status == CAN_UNINIT)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_ENABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
+        #endif
     }
     else if(Controller >= CAN_CONTROLLERS_NUMBER)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_ENABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_PARAM_CONTROLLER);
+        #endif
     }
-#endif
-    /* Decrement Enable/Disable Counter*/
-    if ( Interrupts_Enable_Disable_Counter != ZERO_VALUE)
+
+    else
     {
-        Interrupts_Enable_Disable_Counter --;
-    }
-    /*Enable interrupts if already disabled*/
-    if ((Interrupts_Disable_Flag==FLAG_HIGH) && (Interrupts_Enable_Disable_Counter==ZERO_VALUE))
-    {
-#if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
+        /* Decrement Enable/Disable Counter*/
+        if ( Interrupts_Enable_Disable_Counter != ZERO_VALUE)
         {
-            /**************CAN0**************/
-            if(Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED)
-            {
-                REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET);
-                /*Enable interrupts*/
-                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
-                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
-                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
-                SET_BIT(NVIC_EN1,CAN0); /*NVIC*/
-                /*Setting interrupt priority to 1*/
-                NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
-            }
+            Interrupts_Enable_Disable_Counter --;
         }
-#endif /*CAN1_CONTROLLER_ACTIVATION*/
-#if (CAN1_CONTROLLER_ACTIVATION == STD_ON)
+        /*Enable interrupts if already disabled*/
+        if ((Interrupts_Disable_Flag==FLAG_HIGH) && (Interrupts_Enable_Disable_Counter==ZERO_VALUE))
         {
-            /**************CAN1**************/
-            if(Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED)
+    #if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
             {
-                REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET);
-                /*Enable interrupts*/
-                SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
-                SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
-                SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
-                SET_BIT(NVIC_EN1,CAN1); /*NVIC*/
-                /*Setting interrupt priority to 1*/
-                NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
+                /**************CAN0**************/
+                if(Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED)
+                {
+                    REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET);
+                    /*Enable interrupts*/
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
+                    SET_BIT(NVIC_EN1,CAN0); /*NVIC*/
+                    /*Setting interrupt priority to 1*/
+                    NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
+                }
             }
+    #endif /*CAN1_CONTROLLER_ACTIVATION*/
+    #if (CAN1_CONTROLLER_ACTIVATION == STD_ON)
+            {
+                /**************CAN1**************/
+                if(Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED)
+                {
+                    REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET);
+                    /*Enable interrupts*/
+                    SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
+                    SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
+                    SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
+                    SET_BIT(NVIC_EN1,CAN1); /*NVIC*/
+                    /*Setting interrupt priority to 1*/
+                    NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
+                }
+            }
+    #endif /*CAN0_CONTROLLER_ACTIVATION*/
         }
-#endif /*CAN0_CONTROLLER_ACTIVATION*/
     }
 }
-
 /**************************************************************************************
  * Service name: Can_Write
  * Service ID[hex]: 0x06
@@ -1373,56 +1375,48 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
      *   The function Can_Write shall raise the error CAN_E_UNINIT and shall return
      *   E_NOT_OK if the driver is not yet initialized.
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
-    /*
-     * [SWS_Can_00216]  If development error detection for the Can module is enabled:
-     *                    The function Can_Write shall raise the error CAN_E_UNINIT and shall return
-     *                    E_NOT_OK if the driver is not yet initialized.
-     */
+
+
     if(Can_Status == CAN_UNINIT)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_UNINIT) ;
         Return_Value =  E_NOT_OK;
-    }
-    else
-    {
-        /*MISRA : do nothing*/
+        #endif
     }
 
     /* [SWS_Can_00217]  If development error detection for the Can module is enabled:
          The function Can_Write shall raise the error CAN_E_PARAM_HANDLE and shall
          return E_NOT_OK if the parameter Hth is not a configured Hardware Transmit
          Handle. */
-    if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanObjectType)
+    else if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanObjectType)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_HANDLE);
         Return_Value = E_NOT_OK;
-    }
-
-    else
-    {
-        /*MISRA : do nothing*/
+        #endif
     }
 
     /* [SWS_CAN_00219]  If development error detection for CanDrv is enabled:
          Can_Write() shall raise CAN_E_PARAM_POINTER and shall return E_NOT_OK if the
          parameter PduInfo is a null pointer.*/
-    if(NULL_PTR == PduInfo)
+    else if(NULL_PTR == PduInfo)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_POINTER);
         Return_Value = E_NOT_OK;
+        #endif
     }
-    else
+
+    else if(PduInfo->length > SHIFT_EIGHT_BITS)
     {
-        /*MISRA : do nothing*/
-    }
-    if(PduInfo->length > SHIFT_EIGHT_BITS)
-    {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_DATA_LENGTH);
         Return_Value = E_NOT_OK;
+        #endif
     }
+
     else
-#endif
     {
 #if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
         /********************CAN0********************/
@@ -1927,7 +1921,7 @@ void Can_MainFunction_Write(void)
     /*
      * Check on the errors if the DET is ON
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
 
     /*
      * -Check on the state of the driver
@@ -1936,14 +1930,12 @@ void Can_MainFunction_Write(void)
 
     if(Can_Status == CAN_UNINIT)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_WRITE_SID, CAN_E_UNINIT);
+        #endif /* CAN_DEV_ERROR_DETECT*/
     }
     else
     {
-        /*MISRA : do nothing*/
-    }
-#endif /* CAN_DEV_ERROR_DETECT*/
-
 #if (STD_ON == CAN0_CONTROLLER_ACTIVATION)
     /**************CAN0**************/
     /*
@@ -2092,8 +2084,8 @@ void Can_MainFunction_Write(void)
 #endif /* CAN1_TX_PROCESSING*/
 #endif /* CAN1_CONTROLLER_ACTIVATION*/
 #endif /* CAN0_TX_PROCESSING || CAN1_TX_PROCESSING */
+    }
 }
-
 /*************************************************************************************
  * Service name: Can_MainFunction_Read
  * Service ID[hex]: 0x08
@@ -2110,20 +2102,20 @@ void Can_MainFunction_Read(void)
     /*
      * Check on the errors if the DET is ON
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
     /*
      * -Check on the state of the driver
      * -If Driver state in UNINIT ,Function should not be called and error report
      */
     if(Can_Status == CAN_UNINIT)
     {
+        #if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_READ_SID, CAN_E_UNINIT) ;
+        #endif /* CAN_DEV_ERROR_DETECT*/
     }
+
     else
     {
-        /*MISRA : do nothing*/
-    }
-#endif /* CAN_DEV_ERROR_DETECT*/
     /*
      * Structures used for Receiving message object info
      *
@@ -2291,4 +2283,5 @@ void Can_MainFunction_Read(void)
 #endif /* CAN1_RX_PROCESSING*/
 #endif /* CAN1_CONTROLLER_ACTIVATION*/
 #endif /* CAN0_RX_PROCESSING || CAN1_RX_PROCESSING*/
+    }
 }
