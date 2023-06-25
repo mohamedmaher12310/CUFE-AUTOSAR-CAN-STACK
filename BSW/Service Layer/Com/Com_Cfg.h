@@ -102,19 +102,23 @@
  * module to internal implementation specific counter or tick values. The
  * COM module's internal timing handling is implementation specific.
  */
-#define ComTxTimeBase                           (float64)2
+                                                 /*called every 10 ms*/
+#define ComTxTimeBase                           (float64)0.01
 
 /*******************************************************************************
  *                      Definitions used in Module                             *
  *******************************************************************************/
 
-#define SIG_LEN_IN_BTYES                              (uint8)1
-#define MAX_NUM_OF_SIGNAL                             ((uint16)(ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES)))
-#define PDU_LEN_IN_BYTES                              (uint8)8
-#define ComMinimumDelayTime_Value                     (float32)0.005
-#define ComTxIPduUnusedAreasDefault_Value             (uint8)0xFF
-#define ComTxModeTimePeriod_Value                     (float32)0.125
-#define ComTimeout_Value                              (float32)0.125
+#define SIG_LEN_IN_BTYES                                (uint8)1
+#define MAX_NUM_OF_SIGNAL                               ((uint16)(ComMaxIPduCnt*(8/SIG_LEN_IN_BTYES)))
+#define PDU_LEN_IN_BYTES                                (uint8)8
+#define ComMinimumDelayTime_Value                       (float32)0.005
+#define ComTxIPduUnusedAreasDefault_Value               (uint8)0xFF
+#define ComTxModeTimePeriod_Value_0                     (float32)0.03
+#define ComTxModeTimePeriod_Value_1                     (float32)0.06
+#define ComTxModeTimePeriod_Value_2                     (float32)0.09
+#define ComTimeout_Value                                (float32)0.125
+#define ComTxModeTimePeriod_min_Value                   (float32)0.03
 
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_CFG_H_ */
