@@ -282,12 +282,12 @@ static void Pdu_Concatnate(void)
         {
             if(LITTLE_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
                 /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                PDU[pdu_counter].SduDataPtr[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8)] = SignalObject[signal_counter];
+                PDU[pdu_counter].SduDataPtr[(uint8)((Com.ComSignal[signal_counter].ComBitPosition)/EIGHT)] = SignalObject[signal_counter];
 
             }
             else if(BIG_ENDIAN ==Com.ComSignal[signal_counter].ComSignalEndianness){
                 /* put the updated signal value in the pdu data field to concatenate the whole LPDU */
-                (PDU[pdu_counter].SduDataPtr)[(8)-((uint8)((Com.ComSignal[signal_counter].ComBitPosition)/8))-1] = SignalObject[signal_counter];
+                (PDU[pdu_counter].SduDataPtr)[(EIGHT)-((uint8)((Com.ComSignal[signal_counter].ComBitPosition)/EIGHT))-ONE] = SignalObject[signal_counter];
 
             }
             signal_counter++;
@@ -345,7 +345,7 @@ void Com_MainFunctionTx(void)
                         {
 
                         }
-                        else
+                        else    /*TRIGGERED*/
                         {
 
                             PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
