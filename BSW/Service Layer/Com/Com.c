@@ -321,65 +321,33 @@ void Com_MainFunctionTx(void)
         g_tick++;
         if(g_tick>ComTxModeTimePeriod_max_Value*HUNDRED)
         {
-            g_tick=0;
+            g_tick=1;
         }
-        else{
-            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        else
+        {
+            /*Do Nothing*/
+        }
+        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        {
+            if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
             {
-
-                if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
+                if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                 {
-                    if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                    /*checks the periodicity of this pdu came or the time this less than this period*/
+                    //this condition can be removed just to illusterate the idea
+                    if((g_tick*ComTxTimeBase*THOUSAND) >= ((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND))
                     {
-                        /*checks the periodicity of this pdu came or the time this less than this period*/
-                        //this condition can be removed just to illusterate the idea
-                        if((g_tick*ComTxTimeBase*THOUSAND) >= ((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND))
+                        /*Com_MainFunctionTx period mod pdu period  */
+                        /*if true this pdu its periodocity came and must be concatenated to be sent*/
+                        if((uint8)(g_tick*ComTxTimeBase*THOUSAND)%(uint8)((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND) == 0 )
                         {
-                            /*Com_MainFunctionTx period mod pdu period  */
-                            /*if true this pdu its periodocity came and must be concatenated to be sent*/
-                            if((uint8)(g_tick*ComTxTimeBase*THOUSAND)%(uint8)((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND) == 0 )
-                            {
-                                Pdu_Concatnate(pdu_counter);
-                                PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                            Pdu_Concatnate(pdu_counter);
+                            PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
 
-                            }
-                            else
-                            {
-                                /*Do Nothing*/
-                            }
                         }
                         else
                         {
                             /*Do Nothing*/
-                        }
-
-
-                    }
-                    else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
-                    {
-                        /*loop on signals of this pdu*/
-                        for(signal_counter_per_pdu=0;signal_counter_per_pdu<EIGHT;signal_counter_per_pdu++)
-                        {
-                            if(PENDING == Com.ComSignal[Com.ComIPdu[pdu_counter].ComIPduSignalRef[pdu_counter]->ComHandleId + signal_counter_per_pdu].ComTransferProperty)
-                            {
-
-                            }
-                            else    /*TRIGGERED and updated*/
-                            {
-                                /*check flag of this pdu*/
-                                if(Com_Trigger_Flag[pdu_counter] == 1)
-                                {
-                                    Com_Trigger_Flag[pdu_counter]=0;
-                                    Pdu_Concatnate(pdu_counter);
-                                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
-                                    /*end the request of this direct lpdu as it is done and sent*/
-                                    break;
-                                }
-                                else
-                                {
-                                    /*Do Nothing*/
-                                }
-                            }
                         }
                     }
                     else
@@ -387,12 +355,44 @@ void Com_MainFunctionTx(void)
                         /*Do Nothing*/
                     }
                 }
+                else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                {
+                    /*loop on signals of this pdu*/
+                    for(signal_counter_per_pdu=0;signal_counter_per_pdu<EIGHT;signal_counter_per_pdu++)
+                    {
+                        if(PENDING == Com.ComSignal[Com.ComIPdu[pdu_counter].ComIPduSignalRef[pdu_counter]->ComHandleId + signal_counter_per_pdu].ComTransferProperty)
+                        {
+
+                        }
+                        else    /*TRIGGERED and updated*/
+                        {
+                            /*check flag of this pdu*/
+                            if(Com_Trigger_Flag[pdu_counter] == 1)
+                            {
+                                Com_Trigger_Flag[pdu_counter]=0;
+                                Pdu_Concatnate(pdu_counter);
+                                PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                                /*end the request of this direct lpdu as it is done and sent*/
+                                break;
+                            }
+                            else
+                            {
+                                /*Do Nothing*/
+                            }
+                        }
+                    }
+                }
                 else
                 {
                     /*Do Nothing*/
                 }
             }
+            else
+            {
+                /*Do Nothing*/
+            }
         }
+
     }
 }
 
