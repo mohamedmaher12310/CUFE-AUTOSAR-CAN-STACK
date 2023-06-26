@@ -34,35 +34,30 @@ uint8 check_flag=0;
  ************************************************************************************/
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
 {
-#if(COM_DEV_ERROR_DETECT == STD_ON)
+
     /* Check if the module is initialized or not*/
     if ( ComCurrent_State ==  COM_UNINIT)
     {
+        #if(COM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, Com_RxIndication_SID, COM_E_UNINIT);
-    }
-    else
-    {
-        /* MISRA*/
+        #endif
     }
 
-    if(RxPduId>ComMaxIPduCnt)
+
+    else if(RxPduId>ComMaxIPduCnt)
     {
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, Com_RxIndication_SID, COM_E_PARAM);
     }
 
-    else
-    {
-        /* MISRA*/
-    }
 
     /* check if the input configuration pointer is not a NULL_PTR */
-    if ( PduInfoPtr == NULL_PTR )
+    else if ( PduInfoPtr == NULL_PTR )
     {
         Det_ReportError(COM_MODULE_ID, COM_INSTANCE_ID, Com_RxIndication_SID, COM_E_PARAM_POINTER);
 
     }
     else
-#endif
+
     {
         uint8 pdu_counter,signal_counter,return_value,i;
         void (*NotficationAdress)(void);

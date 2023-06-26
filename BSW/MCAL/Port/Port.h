@@ -52,7 +52,7 @@
   #error "The AR version of Std_Types.h does not match the expected version"
 #endif
 
-/* Dio Pre-Compile Configuration Header file */
+/* Port Pre-Compile Configuration Header file */
 #include "Port_Cfg.h"
 
 /* AUTOSAR Version checking between Port_Cfg.h and Port.h files */

@@ -89,17 +89,18 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
     /***********************CAN0***********************/
     if (Controller == CAN0_CONTROLLER_ID)
     {
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
+
         /*Check invalid transition ->Transition to CS_STARTED can't be reached
          *                           unless coming from CS_STOPPED
          */
         if(Can_CurrentState[CAN0_CONTROLLER_ID] != CAN_CS_STOPPED)
         {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
+#endif /*CAN_DEV_ERROR_DETECT*/
             Return_Value = E_NOT_OK;
         }
         else
-#endif /*CAN_DEV_ERROR_DETECT*/
         {
             /* To check if CanTimeoutDuration is elapsed -> we need to take a snapshot of
              *                                  time and calculate the actual time elapsed
@@ -134,17 +135,17 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
     /***********************CAN1***********************/
     else if (Controller == CAN1_CONTROLLER_ID)
     {
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
         /*Check invalid transition ->Transition to CS_STARTED can't be reached
          *                           unless coming from CS_STOPPED
          */
         if(Can_CurrentState[CAN1_CONTROLLER_ID] != CAN_CS_STOPPED)
         {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
+#endif /*CAN_DEV_ERROR_DETECT*/
             Return_Value = E_NOT_OK;
         }
         else
-#endif /*CAN_DEV_ERROR_DETECT*/
         {
             /* To check if CanTimeoutDuration is elapsed -> we need to take a snapshot of
              *                                  time and calculate the actual time elapsed
@@ -191,17 +192,17 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
     /***********************CAN0***********************/
     if (Controller == CAN0_CONTROLLER_ID)
     {
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
         /*Check invalid transition ->Transition to CS_STOPPED can't be reached
          *                           unless coming from CS_STARTED
          */
         if(Can_CurrentState[CAN0_CONTROLLER_ID] != CAN_CS_STARTED)
         {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
+#endif /*CAN_DEV_ERROR_DETECT*/
             Return_Value = E_NOT_OK;
         }
         else
-#endif /*CAN_DEV_ERROR_DETECT*/
         {
             /* To check if CanTimeoutDuration is elapsed -> we need to take a snapshot of
              *                                  time and calculate the actual time elapsed
@@ -237,17 +238,17 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
     /***********************CAN1***********************/
     else if (Controller == CAN1_CONTROLLER_ID)
     {
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
         /*Check invalid transition ->Transition to CS_STOPPED can't be reached
          *                           unless coming from CS_STARTED
          */
         if(Can_CurrentState[CAN1_CONTROLLER_ID] != CAN_CS_STARTED)
         {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
             Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_TRANSITION);
+#endif /*CAN_DEV_ERROR_DETECT*/
             Return_Value = E_NOT_OK;
         }
         else
-#endif /*CAN_DEV_ERROR_DETECT*/
         {
             /* To check if CanTimeoutDuration is elapsed -> we need to take a snapshot of
              *                                  time and calculate the actual time elapsed
@@ -494,23 +495,21 @@ uint8 Can_MessageReceive(uint32 Controller_ID, Can_HwHandleType MessageObj_Num, 
  ************************************************************************************/
 void Can_Init(const Can_ConfigType* Config)
 {
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
+
     /* Check if the input configuration pointer is not a NULL_PTR */
     if (NULL_PTR == Config)
     {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_INIT_SID,CAN_E_PARAM_POINTER);
-    }
-    else
-    {
-        /* Do Nothing*/
-    }
-    /* Check for Invalid configuration set selection */
-    if(&Can_Configuration != Config)
-    {
-        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_INIT_SID,CAN_E_INIT_FAILED);
-    }
-    else
 #endif /*CAN_DEV_ERROR_DETECT*/
+    }
+    else if(&Can_Configuration != Config)
+    {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_INIT_SID,CAN_E_INIT_FAILED);
+#endif /*CAN_DEV_ERROR_DETECT*/
+    }
+    else
     {
 #if(CAN0_CONTROLLER_ACTIVATION == STD_ON)
         /**************CAN0**************/
@@ -1066,23 +1065,20 @@ void Can_Init(const Can_ConfigType* Config)
 void Can_DeInit(void)
 {
     /* The function Can_DeInit shall raise the error CAN_E_TRANSITION if the driver is not in state CAN_READY*/
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
     if(Can_Status != CAN_READY)
     {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DE_INIT_SID, CAN_E_TRANSITION);
-    }
-    else
-    {
-        /* Do nothing*/
-    }
-
-    /* The function Can_DeInit shall raise the error CAN_E_TRANSITION if any of the CAN controllers is in state STARTED.*/
-    if(  (Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED ) || (Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED ) )
-    {
-        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DE_INIT_SID, CAN_E_TRANSITION);
-    }
-    else
 #endif /* CAN_DEV_ERROR_DETECT*/
+    }
+    /* The function Can_DeInit shall raise the error CAN_E_TRANSITION if any of the CAN controllers is in state STARTED.*/
+    else if(  (Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED ) || (Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED ) )
+    {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DE_INIT_SID, CAN_E_TRANSITION);
+#endif /* CAN_DEV_ERROR_DETECT*/
+    }
+    else
     {
         /* Change the driver state to UNINT state*/
         Can_Status = CAN_UNINIT;
@@ -1164,61 +1160,59 @@ void Can_DeInit(void)
 Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType Transition)
 {
     Std_ReturnType Return_Value;
-#if(CAN_DEV_ERROR_DETECT == STD_ON)
+
     /* Check if the Controller ID is greater than the number of configured controllers*/
     if (Controller >= CAN_CONTROLLERS_NUMBER)
     {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_PARAM_CONTROLLER);
         Return_Value = E_NOT_OK;
-    }
-    else
-    {
-        /* Do nothing*/
+#endif /*CAN_DEV_ERROR_DETECT*/
     }
     /* Check if the module is initialized*/
-    if (Can_Status == CAN_UNINIT)
+    else if (Can_Status == CAN_UNINIT)
     {
+#if(CAN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_SET_CONTROLLER_MODE_SID, CAN_E_UNINIT);
         Return_Value = E_NOT_OK;
-    }
-    else
-    {
-        /* Do Nothing*/
-    }
 #endif /*CAN_DEV_ERROR_DETECT*/
+    }
     /* Switch on the transition state value to perform specific
      * function depending on the transition
      */
-    switch (Transition)
+    else
     {
-    case CAN_CS_STARTED:
-        if (Can_Started_State(Controller) == E_OK)
+        switch (Transition)
         {
-            Return_Value = E_OK;
+        case CAN_CS_STARTED:
+            if (Can_Started_State(Controller) == E_OK)
+            {
+                Return_Value = E_OK;
+            }
+            else
+            {
+                Return_Value = E_NOT_OK;
+            }
+            break;
+        case CAN_CS_STOPPED:
+            if(Can_Stopped_State(Controller) == E_OK)
+            {
+                Return_Value = E_OK;
+            }
+            else
+            {
+                Return_Value = E_NOT_OK;
+            }
+            break;
+        default :
+            break;
         }
-        else
-        {
-            Return_Value = E_NOT_OK;
-        }
-        break;
-    case CAN_CS_STOPPED:
-        if(Can_Stopped_State(Controller) == E_OK)
-        {
-            Return_Value = E_OK;
-        }
-        else
-        {
-            Return_Value = E_NOT_OK;
-        }
-        break;
-    default :
-        break;
+        /*Indicate a mode transition to the user (CanIf)*/
+        CanIf_ControllerModeIndication(Controller,Transition);
+
     }
-    /*Indicate a mode transition to the user (CanIf)*/
-    CanIf_ControllerModeIndication(Controller,Transition);
     return Return_Value;
 }
-
 /*************************************************************************************
  * Service name: Can_DisableControllerInterrupts
  * Service ID[hex]: 0x04
@@ -1232,49 +1226,52 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerStateType 
  **************************************************************************************/
 void Can_DisableControllerInterrupts( uint8 Controller )
 {
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
     /*implementation of the DET*/
     if(Can_Status == CAN_UNINIT)
     {
-
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DISABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
-
+#endif
     }
     else if(Controller >= CAN_CONTROLLERS_NUMBER)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_DISABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_PARAM_CONTROLLER);
-    }
 #endif
+    }
     /*
      * [SWS_Can_00202] When Can_DisableControllerInterrupts has been called several times,
      * Can_EnableControllerInterrupts must be called as many times before
      * the interrupts are re-enabled..
      */
-    Interrupts_Disable_Flag =FLAG_HIGH;
-    Interrupts_Enable_Disable_Counter ++ ;
+    else
+    {
+        Interrupts_Disable_Flag =FLAG_HIGH;
+        Interrupts_Enable_Disable_Counter ++ ;
 
 #if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
-    {
-        /****************CAN0****************/
-        if(Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED)
         {
-            CLEAR_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),INIT_BIT);
-            SET_BIT(NVIC_DIS1,CAN0);
+            /****************CAN0****************/
+            if(Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED)
+            {
+                CLEAR_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),INIT_BIT);
+                SET_BIT(NVIC_DIS1,CAN0);
+            }
         }
-    }
 #endif /*CAN0_CONTROLLER_ACTIVATION*/
 #if (CAN1_CONTROLLER_ACTIVATION == STD_ON)
-    {
-        /****************CAN1****************/
-        if(Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED)
         {
-            CLEAR_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),INIT_BIT);
-            SET_BIT(NVIC_DIS1,CAN1);
+            /****************CAN1****************/
+            if(Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED)
+            {
+                CLEAR_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),INIT_BIT);
+                SET_BIT(NVIC_DIS1,CAN1);
+            }
         }
-    }
 #endif /*CAN1_CONTROLLER_ACTIVATION*/
+    }
 }
-
 /**************************************************************************************
 /* Service name: Can_EnableControllerInterrupts
  * Service ID[hex]: 0x05
@@ -1292,60 +1289,66 @@ void Can_EnableControllerInterrupts( uint8 Controller )
     /*
      * Check on the errors if the DET is ON
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
     /*implementation of the DET*/
     if(Can_Status == CAN_UNINIT)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_ENABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_UNINIT);
+#endif
     }
     else if(Controller >= CAN_CONTROLLERS_NUMBER)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_ENABLE_CONTROLLER_INTERRUPTS_SID, CAN_E_PARAM_CONTROLLER);
-    }
 #endif
-    /* Decrement Enable/Disable Counter*/
-    if ( Interrupts_Enable_Disable_Counter != ZERO_VALUE)
-    {
-        Interrupts_Enable_Disable_Counter --;
     }
-    /*Enable interrupts if already disabled*/
-    if ((Interrupts_Disable_Flag==FLAG_HIGH) && (Interrupts_Enable_Disable_Counter==ZERO_VALUE))
+
+    else
     {
-#if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
+        /* Decrement Enable/Disable Counter*/
+        if ( Interrupts_Enable_Disable_Counter != ZERO_VALUE)
         {
-            /**************CAN0**************/
-            if(Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED)
-            {
-                REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET);
-                /*Enable interrupts*/
-                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
-                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
-                SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
-                SET_BIT(NVIC_EN1,CAN0); /*NVIC*/
-                /*Setting interrupt priority to 1*/
-                NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
-            }
+            Interrupts_Enable_Disable_Counter --;
         }
+        /*Enable interrupts if already disabled*/
+        if ((Interrupts_Disable_Flag==FLAG_HIGH) && (Interrupts_Enable_Disable_Counter==ZERO_VALUE))
+        {
+#if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
+            {
+                /**************CAN0**************/
+                if(Can_CurrentState[CAN0_CONTROLLER_ID] == CAN_CS_STARTED)
+                {
+                    REG_VAL(CAN0_BASE, CAN_IF1CMSK_OFFSET);
+                    /*Enable interrupts*/
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
+                    SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
+                    SET_BIT(NVIC_EN1,CAN0); /*NVIC*/
+                    /*Setting interrupt priority to 1*/
+                    NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
+                }
+            }
 #endif /*CAN1_CONTROLLER_ACTIVATION*/
 #if (CAN1_CONTROLLER_ACTIVATION == STD_ON)
-        {
-            /**************CAN1**************/
-            if(Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED)
             {
-                REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET);
-                /*Enable interrupts*/
-                SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
-                SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
-                SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
-                SET_BIT(NVIC_EN1,CAN1); /*NVIC*/
-                /*Setting interrupt priority to 1*/
-                NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
+                /**************CAN1**************/
+                if(Can_CurrentState[CAN1_CONTROLLER_ID] == CAN_CS_STARTED)
+                {
+                    REG_VAL(CAN1_BASE, CAN_IF1CMSK_OFFSET);
+                    /*Enable interrupts*/
+                    SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),IE_BIT);      /*General Can interrupt*/
+                    SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),SIE_BIT);      /*Statues Interrupt*/
+                    SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),EIE_BIT);      /*Error Interrupt*/
+                    SET_BIT(NVIC_EN1,CAN1); /*NVIC*/
+                    /*Setting interrupt priority to 1*/
+                    NVIC_PRI9 |= PRIORITY_VALUE_ONE_MASK;
+                }
             }
-        }
 #endif /*CAN0_CONTROLLER_ACTIVATION*/
+        }
     }
 }
-
 /**************************************************************************************
  * Service name: Can_Write
  * Service ID[hex]: 0x06
@@ -1373,56 +1376,48 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
      *   The function Can_Write shall raise the error CAN_E_UNINIT and shall return
      *   E_NOT_OK if the driver is not yet initialized.
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
-    /*
-     * [SWS_Can_00216]  If development error detection for the Can module is enabled:
-     *                    The function Can_Write shall raise the error CAN_E_UNINIT and shall return
-     *                    E_NOT_OK if the driver is not yet initialized.
-     */
+
+
     if(Can_Status == CAN_UNINIT)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_UNINIT) ;
         Return_Value =  E_NOT_OK;
-    }
-    else
-    {
-        /*MISRA : do nothing*/
+#endif
     }
 
     /* [SWS_Can_00217]  If development error detection for the Can module is enabled:
          The function Can_Write shall raise the error CAN_E_PARAM_HANDLE and shall
          return E_NOT_OK if the parameter Hth is not a configured Hardware Transmit
          Handle. */
-    if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanObjectType)
+    else if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[Hth].CanObjectType)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_HANDLE);
         Return_Value = E_NOT_OK;
-    }
-
-    else
-    {
-        /*MISRA : do nothing*/
+#endif
     }
 
     /* [SWS_CAN_00219]  If development error detection for CanDrv is enabled:
          Can_Write() shall raise CAN_E_PARAM_POINTER and shall return E_NOT_OK if the
          parameter PduInfo is a null pointer.*/
-    if(NULL_PTR == PduInfo)
+    else if(NULL_PTR == PduInfo)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_POINTER);
         Return_Value = E_NOT_OK;
+#endif
     }
-    else
+
+    else if(PduInfo->length > SHIFT_EIGHT_BITS)
     {
-        /*MISRA : do nothing*/
-    }
-    if(PduInfo->length > SHIFT_EIGHT_BITS)
-    {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_WRITE_SID, CAN_E_PARAM_DATA_LENGTH);
         Return_Value = E_NOT_OK;
-    }
-    else
 #endif
+    }
+
+    else
     {
 #if (CAN0_CONTROLLER_ACTIVATION == STD_ON)
         /********************CAN0********************/
@@ -1927,7 +1922,7 @@ void Can_MainFunction_Write(void)
     /*
      * Check on the errors if the DET is ON
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
 
     /*
      * -Check on the state of the driver
@@ -1936,72 +1931,75 @@ void Can_MainFunction_Write(void)
 
     if(Can_Status == CAN_UNINIT)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_WRITE_SID, CAN_E_UNINIT);
+#endif /* CAN_DEV_ERROR_DETECT*/
     }
     else
     {
-        /*MISRA : do nothing*/
-    }
-#endif /* CAN_DEV_ERROR_DETECT*/
-
 #if (STD_ON == CAN0_CONTROLLER_ACTIVATION)
-    /**************CAN0**************/
-    /*
-     * The function Can_MainFunction_Write shall perform the
-     * polling of TX confirmation when CanTxProcessing
-     * is set to POLLING or MIXED. In case of MIXED processing only the hardware
-     * objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
-     * (SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
-     */
+        /**************CAN0**************/
+        /*
+         * The function Can_MainFunction_Write shall perform the
+         * polling of TX confirmation when CanTxProcessing
+         * is set to POLLING or MIXED. In case of MIXED processing only the hardware
+         * objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
+         * (SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
+         */
 #if  (POLLING == CAN0_TX_PROCESSING)
-    uint8 HOH_Index=INIT_VAL_ZERO;
-    uint8 Mailbox_Index = INIT_VAL_ZERO;
-    for(HOH_Index= INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++ )
-    {
-        if(TRANSMIT == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
+        uint8 HOH_Index=INIT_VAL_ZERO;
+        uint8 Mailbox_Index = INIT_VAL_ZERO;
+        for(HOH_Index= INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++ )
         {
-            /*
-             * Check if the reference of CAN Controller 0 to which the HOH is associated to is the same as
-             * Configurations of can controller 0.
-             */
-            if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID])
+            if(TRANSMIT == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
             {
-                for(Mailbox_Index = INIT_VAL_ZERO;Mailbox_Index <= Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount -ONE_VALUE; Mailbox_Index++)
+                /*
+                 * Check if the reference of CAN Controller 0 to which the HOH is associated to is the same as
+                 * Configurations of can controller 0.
+                 */
+                if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID])
                 {
-                    /* Check if this message object is used but never released*/
-                    if(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check == Unconfirmed)
+                    for(Mailbox_Index = INIT_VAL_ZERO;Mailbox_Index <= Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount -ONE_VALUE; Mailbox_Index++)
                     {
-                        REG_VAL(CAN0_BASE,CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox & MNUM_MASK;
-                        while (BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
+                        /* Check if this message object is used but never released*/
+                        if(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check == Unconfirmed)
                         {
-                            /* Do nothing ,wait for busy bit to clear */
-                        }
+                            REG_VAL(CAN0_BASE,CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox & MNUM_MASK;
+                            while (BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
+                            {
+                                /* Do nothing ,wait for busy bit to clear */
+                            }
 
-                        /* If it is used:
-                         * Check if it handled or not by checking on TRXQST bit
-                         * If it is cleared,it means that a transmission is handled*/
-                        if(BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),TXOK_BIT))
-                        {
-                            CLEAR_BIT(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),TXOK_BIT);
-                            /* Switch the message object state back to free*/
-                            Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
-                            /*
-                             * [SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
-                             * successful transmission. It shall either called by the TX-interrupt service routine of
-                             * the corresponding HW resource or inside the Can_MainFunction_Write in case of
-                             * polling mode. (SRS_Can_01051)
-                             */
-                            CanIf_TxConfirmation(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].PduID);
+                            /* If it is used:
+                             * Check if it handled or not by checking on TRXQST bit
+                             * If it is cleared,it means that a transmission is handled*/
+                            if(BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),TXOK_BIT))
+                            {
+                                CLEAR_BIT(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),TXOK_BIT);
+                                /* Switch the message object state back to free*/
+                                Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
+                                /*
+                                 * [SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
+                                 * successful transmission. It shall either called by the TX-interrupt service routine of
+                                 * the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                 * polling mode. (SRS_Can_01051)
+                                 */
+                                CanIf_TxConfirmation(Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].PduID);
+                            }
+                            else
+                            {
+                                /*MISRA : do nothing*/
+                            }
                         }
                         else
                         {
                             /*MISRA : do nothing*/
                         }
                     }
-                    else
-                    {
-                        /*MISRA : do nothing*/
-                    }
+                }
+                else
+                {
+                    /*MISRA : do nothing*/
                 }
             }
             else
@@ -2009,74 +2007,74 @@ void Can_MainFunction_Write(void)
                 /*MISRA : do nothing*/
             }
         }
-        else
-        {
-            /*MISRA : do nothing*/
-        }
-    }
 #endif /* CAN0_TX_PROCESSING*/
 #endif /* CAN0_CONTROLLER_ACTIVATION*/
-    /*
-     * Same configuration and checks but controller 1
-     */
+        /*
+         * Same configuration and checks but controller 1
+         */
 #if (STD_ON == CAN1_CONTROLLER_ACTIVATION)
-    /**************CAN1**************/
-    /*
-     * The function Can_MainFunction_Write shall perform the
-     * polling of TX confirmation when CanTxProcessing
-     * is set to POLLING or MIXED. In case of MIXED processing only the hardware
-     * objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
-     * (SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
-     */
+        /**************CAN1**************/
+        /*
+         * The function Can_MainFunction_Write shall perform the
+         * polling of TX confirmation when CanTxProcessing
+         * is set to POLLING or MIXED. In case of MIXED processing only the hardware
+         * objects for which CanHardwareObjectUsesPolling is set to TRUE shall be polled.
+         * (SRS_BSW_00432, SRS_BSW_00373, SRS_SPAL_00157)
+         */
 #if  (POLLING == CAN0_TX_PROCESSING)
-    uint8 HOH_Index=INIT_VAL_ZERO;
-    uint8 Mailbox_Index = INIT_VAL_ZERO;
-    for(HOH_Index= INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++ )
-    {
-        if(TRANSMIT == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
+        uint8 HOH_Index=INIT_VAL_ZERO;
+        uint8 Mailbox_Index = INIT_VAL_ZERO;
+        for(HOH_Index= INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++ )
         {
-            /*
-             * Check if the reference of CAN Controller 1 to which the HOH is associated to is the same as
-             * Configurations of can controller 1.
-             */
-            if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
+            if(TRANSMIT == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
             {
-                for(Mailbox_Index = INIT_VAL_ZERO;Mailbox_Index <= Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount -ONE_VALUE; Mailbox_Index++)
+                /*
+                 * Check if the reference of CAN Controller 1 to which the HOH is associated to is the same as
+                 * Configurations of can controller 1.
+                 */
+                if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
                 {
-                    /* Check if this message object is used but never released*/
-                    if(Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check == Unconfirmed)
+                    for(Mailbox_Index = INIT_VAL_ZERO;Mailbox_Index <= Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount -ONE_VALUE; Mailbox_Index++)
                     {
-                        REG_VAL(CAN1_BASE,CAN_IF1CRQ_OFFSET) = Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox & MNUM_MASK;
-                        while (BIT_IS_SET(REG_VAL(CAN1_BASE,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
+                        /* Check if this message object is used but never released*/
+                        if(Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check == Unconfirmed)
                         {
-                            /* Do nothing ,wait for busy bit to clear */
-                        }
+                            REG_VAL(CAN1_BASE,CAN_IF1CRQ_OFFSET) = Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox & MNUM_MASK;
+                            while (BIT_IS_SET(REG_VAL(CAN1_BASE,CAN_IF1CRQ_OFFSET),BUSY_BIT) )
+                            {
+                                /* Do nothing ,wait for busy bit to clear */
+                            }
 
-                        /* If it is used:
-                         * Check if it handled or not by checking on TRXQST bit
-                         * If it is cleared,it means that a transmission is handled*/
-                        if(BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),TXOK_BIT))
-                        {
-                            CLEAR_BIT(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),TXOK_BIT);
-                            /* Switch the message object state back to free*/
-                            Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
-                            /*
-                             * [SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
-                             * successful transmission. It shall either called by the TX-interrupt service routine of
-                             * the corresponding HW resource or inside the Can_MainFunction_Write in case of
-                             * polling mode. (SRS_Can_01051)
-                             */
-                            CanIf_TxConfirmation(Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].PduID);
+                            /* If it is used:
+                             * Check if it handled or not by checking on TRXQST bit
+                             * If it is cleared,it means that a transmission is handled*/
+                            if(BIT_IS_SET(REG_VAL(CAN0_BASE_ADDRESS,CAN_STS_OFFSET),TXOK_BIT))
+                            {
+                                CLEAR_BIT(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),TXOK_BIT);
+                                /* Switch the message object state back to free*/
+                                Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
+                                /*
+                                 * [SWS_Can_00016]  The Can module shall call CanIf_TxConfirmation to indicate a
+                                 * successful transmission. It shall either called by the TX-interrupt service routine of
+                                 * the corresponding HW resource or inside the Can_MainFunction_Write in case of
+                                 * polling mode. (SRS_Can_01051)
+                                 */
+                                CanIf_TxConfirmation(Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].PduID);
+                            }
+                            else
+                            {
+                                /*MISRA : do nothing*/
+                            }
                         }
                         else
                         {
                             /*MISRA : do nothing*/
                         }
                     }
-                    else
-                    {
-                        /*MISRA : do nothing*/
-                    }
+                }
+                else
+                {
+                    /*MISRA : do nothing*/
                 }
             }
             else
@@ -2084,16 +2082,11 @@ void Can_MainFunction_Write(void)
                 /*MISRA : do nothing*/
             }
         }
-        else
-        {
-            /*MISRA : do nothing*/
-        }
-    }
 #endif /* CAN1_TX_PROCESSING*/
 #endif /* CAN1_CONTROLLER_ACTIVATION*/
 #endif /* CAN0_TX_PROCESSING || CAN1_TX_PROCESSING */
+    }
 }
-
 /*************************************************************************************
  * Service name: Can_MainFunction_Read
  * Service ID[hex]: 0x08
@@ -2110,93 +2103,98 @@ void Can_MainFunction_Read(void)
     /*
      * Check on the errors if the DET is ON
      */
-#if(STD_ON == CAN_DEV_ERROR_DETECT)
+
     /*
      * -Check on the state of the driver
      * -If Driver state in UNINIT ,Function should not be called and error report
      */
     if(Can_Status == CAN_UNINIT)
     {
+#if(STD_ON == CAN_DEV_ERROR_DETECT)
         Det_ReportError(CAN_MODULE_ID, CAN_INSTANCE_ID, CAN_MAINFUNCTION_READ_SID, CAN_E_UNINIT) ;
+#endif /* CAN_DEV_ERROR_DETECT*/
     }
+
     else
     {
-        /*MISRA : do nothing*/
-    }
-#endif /* CAN_DEV_ERROR_DETECT*/
-    /*
-     * Structures used for Receiving message object info
-     *
-     */
-    PduInfoType ReceiverPduInfo;
-    Can_PduType Can_Msg_Received;
-    Can_HwType MSG_Object;
+        /*
+         * Structures used for Receiving message object info
+         *
+         */
+        PduInfoType ReceiverPduInfo;
+        Can_PduType Can_Msg_Received;
+        Can_HwType MSG_Object;
 
-    /*
-     * Check if Controller (0) is activated from the configurations
-     * -if not configured active -> no processing on Controller (0)
-     */
+        /*
+         * Check if Controller (0) is activated from the configurations
+         * -if not configured active -> no processing on Controller (0)
+         */
 #if (STD_ON == CAN0_CONTROLLER_ACTIVATION)
-    /******************CAN0******************/
-    /*
-     * The function Can_MainFunction_Read shall perform the
-     * polling of RX indications when CanRxProcessing is set to POLLING or MIXED. In
-     * case of MIXED processing only the hardware objects for which
-     * CanHardwareObjectUsesPolling is set to TRUE shall be
-     * polled.(SRS_BSW_00432, SRS_SPAL_00157)
-     */
+        /******************CAN0******************/
+        /*
+         * The function Can_MainFunction_Read shall perform the
+         * polling of RX indications when CanRxProcessing is set to POLLING or MIXED. In
+         * case of MIXED processing only the hardware objects for which
+         * CanHardwareObjectUsesPolling is set to TRUE shall be
+         * polled.(SRS_BSW_00432, SRS_SPAL_00157)
+         */
 #if (POLLING == CAN0_RX_PROCESSING)
 
-    uint8 HOH_Index=INIT_VAL_ZERO;
-    uint8 Mailbox_Index = INIT_VAL_ZERO;
+        uint8 HOH_Index=INIT_VAL_ZERO;
+        uint8 Mailbox_Index = INIT_VAL_ZERO;
 
-    for(HOH_Index = INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++)
-    {
-        /*
-         * Check on each Hardware object if it is used as receive object
-         */
-        if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
+        for(HOH_Index = INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++)
         {
             /*
-             * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
-             * Configurations of can controller 0.
+             * Check on each Hardware object if it is used as receive object
              */
-            if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
+            if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
             {
-                /*Loop through CanHardwareObjectCount*/
-                for(Mailbox_Index = INIT_VAL_ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
-
+                /*
+                 * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
+                 * Configurations of can controller 0.
+                 */
+                if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN0_CONTROLLER_ID,Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox,&Can_Msg_Received);
+                    /*Loop through CanHardwareObjectCount*/
+                    for(Mailbox_Index = INIT_VAL_ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
 
-                    /*
-                     * Check if the there is a new message in the
-                     * message using the new data bit
-                     */
-                    if(FLAG_HIGH == NEW_DATA_UPDATE )
                     {
-                        /*Lock Mailbox until Reading of Pdu from Users*/
-                        Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Unconfirmed;
-                        MSG_Object.CanId =  Can_Msg_Received.id ;
-                        MSG_Object.ControllerId = Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef->CanControllerId;
-                        MSG_Object.Hoh = HOH_Index;
-                        ReceiverPduInfo.SduDataPtr = Can_Msg_Received.sdu;
-                        ReceiverPduInfo.SduLength = Can_Msg_Received.length;
-                        /*
-                         * On L-PDU reception, the Can module shall call the RX
-                         * indication callback function CanIf_RxIndication with ID, Hoh, abstract CanIf
-                         * ControllerId in parameter Mailbox, and the Data Length and pointer to the L-SDU
-                         * buffer in parameter PduInfoPtr. (SRS_Can_01045)
-                         */
-                        /*Call User (CanIf) to indicate recieved message*/
-                        CanIf_RxIndication(&MSG_Object,&ReceiverPduInfo);
-                        /*
-                         * The hardware object will be immediately released
-                         * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
-                         */
-                        Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
-                    }
+                        uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN0_CONTROLLER_ID,Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox,&Can_Msg_Received);
 
+                        /*
+                         * Check if the there is a new message in the
+                         * message using the new data bit
+                         */
+                        if(FLAG_HIGH == NEW_DATA_UPDATE )
+                        {
+                            /*Lock Mailbox until Reading of Pdu from Users*/
+                            Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Unconfirmed;
+                            MSG_Object.CanId =  Can_Msg_Received.id ;
+                            MSG_Object.ControllerId = Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef->CanControllerId;
+                            MSG_Object.Hoh = HOH_Index;
+                            ReceiverPduInfo.SduDataPtr = Can_Msg_Received.sdu;
+                            ReceiverPduInfo.SduLength = Can_Msg_Received.length;
+                            /*
+                             * On L-PDU reception, the Can module shall call the RX
+                             * indication callback function CanIf_RxIndication with ID, Hoh, abstract CanIf
+                             * ControllerId in parameter Mailbox, and the Data Length and pointer to the L-SDU
+                             * buffer in parameter PduInfoPtr. (SRS_Can_01045)
+                             */
+                            /*Call User (CanIf) to indicate recieved message*/
+                            CanIf_RxIndication(&MSG_Object,&ReceiverPduInfo);
+                            /*
+                             * The hardware object will be immediately released
+                             * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
+                             */
+                            Object_Check[CAN0_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
+                        }
+
+                    }
+                }
+                else
+                {
+                    /*MISRA : do nothing*/
                 }
             }
             else
@@ -2204,78 +2202,78 @@ void Can_MainFunction_Read(void)
                 /*MISRA : do nothing*/
             }
         }
-        else
-        {
-            /*MISRA : do nothing*/
-        }
-    }
 #endif /* CAN0_RX_PROCESSING*/
 #endif /* CAN0_CONTROLLER_ACTIVATION*/
 
-    /*
-     * Same configuration and checks but controller 1
-     */
+        /*
+         * Same configuration and checks but controller 1
+         */
 #if (STD_ON == CAN1_CONTROLLER_ACTIVATION)
-    /******************CAN1******************/
-    /*
-     * The function Can_MainFunction_Read shall perform the
-     * polling of RX indications when CanRxProcessing is set to POLLING or MIXED. In
-     * case of MIXED processing only the hardware objects for which
-     * CanHardwareObjectUsesPolling is set to TRUE shall be
-     * polled.(SRS_BSW_00432, SRS_SPAL_00157)
-     */
+        /******************CAN1******************/
+        /*
+         * The function Can_MainFunction_Read shall perform the
+         * polling of RX indications when CanRxProcessing is set to POLLING or MIXED. In
+         * case of MIXED processing only the hardware objects for which
+         * CanHardwareObjectUsesPolling is set to TRUE shall be
+         * polled.(SRS_BSW_00432, SRS_SPAL_00157)
+         */
 #if (POLLING == CAN0_RX_PROCESSING)
 
-    uint8 HOH_Index=INIT_VAL_ZERO;
-    uint8 Mailbox_Index = INIT_VAL_ZERO;
+        uint8 HOH_Index=INIT_VAL_ZERO;
+        uint8 Mailbox_Index = INIT_VAL_ZERO;
 
-    for(HOH_Index = INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++)
-    {
-        /*
-         * Check on each Hardware object if it is used as receive object
-         */
-        if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
+        for(HOH_Index = INIT_VAL_ZERO; HOH_Index < CAN_HOH_NUMBER;HOH_Index++)
         {
             /*
-             * Check if the Reference of CAN Controller 1 to which the HOH is associated to is the same as
-             * Configurations of can controller 1.
+             * Check on each Hardware object if it is used as receive object
              */
-            if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
+            if( RECIEVE == Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanObjectType)
             {
-                /*Loop through CanHardwareObjectCount*/
-                for(Mailbox_Index = INIT_VAL_ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
+                /*
+                 * Check if the Reference of CAN Controller 1 to which the HOH is associated to is the same as
+                 * Configurations of can controller 1.
+                 */
+                if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
                 {
-                    uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN1_CONTROLLER_ID,Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox,&Can_Msg_Received);
-
-                    /*
-                     * Check if the there is a new message in the
-                     * message using the new data bit
-                     */
-                    if(FLAG_HIGH == NEW_DATA_UPDATE )
+                    /*Loop through CanHardwareObjectCount*/
+                    for(Mailbox_Index = INIT_VAL_ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)
                     {
-                        /*Lock Mailbox until Reading of Pdu from Users*/
-                        Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Unconfirmed;
-                        MSG_Object.CanId =  Can_Msg_Received.id ;
-                        MSG_Object.ControllerId = Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef->CanControllerId;
-                        MSG_Object.Hoh = HOH_Index;
-                        ReceiverPduInfo.SduDataPtr = Can_Msg_Received.sdu;
-                        ReceiverPduInfo.SduLength = Can_Msg_Received.length;
-                        /*
-                         * On L-PDU reception, the Can module shall call the RX
-                         * indication callback function CanIf_RxIndication with ID, Hoh, abstract CanIf
-                         * ControllerId in parameter Mailbox, and the Data Length and pointer to the L-SDU
-                         * buffer in parameter PduInfoPtr. (SRS_Can_01045)
-                         *
-                         */
-                        /*Call User (CanIf) to indicate recieved message*/
-                        CanIf_RxIndication(&MSG_Object,&ReceiverPduInfo);
-                        /*
-                         * The hardware object will be immediately released
-                         * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
-                         */
-                        Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
-                    }
+                        uint8 NEW_DATA_UPDATE = Can_MessageReceive(CAN1_CONTROLLER_ID,Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Mailbox,&Can_Msg_Received);
 
+                        /*
+                         * Check if the there is a new message in the
+                         * message using the new data bit
+                         */
+                        if(FLAG_HIGH == NEW_DATA_UPDATE )
+                        {
+                            /*Lock Mailbox until Reading of Pdu from Users*/
+                            Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Unconfirmed;
+                            MSG_Object.CanId =  Can_Msg_Received.id ;
+                            MSG_Object.ControllerId = Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef->CanControllerId;
+                            MSG_Object.Hoh = HOH_Index;
+                            ReceiverPduInfo.SduDataPtr = Can_Msg_Received.sdu;
+                            ReceiverPduInfo.SduLength = Can_Msg_Received.length;
+                            /*
+                             * On L-PDU reception, the Can module shall call the RX
+                             * indication callback function CanIf_RxIndication with ID, Hoh, abstract CanIf
+                             * ControllerId in parameter Mailbox, and the Data Length and pointer to the L-SDU
+                             * buffer in parameter PduInfoPtr. (SRS_Can_01045)
+                             *
+                             */
+                            /*Call User (CanIf) to indicate recieved message*/
+                            CanIf_RxIndication(&MSG_Object,&ReceiverPduInfo);
+                            /*
+                             * The hardware object will be immediately released
+                             * after CanIf_RxIndication() of CanIf returns to avoid loss of data.
+                             */
+                            Object_Check[CAN1_CONTROLLER_ID][HOH_Index][Mailbox_Index].Check = Confirmed;
+                        }
+
+                    }
+                }
+                else
+                {
+                    /*MISRA : do nothing*/
                 }
             }
             else
@@ -2283,12 +2281,8 @@ void Can_MainFunction_Read(void)
                 /*MISRA : do nothing*/
             }
         }
-        else
-        {
-            /*MISRA : do nothing*/
-        }
-    }
 #endif /* CAN1_RX_PROCESSING*/
 #endif /* CAN1_CONTROLLER_ACTIVATION*/
 #endif /* CAN0_RX_PROCESSING || CAN1_RX_PROCESSING*/
+    }
 }

@@ -55,7 +55,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     /*Index of HRH*/
     uint8 HRH_index ;
 
-#if(STD_ON == CanIfDevErrorDetect)
+
     /*
      * If CanIf was not initialized before calling CanIf_RxIndication(),
      * CanIf shall not execute Rx indication handling, when CanIf_RxIndication() is called.
@@ -63,48 +63,47 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     /* Check if the module is initialized or not*/
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
+ #if(STD_ON == CanIfDevErrorDetect)
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_UNINIT);
-    }
-    else
-    {
-        /*MISRA :Do Nothing*/
-    }
+
+#endif
+        }
+
     /*
      * If parameter Mailbox->Hoh of CanIf_RxIndication() has an invalid value,
      * CanIf shall report development error code
      */
-    if(Mailbox->Hoh > CAN_HOH_NUMBER)
+    else if(Mailbox->Hoh > CAN_HOH_NUMBER)
     {
+#if(STD_ON == CanIfDevErrorDetect)
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_HOH);
+#endif
     }
-    else
-    {
-        /*MISRA : Do nothing*/
-    }
+
     /*
      * If parameter Mailbox->CanId of CanIf_RxIndication() has an invalid value,
      * CanIf shall report development error code CANIF_E_PARAM_CANID to the Det_ReportError
      * service of the DET
      */
-    if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) )
+    else if ( (Mailbox->CanId > CANNIF_STANDARD_MAX) || (Mailbox->CanId >CANNIF_EXTENDED_MAX) )
     {
+#if(STD_ON == CanIfDevErrorDetect)
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_CANID);
-    }
-    else
-    {
-        /*MISRA : do nothing*/
-    }
+#endif
+        }
     /*
      * If parameter PduInfoPtr or Mailbox has an invalid value,
      * CanIf shall report development error code CANIF_E_PARAM_POINTER to
      * the Det_ReportError service of the DET module
      */
-    if( ( NULL_PTR == Mailbox) || ( NULL_PTR== PduInfoPtr)  )
+    else if( ( NULL_PTR == Mailbox) || ( NULL_PTR== PduInfoPtr)  )
     {
+#if(STD_ON == CanIfDevErrorDetect)
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_PARAM_POINTER);
+#endif
     }
     else
-#endif
+
     {
         /* Store the addresses to pointers*/
         /* CanIfRxPduCfg Container*/
@@ -164,7 +163,9 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
                      */
                     if((PduInfoPtr->SduLength) > (RxPDU->CanIfRxPduDataLength))
                     {
+#if(STD_ON == CanIfDevErrorDetect)
                         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_RX_INDICATION_SID, CANIF_E_INVALID_DATA_LENGTH);
+#endif
                     }
                     /*Passed the Data Length Check*/
                     else
@@ -309,16 +310,15 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
 #if (PduRTxConfirmation)
 void CanIf_TxConfirmation(PduIdType CanTxPduId)
 {
-
-#if( CanIfDevErrorDetect == STD_ON  )
-
     /* [SWS_CANIF_00412] If CanIf was not initialized before calling CanIf_TxConfirmation(), CanIf shall not call the service
      * <User_TxConfirmation>() and shall not set the Tx confirmation status, when
      * CanIf_TxConfirmation() is called.
      */
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
+#if( CanIfDevErrorDetect == STD_ON  )
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_SID, CANIF_E_UNINIT);
+#endif
     }
 
     /* [SWS_CANIF_00410] If parameter CanTxPduId of CanIf_TxConfirmation()
@@ -326,12 +326,14 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
      * CANIF_E_PARAM_LPDU to the Det_ReportError service of the DET module,
      * when CanIf_TxConfirmation() is called.
      */
-    if (CanTxPduId > CanIfMaxTxPduCfg )
+    else if (CanTxPduId > CanIfMaxTxPduCfg )
     {
+#if( CanIfDevErrorDetect == STD_ON  )
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TX_CONFIRMATION_SID,  CANIF_E_PARAM_LPDU );
+#endif
     }
 
-#endif
+    else{
 
      /*Pointer to the Transmitted PDU */
     CanIfTxPduCfg *TxPDU_ptr = NULL_PTR;
@@ -364,6 +366,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
         /*MISRA : Do Nothing*/
     }
 }
+}
 #endif /*PduRTxConfirmation*/
 
 /************************************************************************************
@@ -382,16 +385,15 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
  ************************************************************************************/
 void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType ControllerMode)
 {
-
-#if( CanIfDevErrorDetect == STD_ON  )
-
     /* [SWS_CANIF_00702] If CanIf was not initialized before calling
      * CanIf_ControllerModeIndication(), CanIf shall not execute state transition notification,
      *  when CanIf_ControllerModeIndication() is called.
      */
     if (CANIF_UNINIT == CanIfCurrent_State)
     {
+#if( CanIfDevErrorDetect == STD_ON  )
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID, CANIF_E_UNINIT);
+#endif
     }
 
     /* [SWS_CANIF_00700] If parameter ControllerId of
@@ -400,16 +402,24 @@ void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType C
      * to the Det_ReportError service of the DET module, when
      * CanIf_ControllerModeIndication() is called.
      */
-    if (ControllerId >= CAN_CONTROLLERS_NUMBER)
+    else if (ControllerId >= CAN_CONTROLLERS_NUMBER)
     {
+#if( CanIfDevErrorDetect == STD_ON  )
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CONTROLLERID );
+#endif
     }
 
     /* Check If parameter ControllerMode has an invalid value*/
-    if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
+    else if (  (ControllerMode !=CAN_CS_STARTED) && (ControllerMode !=CAN_CS_STOPPED) && (ControllerMode !=CAN_CS_SLEEP) )
     {
+#if( CanIfDevErrorDetect == STD_ON  )
         Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_CONTROLLER_MODE_INDICATION_SID,  CANIF_E_PARAM_CTRLMODE );
-    }
 #endif
+    }
+    else
+       {
+           /*MISRA : Do Nothing*/
+       }
+
 
 }
