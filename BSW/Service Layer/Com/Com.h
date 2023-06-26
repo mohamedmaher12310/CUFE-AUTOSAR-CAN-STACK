@@ -270,5 +270,6 @@ extern Com_StatusType ComCurrent_State;
 #define FOURTY_SEVEN    (47u)
 #define FOURTY_EIGHT    (48u)
 #define FIFTY_SIX       (56u)
-
+#define HUNDRED        (100u)
+#define THOUSAND       (1000u)
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_H_ */

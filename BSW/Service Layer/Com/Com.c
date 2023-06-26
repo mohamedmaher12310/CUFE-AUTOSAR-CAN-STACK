@@ -319,79 +319,75 @@ void Com_MainFunctionTx(void)
     else
     {
         g_tick++;
-        for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
+        if(g_tick>ComTxModeTimePeriod_max_Value*HUNDRED)
         {
-
-            if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
+            g_tick=0;
+        }
+        else{
+            for(pdu_counter=0;pdu_counter<ComMaxIPduCnt;pdu_counter++)
             {
-                /***************************************PDU CONCATINATION****************************************************/
-                if(1 == Com_Trigger_Flag[pdu_counter])
+
+                if( SEND == Com.ComIPdu[pdu_counter].ComIPduDirection)
                 {
-                    Pdu_Concatnate(pdu_counter);
-                    if(DIRECT_Tx != Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                    if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
                     {
-                        Com_Trigger_Flag[pdu_counter]=0;
-                    }
-                    else
-                    {
-                        /*Do Nothing*/
-                    }
-                }
-                else
-                {
-                    /*Do Nothing*/
-                }
-
-                if(PERIODIC_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
-                {
-
-
-
-                    if((g_tick*ComTxTimeBase*1000) >= ((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*1000))
-                    {
-                        PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
-                    }
-                    else
-                    {
-                        /*Do Nothing*/
-                    }
-
-
-                }
-                else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
-                {
-                    /*loop on signals of this pdu*/
-                    for(signal_counter_per_pdu=0;signal_counter_per_pdu<EIGHT;signal_counter_per_pdu++)
-                    {
-                        if(PENDING == Com.ComSignal[Com.ComIPdu[pdu_counter].ComIPduSignalRef[pdu_counter]->ComHandleId + signal_counter_per_pdu].ComTransferProperty)
+                        if((g_tick*ComTxTimeBase*THOUSAND) >= ((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND))
                         {
 
-                        }
-                        else    /*TRIGGERED and updated*/
-                        {
-                            /*check flag of this signal*/
-                            if(Com_Trigger_Flag[pdu_counter] == 1)
+                            if( (uint8)((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND)%(uint8)(g_tick*ComTxTimeBase*THOUSAND) == 0 )
                             {
-                                Com_Trigger_Flag[pdu_counter]=0;
+                                Pdu_Concatnate(pdu_counter);
                                 PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
-                                /*end the request of this direct lpdu as it is done and sent*/
-                                break;
+
                             }
                             else
                             {
                                 /*Do Nothing*/
                             }
                         }
+                        else
+                        {
+                            /*Do Nothing*/
+                        }
+
+
+                    }
+                    else if(DIRECT_Tx == Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeMode)
+                    {
+                        /*loop on signals of this pdu*/
+                        for(signal_counter_per_pdu=0;signal_counter_per_pdu<EIGHT;signal_counter_per_pdu++)
+                        {
+                            if(PENDING == Com.ComSignal[Com.ComIPdu[pdu_counter].ComIPduSignalRef[pdu_counter]->ComHandleId + signal_counter_per_pdu].ComTransferProperty)
+                            {
+
+                            }
+                            else    /*TRIGGERED and updated*/
+                            {
+                                /*check flag of this pdu*/
+                                if(Com_Trigger_Flag[pdu_counter] == 1)
+                                {
+                                    Com_Trigger_Flag[pdu_counter]=0;
+                                    Pdu_Concatnate(pdu_counter);
+                                    PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);
+                                    /*end the request of this direct lpdu as it is done and sent*/
+                                    break;
+                                }
+                                else
+                                {
+                                    /*Do Nothing*/
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        /*Do Nothing*/
                     }
                 }
                 else
                 {
                     /*Do Nothing*/
                 }
-            }
-            else
-            {
-                /*Do Nothing*/
             }
         }
     }
