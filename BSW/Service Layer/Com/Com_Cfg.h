@@ -117,10 +117,10 @@
 #define ComTxModeTimePeriod_Value_0                     (float32)0.02
 #define ComTxModeTimePeriod_Value_1                     (float32)0.04
 #define ComTxModeTimePeriod_Value_2                     (float32)0.06
-#define ComTimeout_Value                                (float32)0.125
-#define ComTxModeTimePeriod_min_Value                   (float32)0.02
 /*calculated from least common factor of ComTxModeTimePeriod_Value_0 & ComTxModeTimePeriod_Value_1 & ComTxModeTimePeriod_Value_2 */
 #define ComTxModeTimePeriod_max_Value                   (float32)0.12
+#define ComTimeout_Value                                (float32)0.125
+
 
 
 #endif /* CUFE_AUTOSAR_CAN_STACK_COM_CFG_H_ */
