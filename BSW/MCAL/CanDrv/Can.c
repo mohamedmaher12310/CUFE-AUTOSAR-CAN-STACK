@@ -2154,7 +2154,7 @@ void Can_MainFunction_Read(void)
                  * check if the Reference of CAN Controller 0 to which the HOH is associated to is the same as
                  * Configurations of can controller 0.
                  */
-                if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN1_CONTROLLER_ID])
+                if(Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanControllerRef == &Can_Configuration.CanConfigSet.CanController[CAN0_CONTROLLER_ID])
                 {
                     /*Loop through CanHardwareObjectCount*/
                     for(Mailbox_Index = INIT_VAL_ZERO ;Mailbox_Index < Can_Configuration.CanConfigSet.CanHardwareObject[HOH_Index].CanHardwareObjectCount; Mailbox_Index++)

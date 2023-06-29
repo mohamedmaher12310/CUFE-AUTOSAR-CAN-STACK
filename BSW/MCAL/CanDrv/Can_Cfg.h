@@ -124,7 +124,7 @@
 #define CAN1_CONTROLLER_SYNC_JUMP_WIDTH  (uint8)4
 
 /**********************************CanHardwareObject Configurations***************************/
-/* Defines the number of CAN Controllers in TM4C123GH6PM MCU*/
+/* Defines the number of CanHardwareObject */
 #define CAN_HOH_NUMBER                     (uint8)5
 
 /*

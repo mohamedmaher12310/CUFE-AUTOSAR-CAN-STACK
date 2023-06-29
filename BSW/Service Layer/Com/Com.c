@@ -34,7 +34,7 @@ uint8 Com_Trigger_Flag[ComMaxIPduCnt] ={0};
 uint8 g_tick = 0;
 
 /* LOCAL STATIC FUNCTION USED TO CONCATINATE THE PDUs. */
-static void Pdu_Concatnate(PduIdType PduId);
+STATIC void Pdu_Concatnate(PduIdType PduId);
 
 /************************************************************************************
  * Service Name: Com_Init
