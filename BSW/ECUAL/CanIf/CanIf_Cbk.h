@@ -85,6 +85,8 @@ void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
  ************************************************************************************/
 void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType ControllerMode);
 
+
+/*MUST BE REMOVED*/
 /************************************************************************************
  * Service Name: <User_RxIndication>
  * Sync/Async: Synchronous
@@ -100,7 +102,7 @@ void CanIf_ControllerModeIndication(uint8 ControllerId,Can_ControllerStateType C
  * Description: Indication of a received PDU from a lower layer communication interface
  *              module
  ************************************************************************************/
-void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
+//void PDUR_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 
 /*******************************************************************************
  *                       External Variables                                    *
