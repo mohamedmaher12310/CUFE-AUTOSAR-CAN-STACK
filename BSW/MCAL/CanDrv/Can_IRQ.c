@@ -63,6 +63,10 @@ void CAN0_Handler(void)
             {
                 Mailbox_Index=iter;
             }
+            else
+            {
+                /*Do Nothing*/
+            }
         }
 
         /* Wait for busy bit to clear */

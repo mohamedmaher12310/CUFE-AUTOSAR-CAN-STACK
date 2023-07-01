@@ -94,7 +94,7 @@
  * module to internal implementation specific counter or tick values. The
  * COM module's internal timing handling is implementation specific.
  */
-#define ComRxTimeBase                           (float64)2
+#define ComRxTimeBase                           (float64)0.01
 
 /* The period between successive calls to Com_MainFunctionTx in seconds.
  * This parameter may be used by the COM generator to transform the values of the transmission

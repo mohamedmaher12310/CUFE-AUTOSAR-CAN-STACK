@@ -243,6 +243,6 @@
  * Can_MainFunction_Read() or Can_MainFunction_Write() will be provided
  * by the CAN Driver module.
  */
-#define CAN_MAIN_FUNCTION_PERIOD            (float32)100
+#define CAN_MAIN_FUNCTION_PERIOD            (float32)0.02/*to handle the time of Com_MainFunction(0.01 sec)*/
 
 #endif /* CAN_CFG_H_ */
