@@ -33,30 +33,27 @@
 void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result)
 {
 
-#if( PduRDevErrorDetect == STD_ON  )
+
     /* Check if the module is initialized or not*/
     if (PDUR_UNINIT == PduRCurrent_State)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFTXCONFIRMATION_SID, PDUR_E_UNINIT);
+#endif /*PduRDevErrorDetect*/
     }
-    else
-    {
-        /*Do Nothing*/
-    }
-
     /*  [SWS_PduR_00221] If development error detection is enabled, a PDU identifier is
      * not within the specified range, and the PDU identifier is configured to be used by the
      * PDU Router module, the PDU Router module shall report the error
      * PDUR_E_PDU_ID_INVALID to the DET module, when PduRDevErrorDetect is
      * enabled.
      */
-
-    if (PduR_MaxPduID < id)
+    else if (PduR_MaxPduID < id)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFTXCONFIRMATION_SID, PDUR_E_PDU_ID_INVALID);
+#endif /*PduRDevErrorDetect*/
     }
     else
-#endif /*PduRDevErrorDetect*/
     {
         /*
          * [SWS_PduR_00627] When the communication interface module calls
@@ -98,15 +95,19 @@ void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result)
  ************************************************************************************/
 void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
 {
+    /* check if NULL pointer is passed as an argument */
+    if (NULL_PTR == PduInfoPtr)
+    {
 #if (PduRDevErrorDetect == STD_ON)
-    /* Check if the module is initialized or not*/
-    if (PDUR_UNINIT == PduRCurrent_State)
-    {
-        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFRXINDICATION_SID, PDUR_E_UNINIT);
+        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFRXINDICATION_SID, PDUR_E_PARAM_POINTER);
+#endif /*PduRDevErrorDetect*/
     }
-    else
+    /* Check if the module is initialized or not*/
+    else if (PDUR_UNINIT == PduRCurrent_State)
     {
-        /*Do Nothing*/
+#if (PduRDevErrorDetect == STD_ON)
+        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFRXINDICATION_SID, PDUR_E_UNINIT);
+#endif /*PduRDevErrorDetect*/
     }
     /*
      * [SWS_PduR_00221] If development error detection is enabled, a PDU identifier is
@@ -115,22 +116,14 @@ void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
      * PDUR_E_PDU_ID_INVALID to the DET module, when PduRDevErrorDetect is
      * enabled.
      */
-
-    if (PduR_MaxPduID < RxPduId)
+    else if (PduR_MaxPduID < RxPduId)
     {
+#if (PduRDevErrorDetect == STD_ON)
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFRXINDICATION_SID, PDUR_E_PDU_ID_INVALID);
-    }
-    else
-    {
-        /*Do Nothing*/
-    }
-    /* check if NULL pointer is passed as an argument */
-    if (NULL_PTR == PduInfoPtr)
-    {
-        Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_CANIFRXINDICATION_SID, PDUR_E_PARAM_POINTER);
-    }
-    else
 #endif /*PduRDevErrorDetect*/
+    }
+
+    else
     {
         /*
          * [SWS_PduR_00621] When the PduR_<Lo>RxIndication is called the PDU Router

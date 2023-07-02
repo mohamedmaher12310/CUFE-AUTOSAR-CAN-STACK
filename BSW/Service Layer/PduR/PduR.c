@@ -31,24 +31,21 @@ PduR_StateType PduRCurrent_State  = PDUR_UNINIT;
 void PduR_Init(const PduR_PBConfigType* ConfigPtr)
 {
 
-#if( PduRDevErrorDetect == STD_ON  )
-
     /* check if NULL pointer is passed as an argument */
     if (NULL_PTR == ConfigPtr)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_INIT_SID, PDUR_E_PARAM_POINTER);
-    }
-    else
-    {
-        /*Do Nothing*/
+#endif /*PduRDevErrorDetect*/
     }
     /* check if the configuration parameter is invalid */
-    if(ConfigPtr != &PduR_Configuration)
+    else if(ConfigPtr != &PduR_Configuration)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_INIT_SID, PDUR_E_INIT_FAILED);
+#endif /*PduRDevErrorDetect*/
     }
     else
-#endif /*PduRDevErrorDetect*/
     {
         PduRCurrent_State = PDUR_ONLINE;
     }
@@ -70,41 +67,39 @@ void PduR_Init(const PduR_PBConfigType* ConfigPtr)
 Std_ReturnType PduR_ComTransmit( PduIdType TxPduId, const PduInfoType* PduInfoPtr )
 {
     Std_ReturnType Pdur_ComTransmitReturn ;
-#if( PduRDevErrorDetect == STD_ON  )
 
     /* Check if the module is initialized or not*/
     if (PDUR_UNINIT == PduRCurrent_State)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_COMTRANSMIT_SID, PDUR_E_UNINIT);
         Pdur_ComTransmitReturn = E_NOT_OK;
+#endif /*PduRDevErrorDetect*/
     }
-    else
-    {
-        /*Do Nothing*/
-    }
+
     /*  [SWS_PduR_00221] If development error detection is enabled, a PDU identifier is
      * not within the specified range, and the PDU identifier is configured to be used by the
      * PDU Router module, the PDU Router module shall report the error
      * PDUR_E_PDU_ID_INVALID to the DET module, when PduRDevErrorDetect is
      * enabled.
      */
-    if (PduR_MaxPduID < TxPduId)
+    else if (PduR_MaxPduID < TxPduId)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_COMTRANSMIT_SID, PDUR_E_PDU_ID_INVALID);
         Pdur_ComTransmitReturn = E_NOT_OK;
+#endif /*PduRDevErrorDetect*/
     }
-    else
-    {
-        /*Do Nothing*/
-    }
+
     /* check if NULL pointer is passed as an argument */
-    if (NULL_PTR == PduInfoPtr)
+    else if (NULL_PTR == PduInfoPtr)
     {
+#if( PduRDevErrorDetect == STD_ON  )
         Det_ReportError(PDUR_MODULE_ID, PDUR_INSTANCE_ID, PDUR_COMTRANSMIT_SID, PDUR_E_PARAM_POINTER);
         Pdur_ComTransmitReturn = E_NOT_OK;
+#endif /*PduRDevErrorDetect*/
     }
     else
-#endif /*PduRDevErrorDetect*/
     {
         uint8 iter=ZERO;
         for (iter = ZERO; iter < PduRMaxRoutingPathCnt ; iter ++)
