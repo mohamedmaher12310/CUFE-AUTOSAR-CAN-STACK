@@ -247,134 +247,136 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId,const PduInfoType* PduInfoPtr)
      * CanIf shall report runtime error code CANIF_E_DATA_LENGTH_MISMATCH to the
      * Det_ReportRuntimeError() service of the DET.
      */
-    else if((Pdu_CanId_Type ==STANDARD_CAN )||(Pdu_CanId_Type ==EXTENDED_CAN ))
+    else if(((Pdu_CanId_Type ==STANDARD_CAN )||(Pdu_CanId_Type ==EXTENDED_CAN )) && (PduInfoPtr->SduLength >CANNIF_STANDARD_MAX_SDU_Length))
     {
         /*check if PduInfoPtr->SduLength exceeding the maximum length of the PDU referenced by TxPduId */
-        if(PduInfoPtr->SduLength >CANNIF_STANDARD_MAX_SDU_Length)
-        {
+
+
 #if( CanIfDevErrorDetect == STD_ON  )
             Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_DATA_LENGTH_MISMATCH);
             /*Make the return value of the function be E_NOT_OK*/
             CanIf_Transmit_Return = E_NOT_OK;
 #endif
-        }
+
     }
 
-    else if((Pdu_CanId_Type ==STANDARD_FD_CAN )||(Pdu_CanId_Type ==EXTENDED_FD_CAN ))
+    else if(((Pdu_CanId_Type ==STANDARD_FD_CAN )||(Pdu_CanId_Type ==EXTENDED_FD_CAN )) && (PduInfoPtr->SduLength >CANNIF_FD_MAX_SDU_Length))
     {
         /*check if PduInfoPtr->SduLength exceeding the maximum length of the PDU referenced by TxPduId */
-        if(PduInfoPtr->SduLength >CANNIF_FD_MAX_SDU_Length)
-        {
+
+
 #if( CanIfDevErrorDetect == STD_ON  )
             Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_DATA_LENGTH_MISMATCH);
             /*Make the return value of the function be E_NOT_OK*/
             CanIf_Transmit_Return = E_NOT_OK;
 #endif
-        }
+
     }
 
-    /*
-     * [SWS_CANIF_00900] When CanIf_Transmit() is called with PduInfoPtr->SduLength
-     * exceeding the maximum length of the PDU referenced by TxPduId
-     * and CanIfTxPduTruncation is disabled, CanIf shall report the runtime error
-     * CANIF_E_TXPDU_LENGTH_EXCEEDED and return E_NOT_OK without further actions.
-     */
-    else if((PduInfoPtr->SduLength > CANIF_MAX_PDU_Length) && (TxPDU->CanIfTxPduTruncation == FALSE))   /* how to use the TX PDUID to get the max Pdu length  ???*/
-    {
-#if( CanIfDevErrorDetect == STD_ON  )
-        Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_TXPDU_LENGTH_EXCEEDED);
-        /*Make the return value of the function be E_NOT_OK*/
-        CanIf_Transmit_Return = E_NOT_OK;
-#endif
-    }
-    else
-    {
-
-        /* [SWS_CANIF_00317]  The service CanIf_Transmit() shall not accept a transmit request,
-         *  if the controller mode referenced by ControllerId is different to
-         *  CAN_CS_STARTED and the channel mode at least for the transmit path is not online
-         *  or offline active.
+        /*
+         * [SWS_CANIF_00900] When CanIf_Transmit() is called with PduInfoPtr->SduLength
+         * exceeding the maximum length of the PDU referenced by TxPduId
+         * and CanIfTxPduTruncation is disabled, CanIf shall report the runtime error
+         * CANIF_E_TXPDU_LENGTH_EXCEEDED and return E_NOT_OK without further actions.
          */
-        if((CanIf_ControllerMode[ControllerId]!=CAN_CS_STARTED) && ((CanIf_ChannelPduMode[ControllerId] != CANIF_ONLINE) || (CanIf_ChannelPduMode[ControllerId] != CANIF_TX_OFFLINE_ACTIVE) ))
+        else if((PduInfoPtr->SduLength > CANIF_MAX_PDU_Length) && (TxPDU->CanIfTxPduTruncation == FALSE))   /* how to use the TX PDUID to get the max Pdu length  ???*/
         {
+#if( CanIfDevErrorDetect == STD_ON  )
+            Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, CANIF_TRANSMIT_SID, CANIF_E_TXPDU_LENGTH_EXCEEDED);
             /*Make the return value of the function be E_NOT_OK*/
             CanIf_Transmit_Return = E_NOT_OK;
+#endif
         }
         else
         {
 
-
-
-            /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
-            Can_HwHandleType Hth = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthIdSymRef->CanObjectId;
-
-            /* [SWS_CANIF_00318] CanIf_Transmit() shall call Can_Write() with the hardware transmit handle corresponding
-             *  to the provided TxPduId and a Can_PduType structure where:
-             *  swPduHandle is set to the CanTxPduId used in the corresponding CanIf_TxConfirmation() call
-             *  length is set to the value provided as PduInfoPtr->SduLength, possibly reduced according to [SWS_CANIF_00894]
-             *  id is set to the CAN ID associated with the TxPduId
-             *  sdu is set to the pointer provided as PduInfoPtr->SduDataPtr
+            /* [SWS_CANIF_00317]  The service CanIf_Transmit() shall not accept a transmit request,
+             *  if the controller mode referenced by ControllerId is different to
+             *  CAN_CS_STARTED and the channel mode at least for the transmit path is not online
+             *  or offline active.
              */
-
-            /* [SWS_CANIF_00243]  CanIf shall set the two most significant bits (’IDentifier Extension flag’ and ’CAN FD flag’)
-             *  of the CanId (PduInfoPtr->id) before CanIf passes the predefined CanId to CanDrv at call of Can_Write()
-             * The CanId format type of each CAN L-PDU can be configured by CanIfTxPduCanIdType, refer to CanIfTxPduCanIdType
-             */
-
-            /*  TxPDU->CanIfTxPduCanId is used to get the CANID of the PDU */
-            TxPDU_CanID = TxPDU->CanIfTxPduCanId;
-            if(TxPDU->CanIfTxPduCanIdType == STANDARD_CAN)
-            {
-                TxPDU_CanID =   TxPDU_CanID | TWO_MSB_STANDARD_MASK ;
-            }
-            else if(TxPDU->CanIfTxPduCanIdType == EXTENDED_CAN)
-            {
-                TxPDU_CanID =   TxPDU_CanID | TWO_MSB_EXTENDED_MASK ;
-            }
-            else
-            {
-                /*MISRA: Do Nothing*/
-            }
-            /*Storing the ID of the TxPDU*/
-            Can_PduData.id = TxPDU_CanID;
-
-            /*
-             * [SWS_CANIF_00894] When CanIf_Transmit() is called with PduInfoPtr->SduLength
-             * exceeding the maximum length of the PDU referenced by TxPduId and
-             * CanIfTxPduTruncation is enabled, CanIf shall transmit as much data as possible
-             * and discard the rest.
-             */
-            if((PduInfoPtr->SduLength > CANIF_MAX_PDU_Length) && (TxPDU->CanIfTxPduTruncation == TRUE))
-            {
-                /*Storing the length of the TxPDU*/
-                Can_PduData.length = CANIF_MAX_PDU_Length;
-            }
-            else
-            {
-                /*Storing the length of the TxPDU*/
-                Can_PduData.length = PduInfoPtr->SduLength;
-            }
-            /*Make the SDU pointer point on the same address/data as SduDataPtr */
-            Can_PduData.sdu = PduInfoPtr->SduDataPtr;
-            /*store TxPDU ID in Can_PduData.swPduHandle variable */
-            Can_PduData.swPduHandle = TxPduId;
-
-            /*Assigning the variables passed by the function to the Can_PduType variable to pass it to the Can_Write */
-            Can_Write_Return = Can_Write(Hth, &Can_PduData);
-            if (Can_Write_Return == E_OK)
-            {
-                /*Make the return value of the function be E_OK*/
-                CanIf_Transmit_Return = E_OK;
-            }
-            else
+            if((CanIf_ControllerMode[ControllerId]!=CAN_CS_STARTED) && ((CanIf_ChannelPduMode[ControllerId] != CANIF_ONLINE) || (CanIf_ChannelPduMode[ControllerId] != CANIF_TX_OFFLINE_ACTIVE) ))
             {
                 /*Make the return value of the function be E_NOT_OK*/
                 CanIf_Transmit_Return = E_NOT_OK;
             }
-        }
+            else
+            {
+
+
+
+                /*Assign the HTH that will be passed to Can_write from the TxPDU Paramter*/
+                Can_HwHandleType Hth = TxPDU->CanIfTxPduBufferRef->CanIfBufferHthRef->CanIfHthIdSymRef->CanObjectId;
+
+                /* [SWS_CANIF_00318] CanIf_Transmit() shall call Can_Write() with the hardware transmit handle corresponding
+                 *  to the provided TxPduId and a Can_PduType structure where:
+                 *  swPduHandle is set to the CanTxPduId used in the corresponding CanIf_TxConfirmation() call
+                 *  length is set to the value provided as PduInfoPtr->SduLength, possibly reduced according to [SWS_CANIF_00894]
+                 *  id is set to the CAN ID associated with the TxPduId
+                 *  sdu is set to the pointer provided as PduInfoPtr->SduDataPtr
+                 */
+
+                /* [SWS_CANIF_00243]  CanIf shall set the two most significant bits (’IDentifier Extension flag’ and ’CAN FD flag’)
+                 *  of the CanId (PduInfoPtr->id) before CanIf passes the predefined CanId to CanDrv at call of Can_Write()
+                 * The CanId format type of each CAN L-PDU can be configured by CanIfTxPduCanIdType, refer to CanIfTxPduCanIdType
+                 */
+
+                /*  TxPDU->CanIfTxPduCanId is used to get the CANID of the PDU */
+                TxPDU_CanID = TxPDU->CanIfTxPduCanId;
+                if(TxPDU->CanIfTxPduCanIdType == STANDARD_CAN)
+                {
+                    TxPDU_CanID =   TxPDU_CanID | TWO_MSB_STANDARD_MASK ;
+                }
+                else if(TxPDU->CanIfTxPduCanIdType == EXTENDED_CAN)
+                {
+                    TxPDU_CanID =   TxPDU_CanID | TWO_MSB_EXTENDED_MASK ;
+                }
+                else
+                {
+                    /*MISRA: Do Nothing*/
+                }
+                /*Storing the ID of the TxPDU*/
+                Can_PduData.id = TxPDU_CanID;
+
+                /*
+                 * [SWS_CANIF_00894] When CanIf_Transmit() is called with PduInfoPtr->SduLength
+                 * exceeding the maximum length of the PDU referenced by TxPduId and
+                 * CanIfTxPduTruncation is enabled, CanIf shall transmit as much data as possible
+                 * and discard the rest.
+                 */
+                if((PduInfoPtr->SduLength > CANIF_MAX_PDU_Length) && (TxPDU->CanIfTxPduTruncation == TRUE))
+                {
+                    /*Storing the length of the TxPDU*/
+                    Can_PduData.length = CANIF_MAX_PDU_Length;
+                }
+                else
+                {
+                    /*Storing the length of the TxPDU*/
+                    Can_PduData.length = PduInfoPtr->SduLength;
+                }
+                /*Make the SDU pointer point on the same address/data as SduDataPtr */
+                Can_PduData.sdu = PduInfoPtr->SduDataPtr;
+                /*store TxPDU ID in Can_PduData.swPduHandle variable */
+                Can_PduData.swPduHandle = TxPduId;
+
+                /*Assigning the variables passed by the function to the Can_PduType variable to pass it to the Can_Write */
+                Can_Write_Return = Can_Write(Hth, &Can_PduData);
+                if (Can_Write_Return == E_OK)
+                {
+                    /*Make the return value of the function be E_OK*/
+                    CanIf_Transmit_Return = E_OK;
+                }
+                else
+                {
+                    /*Make the return value of the function be E_NOT_OK*/
+                    CanIf_Transmit_Return = E_NOT_OK;
+                }
+            }
+
     }
     return CanIf_Transmit_Return;
 }
+
 
 
 

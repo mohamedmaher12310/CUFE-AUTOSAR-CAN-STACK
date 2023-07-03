@@ -687,7 +687,7 @@ void Can_Init(const Can_ConfigType* Config)
                      * Put the 11 bit Mask Identifier into the upper bits of the field
                      * in the register.
                      */
-                    ui16MaskReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterMask) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                    ui16MaskReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterMask) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                 }
                 /* Filter on the extended ID bit*/
                 SET_BIT(ui16MaskReg1, MXTD_BIT);
@@ -727,7 +727,7 @@ void Can_Init(const Can_ConfigType* Config)
                      * The lower 18 bits are set to zero.
                      */
                     ui16ArbReg0 = ZERO_VALUE;
-                    ui16ArbReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterCode) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                    ui16ArbReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter].CanHwFilter.CanHwFilterCode) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                     /*
                      * Mark the message as valid.
                      */
@@ -790,7 +790,7 @@ void Can_Init(const Can_ConfigType* Config)
         /* Set the CCE Bit in CANCTL*/
         SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),CCE_BIT);
         /* Set the Time Segment 1 */
-        REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->CanConfigSet.CanController[CAN1_CONTROLLER_ID].CanControllerBaudrateConfig.PropSeg + Config->CanConfigSet.CanController[CAN0_CONTROLLER_ID].CanControllerBaudrateConfig.PhaseSeg1 -ONE_VALUE)<< SHIFT_EIGHT_BITS) ;
+        REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->CanConfigSet.CanController[CAN1_CONTROLLER_ID].CanControllerBaudrateConfig.PropSeg + Config->CanConfigSet.CanController[CAN1_CONTROLLER_ID].CanControllerBaudrateConfig.PhaseSeg1 -ONE_VALUE)<< SHIFT_EIGHT_BITS) ;
         /* Set the Time Segment 2 */
         REG_VAL(CAN1_BASE,CAN_BIT_OFFSET)|= ((Config->CanConfigSet.CanController[CAN1_CONTROLLER_ID].CanControllerBaudrateConfig.PhaseSeg2  -ONE_VALUE)<< SHIFT_TWELVE_BITS) ;
         /* Set the SyncJumpWidth */
@@ -860,7 +860,7 @@ void Can_Init(const Can_ConfigType* Config)
             uint8 iter2;
             for (iter2 = INIT_VAL_ZERO ; iter2 <= Config->CanConfigSet.CanHardwareObject[iter_2].CanHardwareObjectCount -ONE_VALUE ; iter2 ++)
             {
-                REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET) = Object_Check[CAN0_CONTROLLER_ID][iter_2][iter2].Mailbox & MNUM_MASK;
+                REG_VAL(CAN1_BASE, CAN_IF1CRQ_OFFSET) = Object_Check[CAN1_CONTROLLER_ID][iter_2][iter2].Mailbox & MNUM_MASK;
             }
         }
 
@@ -954,7 +954,7 @@ void Can_Init(const Can_ConfigType* Config)
                      * Put the 11 bit Mask Identifier into the upper bits of the field
                      * in the register.
                      */
-                    ui16MaskReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter_2].CanHwFilter.CanHwFilterMask) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                    ui16MaskReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter_2].CanHwFilter.CanHwFilterMask) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                 }
                 /* Filter on the extended ID bit*/
                 SET_BIT(ui16MaskReg1, MXTD_BIT);
@@ -994,7 +994,7 @@ void Can_Init(const Can_ConfigType* Config)
                      * The lower 18 bits are set to zero.
                      */
                     ui16ArbReg0 = ZERO_VALUE;
-                    ui16ArbReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter_2].CanHwFilter.CanHwFilterCode) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                    ui16ArbReg1 = (((uint16)(Config->CanConfigSet.CanHardwareObject[iter_2].CanHwFilter.CanHwFilterCode) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                     /*
                      * Mark the message as valid.
                      */
@@ -1466,7 +1466,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                  * The lower 18 bits are set to zero.
                  */
                 registers[Hth].ui16ArbReg0 = INIT_VAL_ZERO;
-                registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                 /*
                  * Mark the message as valid.
                  */
@@ -1579,7 +1579,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                          * The lower 18 bits are set to zero.
                          */
                         registers[Hth].ui16ArbReg0 = INIT_VAL_ZERO;
-                        registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                        registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                         /*
                          * Mark the message as valid.
                          */
@@ -1707,7 +1707,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                  * The lower 18 bits are set to zero.
                  */
                 registers[Hth].ui16ArbReg0 = INIT_VAL_ZERO;
-                registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                 /*
                  * Mark the message as valid.
                  */
@@ -1820,7 +1820,7 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo)
                          * The lower 18 bits are set to zero.
                          */
                         registers[Hth].ui16ArbReg0 = INIT_VAL_ZERO;
-                        registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_ZERO_BITS) & THIRTEEN_BIT_MASK);
+                        registers[Hth].ui16ArbReg1 = (((uint16)(PduInfo->id) << SHIFT_TWO_BITS) & THIRTEEN_BIT_MASK);
                         /*
                          * Mark the message as valid.
                          */

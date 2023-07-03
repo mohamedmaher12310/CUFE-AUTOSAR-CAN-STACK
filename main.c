@@ -108,6 +108,8 @@ int main(void)
             Can_Message_Tx.id=2;
             /*done ;)*/
             Com_MainFunctionTx();
+            Com_MainFunctionTx();
+
             /*done ;)*/
 //            Com_RxIndication(2,&Tx_Pdu);
             /*done ;)*/
