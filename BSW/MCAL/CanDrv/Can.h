@@ -326,7 +326,7 @@ extern Std_ReturnType Can_SetControllerMode(uint8 Controller , Can_ControllerSta
 extern void Can_DisableControllerInterrupts(uint8 Controller);
 
 /**************************************************************************************
-/* Service name: Can_EnableControllerInterrupts
+ * Service name: Can_EnableControllerInterrupts
  * Service ID[hex]: 0x05
  * Sync/Async: Synchronous
  * Reentrancy: Reentrant

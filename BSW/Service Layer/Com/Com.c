@@ -75,7 +75,7 @@ void Com_Init(const Com_ConfigType* config )
         for(counter_pdu=0;counter_pdu<ComMaxIPduCnt;counter_pdu++)
         {
             PDU[counter_pdu].SduLength = PDU_LEN_IN_BYTES;
-            PDU[counter_pdu].SduDataPtr = &(config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault);
+            PDU[counter_pdu].SduDataPtr = (uint8*)&(config->ComIPdu[counter_pdu].ComTxIPdu.ComTxIPduUnusedAreasDefault);
             for(byte_counter=0;byte_counter<PDU_LEN_IN_BYTES;byte_counter++)
             {
 

@@ -15,6 +15,9 @@
 /*Include the module header file*/
 #include "PduR_CanIf.h"
 
+/*Include the PduR_Com header file*/
+#include "PduR_Com.h"
+
 
 /************************************************************************************
  * Service Name: PduR_CanIfTxConfirmation
@@ -66,7 +69,7 @@ void PduR_CanIfTxConfirmation(PduIdType id,Std_ReturnType result)
         {
             if (id == PduR_Configuration.PduRRoutingPaths[iter].PduRDestPdu.PduRDestPduHandleId)
             {
-                PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[iter].PduRSrcPdu.PduRSrcPduRef->ComIPduHandleId;
+               // PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[iter].PduRSrcPdu.PduRSrcPduRef->ComIPduHandleId;
                 // result = Com_TxConfirmation(Pdu_ID, PduInfoPtr);
             }
             else
@@ -135,7 +138,7 @@ void PduR_CanIfRxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
             if (RxPduId == PduR_Configuration.PduRRoutingPaths[iter].PduRDestPdu.PduRDestPduHandleId)
             {
                 PduIdType Pdu_ID = PduR_Configuration.PduRRoutingPaths[iter].PduRSrcPdu.PduRSrcPduRef->ComIPduHandleId;
-                Com_RxIndication(Pdu_ID, &PduInfoPtr);
+                Com_RxIndication(Pdu_ID, PduInfoPtr);
             }
             else
             {

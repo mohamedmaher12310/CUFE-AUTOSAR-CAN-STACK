@@ -1273,7 +1273,7 @@ void Can_DisableControllerInterrupts( uint8 Controller )
     }
 }
 /**************************************************************************************
-/* Service name: Can_EnableControllerInterrupts
+ * Service name: Can_EnableControllerInterrupts
  * Service ID[hex]: 0x05
  * Sync/Async: Synchronous
  * Reentrancy: Reentrant

@@ -59,7 +59,8 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
     }
     else
     {
-        uint8 pdu_counter,signal_counter,return_value,i;
+      //  uint8 pdu_counter,signal_counter,return_value,
+        uint8 i;
         void (*NotficationAdress)(void);
         ComSignal* signal_per_pdu;
         //    uint8 pdu_id = Com.ComIPdu[RxPduId].ComIPduHandleId;

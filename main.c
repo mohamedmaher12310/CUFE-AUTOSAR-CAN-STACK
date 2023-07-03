@@ -83,7 +83,7 @@ int main(void)
     UART1_SendString("Welcome to CAN Network\nPress: \n[1] Send to Computer (2)\n[2] Send to Computer (3)\n[3] Send to Both (2 & 3)\n[4]Read Recieved Messages\n");
     unsigned char *RecievedString;
     RecievedChar = UARTCharGet(0x4000D000);
-    uint32 x;
+ //   uint32 x;
     while(1)
     {
         while (RecievedChar == 0)

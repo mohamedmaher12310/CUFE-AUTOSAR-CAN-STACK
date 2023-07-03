@@ -39,6 +39,7 @@
 
 #include "CommStack_Types.h"
 
+#include "../PduR/PduR.h"
 
 #include "Com_Cbk.h"
 /*

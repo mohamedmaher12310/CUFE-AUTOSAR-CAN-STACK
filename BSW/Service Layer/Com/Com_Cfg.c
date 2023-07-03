@@ -49,7 +49,7 @@ const Com_ConfigType Com = {
                                            .ComIPduSignalProcessing = IMMEDIATE,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
-                                           .ComIPduSignalRef[ZERO] = &Com.ComSignal[ZERO],
+                                           .ComIPduSignalRef[ZERO] = (ComSignal*)&Com.ComSignal[ZERO],
                                            .ComTxIPdu = {
                                                          .ComMinimumDelayTime = ComMinimumDelayTime_Value,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
@@ -69,7 +69,7 @@ const Com_ConfigType Com = {
                                            .ComIPduSignalProcessing = IMMEDIATE,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
-                                           .ComIPduSignalRef[ONE] = &Com.ComSignal[EIGHT],
+                                           .ComIPduSignalRef[ONE] = (ComSignal*)&Com.ComSignal[EIGHT],
                                            .ComTxIPdu = {
                                                          .ComMinimumDelayTime = ComMinimumDelayTime_Value,
                                                          .ComTxIPduClearUpdateBit = Confirmation,
@@ -89,7 +89,7 @@ const Com_ConfigType Com = {
                                            .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
-                                           .ComIPduSignalRef[TWO] = &Com.ComSignal[SIXTEEN],
+                                           .ComIPduSignalRef[TWO] = (ComSignal*)&Com.ComSignal[SIXTEEN],
                                            .ComTxIPdu = {
                                                          .ComMinimumDelayTime = ComMinimumDelayTime_Value,
                                                          .ComTxIPduClearUpdateBit = Confirmation,

@@ -107,7 +107,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
     {
         /* Store the addresses to pointers*/
         /* CanIfRxPduCfg Container*/
-        RxPDU = CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
+        RxPDU = (CanIfRxPduCfg*)CanIf_Configuration.CanIfInitCfg.CanIfRxPduCfg;
         /*Index of Pdu*/
         uint8 RECEIVED_PDU_INDEX ;
         for( RECEIVED_PDU_INDEX=0; RECEIVED_PDU_INDEX< CanIfMaxRxPduCfg ;RECEIVED_PDU_INDEX++)
@@ -138,7 +138,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType * PduInfoPt
         }
         /*Use MACROS instead of variables*/
         /* CanIfHrhRangeCfg Container*/
-        RxPDU_Range = &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[CAN_INSTANCE_ID].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
+        RxPDU_Range = (CanIfHrhRangeCfg*) &CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[CAN_INSTANCE_ID].CanIfHrhCfg[HRH_index].CanIfHrhRangeCfg;
         /* BASIC CAN*/
         if(BASIC == (RxPDU->CanIfRxPduHrhIdRef->CanIfHrhIdSymRef->CanHandleType) )
         {
@@ -337,7 +337,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 
      /*Pointer to the Transmitted PDU */
     CanIfTxPduCfg *TxPDU_ptr = NULL_PTR;
-    TxPDU_ptr =  &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[CanTxPduId];
+    TxPDU_ptr = (CanIfTxPduCfg*) &CanIf_Configuration.CanIfInitCfg.CanIfTxPduCfg[CanTxPduId];
 
     /* [SWS_CANIF_00391]  If configuration parameters
      * CANIF_PUBLIC_READTXPDU_NOTIFY_STATUS_API (ECUC_CanIf_00609) and
