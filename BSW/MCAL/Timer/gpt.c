@@ -1,69 +1,91 @@
-/******************************************************************************
+ /******************************************************************************
  *
- * Module: GPT
+ * Module: Gpt
  *
- * File Name: gpt.c
+ * File Name: Gpt.c
  *
- * Description: Source file for GPT Module.
+ * Description: Source file for TM4C123GH6PM Microcontroller - SysTick Timer Driver.
  *
- * Author: CUFE 2023 Team
  ******************************************************************************/
 
-#include "gpt.h"
-void Timer0_Handler(void){
-//    GPIO_PORTF_DATA_REG^=(1<<1);
-//    GPIO_PORTF_DATA_REG^=(1<<2);
-//    GPIO_PORTF_DATA_REG^=(1<<3);
+#include "Gpt.h"
+#include "../../Service Layer/Os/Os_Regs.h"
 
-/* Writing a 1 to this bit clears the TATORIS bit in the GPTMRIS register
- * and the TATOMIS bit in the GPTMMIS register
- */
-    GPTMICR_REG |= (1<<0);
-}
-void gpt_init(void)
+#define SYSTICK_PRIORITY_MASK  0x1FFFFFFF
+#define SYSTICK_INTERRUPT_PRIORITY  3
+#define SYSTICK_PRIORITY_BITS_POS   29
+
+/* Global pointer to function used to point upper layer functions
+ * to be used in Call Back */
+static void (*g_SysTick_Call_Back_Ptr)(void) = NULL_PTR;
+
+/************************************************************************************
+* Service Name: SysTick_Handler
+* Description: SysTick Timer ISR
+************************************************************************************/
+void SysTick_Handler(void)
 {
-    volatile unsigned char delay;
-    /*enable clock to portB*/
-    RCGCGPIO_REG|= (1<<1);
-    delay=0;
-
-    /* This field controls the configuration for GPIO pin 6. T0CCP0 equivalent number to be put in GPIOPCTL = 7*/
-    GPIOPCTL_REG = (GPIOPCTL_REG & 0xF0FFFFFF) | (T0CCP0 <<T0CCP0_BIT_FILED);
-
-    /* PB6 to work as T0CCP0  */
-    GPIOAFSEL_REG|=(1<<6);
-
-    /* Enable and provide a clock to 16/32-bit general-purpose timer module 0 in Run mode. */
-    RCGCTIMER_REG |= (1<<0);
-
-    /* Timer A is disabled. */
-    GPTMCTL_REG &= ~(1<<0);
-
-    /* For a 16/32-bit timer, this value selects the 32-bit timer configuration */
-    GPTMCFG_REG = 0x00000000;
-
-    /* 0x2 Periodic Timer mode */
-    GPTMTAMR_REG=   (GPTMTAMR_REG&0xFFFFFFFC) | (PERIODIC_MOOD & PERIODIC_MOOD_MASK);
-
-    /*counts up timer*/
-    GPTMTAMR_REG|=(1<<4);
-
-    /*this register sets the upper bound for the timeout event.*/
-    GPTMTAILR_REG= COUNTS_NEEDED;
-
-    /* Interrupt is enabled.GPTM Timer A Time-Out Interrupt Mask */
-    GPTMIMR_REG|=(1<<0);
-
-    /* NAVIC CONFIGURATIONS  */
-
-    /* give the timer0 priority 2 */
-    NVIC_PRI4_REG = (NVIC_PRI4_REG & 0x1FFFFFFF)|(2<<29);
-
-    /* ENABLE BIT 19(TIMER0 INTERRUPT NUMBER) IN INTERRUPT SET ENABLE */
-    NVIC_EN0_REG |= (1<<19);
-
-    /* Timer A is enabled and begins counting or the capture logic is enabled based on the GPTMCFG register. */
-    GPTMCTL_REG |= (1<<0);
+    /* Check if the Timer0_setCallBack is already called */
+    if(g_SysTick_Call_Back_Ptr != NULL_PTR)
+    {
+        (*g_SysTick_Call_Back_Ptr)(); /* call the function in the scheduler using call-back concept */
+    }
+    /* No need to clear the trigger flag (COUNT) bit ... it cleared automatically by the HW */
 }
 
+/************************************************************************************
+* Service Name: SysTick_Start
+* Sync/Async: Synchronous
+* Reentrancy: reentrant
+* Parameters (in): Tick_Time - Time in miliseconds
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: None
+* Description: Function to Setup the SysTick Timer configuration to count n miliseconds:
+*              - Set the Reload value
+*              - Enable SysTick Timer with System clock 16Mhz
+*              - Enable SysTick Timer Interrupt and set its priority
+************************************************************************************/
+void SysTick_Start(uint16 Tick_Time)
+{
+    SYSTICK_STCTRL_REG    = 0;                         /* Disable the SysTick Timer by Clear the ENABLE Bit */
+    SYSTICK_STRELOAD_REG  = 15999 * Tick_Time;         /* Set the Reload value to count n miliseconds */
+    SYSTICK_STCURRENT_REG = 0;                         /* Clear the Current Register value */
+    /* Configure the SysTick Control Register
+     * Enable the SysTick Timer (ENABLE = 1)
+     * Enable SysTick Interrupt (INTEN = 1)
+     * Choose the clock source to be System Clock (CLK_SRC = 1) */
+    SYSTICK_STCTRL_REG   |= 0x07;
+    /* Assign priority level 3 to the SysTick Interrupt */
+    NVIC_SYSTEM_PRI3_REG =  (NVIC_SYSTEM_PRI3_REG & SYSTICK_PRIORITY_MASK) | (SYSTICK_INTERRUPT_PRIORITY << SYSTICK_PRIORITY_BITS_POS);
+}
 
+/************************************************************************************
+* Service Name: SysTick_Stop
+* Sync/Async: Synchronous
+* Reentrancy: reentrant
+* Parameters (in): None
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: None
+* Description: Function to Stop the SysTick Timer.
+************************************************************************************/
+void SysTick_Stop(void)
+{
+    SYSTICK_STCTRL_REG = 0; /* Disable the SysTick Timer by Clear the ENABLE Bit */
+}
+
+/************************************************************************************
+* Service Name: SysTick_SetCallBack
+* Sync/Async: Synchronous
+* Reentrancy: reentrant
+* Parameters (in): Ptr2Func - Call Back function address
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: None
+* Description: Function to Setup the SysTick Timer call back
+************************************************************************************/
+void SysTick_SetCallBack(void(*Ptr2Func)(void))
+{
+    g_SysTick_Call_Back_Ptr = Ptr2Func;
+}

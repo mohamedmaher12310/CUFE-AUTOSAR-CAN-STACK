@@ -416,5 +416,5 @@ extern volatile boolean Error_Flag ;
 extern volatile uint8 Error_Status ;
 extern volatile uint32 Recieve_Count ;
 extern volatile uint32 Transmit_Count ;
-
+extern volatile uint8 g_Time_Tick_Count;
 #endif /* CAN_H_ */

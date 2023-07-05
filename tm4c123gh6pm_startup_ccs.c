@@ -60,7 +60,6 @@ extern uint32_t __STACK_TOP;
 extern void CAN0_Handler (void);
 extern void CAN1_Handler (void);
 extern void SysTick_Handler(void);
-extern void Timer0_Handler(void);
 //*****************************************************************************
 //
 // The vector table.  Note that the proper constructs must be placed on this to
@@ -107,7 +106,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // ADC Sequence 2
     IntDefaultHandler,                      // ADC Sequence 3
     IntDefaultHandler,                      // Watchdog timer
-    Timer0_Handler,                             // Timer 0 subtimer A
+    IntDefaultHandler,                             // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
     IntDefaultHandler,                      // Timer 1 subtimer A
     IntDefaultHandler,                      // Timer 1 subtimer B

@@ -1,15 +1,17 @@
-/******************************************************************************
+ /******************************************************************************
  *
  * Module: Os
  *
  * File Name: Os.h
  *
- * Description: Header file for TM4C123GH6PM Microcontroller - Os Driver
+ * Description: Header file for Os Scheduler.
  *
  * Author: CUFE 2023 Team
  ******************************************************************************/
+
 #ifndef OS_H_
 #define OS_H_
+
 
 /* Id for the company in the AUTOSAR
  * for example Omar Khedr's ID = 1000 :) */
@@ -35,7 +37,6 @@
 #define OS_AR_RELEASE_MINOR_VERSION   (3U)
 #define OS_AR_RELEASE_PATCH_VERSION   (1U)
 
-/* Standard AUTOSAR types */
 #include "../../../Library/Std_Types.h"
 
 /* AUTOSAR checking between Std Types and OS Modules */
@@ -45,19 +46,27 @@
 #error "The AR version of Std_Types.h does not match the expected version"
 #endif
 
-/* Include Common Macros header file -> SET_BIT,CLEAR_BIT*/
-#include "../../../Library/Common_Macros.h"
-/* Include Platform types header file-> uint*/
-#include "../../../Library/Platform_Types.h"
-/* Include Registers header file*/
-#include "Os_Regs.h"
+#include "../Com/Com.h"
 
-/* Initialize the SysTick timer with Preload value ~= 1ms*/
-void SYSTICK_VOIDInit (void);
-/* Function to return the value of the counter which counts every 1 ms*/
-uint32 GetCounterValue(void);
-uint32 CPUcpsid(void);
-uint32 CPUcpsie(void);
+#include "../../../Application/App.h"
+
+#include "../../MCAL/Timer/gpt.h"
+/* Timer counting time in ms */
+#define OS_BASE_TIME 1000
+
+/* Description:
+ * Function responsible for:
+ * 1. Enable Interrupts
+ * 2. Start the Os timer
+ * 3. Execute the Init Task
+ * 4. Start the Scheduler to run the tasks
+ */
+void Os_start(void);
+
+/* Description: The Engine of the Os Scheduler used for switch between different tasks */
+void Os_Scheduler(void);
+
+/* Description: Function called by the Timer Driver in the MCAL layer using the call back pointer */
+void Os_NewTimerTick(void);
 
 #endif /* OS_H_ */
-

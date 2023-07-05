@@ -106,7 +106,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
              *                                  time and calculate the actual time elapsed
              */
             uint32 End =INIT_VAL_ZERO,Start=INIT_VAL_ZERO;
-            Start = GetCounterValue();
+            Start = g_Time_Tick_Count;
             End = Start;
             /* Clear the Init Bit in CANCTL -> to enable the CAN controller to particibate on bus*/
             CLEAR_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),INIT_BIT);
@@ -117,7 +117,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
              */
             while (BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT) || ((End - Start)<(TMILLI*CAN_TIMEOUT_DURATION)))
             {
-                End = GetCounterValue();
+                End = g_Time_Tick_Count;
             }
             if(BIT_IS_CLEAR(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT))
             {
@@ -151,7 +151,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
              *                                  time and calculate the actual time elapsed
              */
             uint32 End =INIT_VAL_ZERO,Start=INIT_VAL_ZERO;
-            Start = GetCounterValue();
+            Start = g_Time_Tick_Count;
             End = Start;
             /* Clear the Init Bit in CANCTL -> to enable the CAN controller to participate on bus*/
             CLEAR_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),INIT_BIT);
@@ -162,7 +162,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
              */
             while (BIT_IS_SET(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),BOFF_BIT) || ((End - Start)<(TMILLI*CAN_TIMEOUT_DURATION)))
             {
-                End = GetCounterValue();
+                End = g_Time_Tick_Count;
             }
             if(BIT_IS_CLEAR(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),BOFF_BIT))
             {
@@ -208,7 +208,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
              *                                  time and calculate the actual time elapsed
              */
             uint32 End =INIT_VAL_ZERO,Start=INIT_VAL_ZERO;
-            Start = GetCounterValue();
+            Start = g_Time_Tick_Count;
             End = Start;
             /* Clear the Init Bit in CANCTL -> to enable the CAN controller to particibate on bus*/
             SET_BIT(REG_VAL(CAN0_BASE,CAN_CTL_OFFSET),INIT_BIT);
@@ -219,7 +219,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
              */
             while (BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT) || ((End - Start)<(TMILLI*CAN_TIMEOUT_DURATION)))
             {
-                End = GetCounterValue();
+                End = g_Time_Tick_Count;
             }
             if(BIT_IS_CLEAR(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT))
             {
@@ -254,7 +254,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
              *                                  time and calculate the actual time elapsed
              */
             uint32 End =INIT_VAL_ZERO,Start=INIT_VAL_ZERO;
-            Start = GetCounterValue();
+            Start = g_Time_Tick_Count;
             End = Start;
             /* Clear the Init Bit in CANCTL -> to enable the CAN controller to particibate on bus*/
             SET_BIT(REG_VAL(CAN1_BASE,CAN_CTL_OFFSET),INIT_BIT);
@@ -265,7 +265,7 @@ STATIC Std_ReturnType Can_Stopped_State(uint8 Controller)
              */
             while (BIT_IS_SET(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),BOFF_BIT) || ((End - Start)<(TMILLI*CAN_TIMEOUT_DURATION)))
             {
-                End = GetCounterValue();
+                End = g_Time_Tick_Count;
             }
             if(BIT_IS_CLEAR(REG_VAL(CAN1_BASE,CAN_STS_OFFSET),BOFF_BIT))
             {
