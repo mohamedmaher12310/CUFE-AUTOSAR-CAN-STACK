@@ -15,5 +15,7 @@
 
 void Init_Task(void);
 
+extern uint8 Array_RTE_Send[3][8];
+extern uint8 Array_RTE_Receive[24];
 
 #endif /* APPLICATION_APP_H_ */

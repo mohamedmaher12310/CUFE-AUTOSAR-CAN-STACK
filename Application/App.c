@@ -6,6 +6,8 @@
  */
 
 #include "App.h"
+uint8 Array_RTE_Send[3][8]={"Omar","Maher","Khedr"};
+uint8 Array_RTE_Receive[24]={0};
 
 void Init_Task(void)
 {
@@ -34,7 +36,7 @@ void Init_Task(void)
     /***************************************************************************************
      * Initialize the Com Module
      ****************************************************************************************/
-     Com_Init(&Com);
+    Com_Init(&Com);
 
     /***************************************************************************************
      * Enable the CAN for operation.
@@ -47,8 +49,22 @@ void Init_Task(void)
 
     Can_DisableControllerInterrupts(CAN0_CONTROLLER_ID);
     Can_EnableControllerInterrupts(CAN0_CONTROLLER_ID);
+
+    unsigned char i=0;
+    for (i=0;i<8;i++)
+    {
+        Com_SendSignal(i, &Array_RTE_Send[0][i]);
+    }
+    for (i=8;i<16;i++)
+    {
+        Com_SendSignal(i, &Array_RTE_Send[1][i-8]);
+    }
+    for (i=16;i<24;i++)
+    {
+        Com_SendSignal(i, &Array_RTE_Send[2][i-16]);
+    }
     /*Greeting Message*/
-    UART1_SendString("Welcome to CAN Network\nPress: \n[1] Send to Computer (2)\n[2] Send to Computer (3)\n[3] Send to Both (2 & 3)\n[4]Read Recieved Messages\n");
+    //UART1_SendString("Welcome to CAN Network\nPress: \n[1] Send to Computer (2)\n[2] Send to Computer (3)\n[3] Send to Both (2 & 3)\n[4]Read Recieved Messages\n");
 
 }
 

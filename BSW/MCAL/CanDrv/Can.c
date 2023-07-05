@@ -115,7 +115,7 @@ STATIC Std_ReturnType Can_Started_State(uint8 Controller)
              * Can_SetControllerMode shall be left and the function Can_Mainfunction_Mode shall
              * continue to poll the flag.
              */
-            while (BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT) || ((End - Start)<(TMILLI*CAN_TIMEOUT_DURATION)))
+            while (BIT_IS_SET(REG_VAL(CAN0_BASE,CAN_STS_OFFSET),BOFF_BIT) && ((End - Start)<(TMILLI*CAN_TIMEOUT_DURATION)))
             {
                 End = g_Time_Tick_Count;
             }

@@ -49,7 +49,7 @@ void SysTick_Handler(void)
 void SysTick_Start(uint16 Tick_Time)
 {
     SYSTICK_STCTRL_REG    = 0;                         /* Disable the SysTick Timer by Clear the ENABLE Bit */
-    SYSTICK_STRELOAD_REG  = 15999 * Tick_Time;         /* Set the Reload value to count n miliseconds */
+    SYSTICK_STRELOAD_REG  = 15999999;                  /* Set the Reload value to count n miliseconds */
     SYSTICK_STCURRENT_REG = 0;                         /* Clear the Current Register value */
     /* Configure the SysTick Control Register
      * Enable the SysTick Timer (ENABLE = 1)
