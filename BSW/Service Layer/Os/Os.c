@@ -12,7 +12,7 @@
 #include "Os.h"
 
 /* Global variable store the Os Time */
-volatile uint8 g_Time_Tick_Count = 0;
+volatile uint32 g_Time_Tick_Count = 0;
 
 /* Global variable to indicate the the timer has a new tick */
 static uint8 g_New_Time_Tick_Flag = 0;
@@ -134,14 +134,14 @@ void Os_Scheduler(void)
             {
                 Com_ReceiveSignal(i, &Array_RTE_Receive[i]);
                 UARTCharPut(0x4000D000, Array_RTE_Receive[i]);
-
             }
             UARTCharPut(0x4000D000,'\n');
+            //g_New_Time_Tick_Flag = 0;
 
             switch(g_Time_Tick_Count)
             {
 
-            case (uint8)(ComTxTimeBase*1000):
+            case (uint32)(1*1000):
                    if(ComTxTimeBase == ComRxTimeBase)
                    {
                        Com_MainFunctionTx();
