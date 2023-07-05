@@ -141,7 +141,7 @@ void Os_Scheduler(void)
             switch(g_Time_Tick_Count)
             {
 
-            case (uint32)(1*1000):
+            case (uint32)(ComTxTimeBase*1000):
                    if(ComTxTimeBase == ComRxTimeBase)
                    {
                        Com_MainFunctionTx();

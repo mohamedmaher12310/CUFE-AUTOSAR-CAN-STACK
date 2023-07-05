@@ -94,7 +94,7 @@
  * module to internal implementation specific counter or tick values. The
  * COM module's internal timing handling is implementation specific.
  */
-#define ComRxTimeBase                           (float64)0.01
+#define ComRxTimeBase                           (float64)1.0
 
 /* The period between successive calls to Com_MainFunctionTx in seconds.
  * This parameter may be used by the COM generator to transform the values of the transmission
@@ -103,7 +103,7 @@
  * COM module's internal timing handling is implementation specific.
  */
                                                  /*called every 10 ms*/
-#define ComTxTimeBase                           (float64)0.01
+#define ComTxTimeBase                           (float64)1.0
 
 /*******************************************************************************
  *                      Definitions used in Module                             *
@@ -114,9 +114,9 @@
 #define PDU_LEN_IN_BYTES                                (uint8)8
 #define ComMinimumDelayTime_Value                       (float32)0.005
 #define ComTxIPduUnusedAreasDefault_Value               (uint8)0xFF
-#define ComTxModeTimePeriod_Value_0                     (float32)0.02
-#define ComTxModeTimePeriod_Value_1                     (float32)0.04
-#define ComTxModeTimePeriod_Value_2                     (float32)0.06
+#define ComTxModeTimePeriod_Value_0                     (float32)2
+#define ComTxModeTimePeriod_Value_1                     (float32)4
+#define ComTxModeTimePeriod_Value_2                     (float32)6
 /*calculated from least common factor of ComTxModeTimePeriod_Value_0 & ComTxModeTimePeriod_Value_1 & ComTxModeTimePeriod_Value_2 */
 #define ComTxModeTimePeriod_max_Value                   (float32)0.12
 #define ComTimeout_Value                                (float32)0.125
