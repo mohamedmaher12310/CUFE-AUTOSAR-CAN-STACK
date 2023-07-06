@@ -135,6 +135,10 @@ void Os_Scheduler(void)
                 Com_ReceiveSignal(i, &Array_RTE_Receive[i]);
                 UARTCharPut(0x4000D000, Array_RTE_Receive[i]);
             }
+//            for(i=0 ; i<24 ; i++)
+//            {
+//                SignalObject[i] = 0;
+//            }
             UARTCharPut(0x4000D000,'\n');
             //g_New_Time_Tick_Flag = 0;
 

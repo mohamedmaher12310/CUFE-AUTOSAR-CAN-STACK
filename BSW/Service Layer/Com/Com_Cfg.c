@@ -64,9 +64,9 @@ const Com_ConfigType Com = {
                             },
                             .ComIPdu[ONE] = {
                                            //                                        .ComIPduCallout = &,
-                                           .ComIPduDirection = SEND,
+                                           .ComIPduDirection = RECIEVE,
                                            .ComIPduHandleId = ONE,
-                                           .ComIPduSignalProcessing = IMMEDIATE,
+                                           .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
                                            .ComIPduSignalRef[ONE] = (ComSignal*)&Com.ComSignal[EIGHT],
