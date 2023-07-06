@@ -89,7 +89,8 @@
 #define CLRINTPND_BIT   (3U) /*Clear Interrupt Pending Bit*/
 #define DATAA_BIT       (1U) /*Access Data Byte 0 to 3*/
 #define DATAB_BIT       (0U) /*Access Data Byte 4 to 7*/
-#define NEWDAT_BIT_MASK (uint32)0x000000040
+#define NEWDAT_BIT_MASK (uint32)0x00000004
+#define CMSK_NEWDAT_BIT (2U)
 
 /* CANIFnMSK2 Registers*/
 #define MXTD_BIT        (15U) /*Mask Extended Identifier*/

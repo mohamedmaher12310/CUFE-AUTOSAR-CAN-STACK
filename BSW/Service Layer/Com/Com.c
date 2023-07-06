@@ -339,7 +339,7 @@ void Com_MainFunctionTx(void)
                     {
                         /*Com_MainFunctionTx period mod pdu period  */
                         /*if true this pdu its periodocity came and must be concatenated to be sent*/
-                        if((uint8)(g_tick*ComTxTimeBase*THOUSAND)%(uint8)((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND) == 0 )
+                        if((uint32)(g_tick*ComTxTimeBase*THOUSAND)%(uint32)((Com.ComIPdu[pdu_counter].ComTxIPdu.ComTxMode.ComTxModeTimePeriod)*THOUSAND) == 0 )
                         {
                             Pdu_Concatnate(pdu_counter);
                             PduR_ComTransmit( Com.ComIPdu[pdu_counter].ComIPduHandleId, &PDU[pdu_counter]);

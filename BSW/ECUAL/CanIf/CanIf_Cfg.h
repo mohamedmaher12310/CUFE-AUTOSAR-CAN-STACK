@@ -159,7 +159,7 @@
  * CAN L-PDU transmission.
  */
 #define CanIfTxPduCanId_0       (0b00000000001)
-#define CanIfTxPduCanId_1       (0b00000000000)
+#define CanIfTxPduCanId_1       (0b00000000001)
 
 /*
  * Identifier mask which denotes relevant bits in the CAN Identifier. This

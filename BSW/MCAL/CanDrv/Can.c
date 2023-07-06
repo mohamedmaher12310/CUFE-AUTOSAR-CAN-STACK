@@ -569,7 +569,7 @@ void Can_Init(const Can_ConfigType* Config)
          * Set NEWDAT to clear the NEWDAT bit in the CANNWDAn register
          */
         SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),CLRINTPND_BIT);
-        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),NEWDAT_BIT);
+        SET_BIT(REG_VAL(CAN0_BASE,CAN_IF1CMSK_OFFSET),CMSK_NEWDAT_BIT);
 
         /* Loop through to program all configured HOH */
         uint8 iter;
