@@ -163,7 +163,7 @@
 #define CAN_HOH_COUNT_0             (uint32)3
 #define CAN_HOH_COUNT_1             (uint32)1
 #define CAN_HOH_COUNT_2             (uint32)1
-#define CAN_HOH_COUNT_3             (uint32)1
+#define CAN_HOH_COUNT_3             (uint32)3
 #define CAN_HOH_COUNT_4             (uint32)1
 
 /*
@@ -194,11 +194,11 @@
 /*
  * Specifies if the HardwareObject is used as Transmit or as Receive object
  */
-#define CAN_HOH_TYPE_0                           (CanObjectType)RECIEVE
+#define CAN_HOH_TYPE_0                           (CanObjectType)TRANSMIT
 #define CAN_HOH_TYPE_1                           (CanObjectType)TRANSMIT
-#define CAN_HOH_TYPE_2                           (CanObjectType)RECIEVE
-#define CAN_HOH_TYPE_3                           (CanObjectType)TRANSMIT
-#define CAN_HOH_TYPE_4                           (CanObjectType)TRANSMIT
+#define CAN_HOH_TYPE_2                           (CanObjectType)TRANSMIT
+#define CAN_HOH_TYPE_3                           (CanObjectType)RECIEVE
+#define CAN_HOH_TYPE_4                           (CanObjectType)RECIEVE
 
 /*
  * Reference to CAN Controller to which the HOH is associated to.
@@ -245,4 +245,8 @@
  */
 #define CAN_MAIN_FUNCTION_PERIOD            (float32)0.02/*to handle the time of Com_MainFunction(0.01 sec)*/
 
+/***********************************Mailbox Configurations**********************************************/
+
+/*Maximum Number of Mailboxes*/
+#define Max_Mailbox_Count                       (uint8)32
 #endif /* CAN_CFG_H_ */

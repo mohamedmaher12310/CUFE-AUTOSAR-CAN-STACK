@@ -56,22 +56,22 @@ const CanIf_ConfigType CanIf_Configuration =
     {
      {
       .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
+      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_0]
+     },
+     {
+      .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
       .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_1]
      },
      {
       .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_3]
-     },
-     {
-      .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_4]
+      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_2]
      }
     },
     .CanIfHrhCfg =
     {
      {
       .CanIfHrhCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_0],
+      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_3],
       .CanIfHrhSoftwareFilter=TRUE,
       .CanIfHrhRangeCfg=
       {
@@ -81,7 +81,7 @@ const CanIf_ConfigType CanIf_Configuration =
      },
      {
       .CanIfHrhCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_2],
+      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_4],
       .CanIfHrhSoftwareFilter=TRUE,
       .CanIfHrhRangeCfg=
       {
@@ -119,7 +119,21 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIfTxPduType = CanIfTxPduType_1,
     .CanIfTxPduUserTxConfirmationUL = CanIfTxPduUserTxConfirmationUL_1,
     .CanIfTxPduBufferRef = (CanIfBufferCfg*)&CanIf_Configuration.CanIfInitCfg.CanIfBufferCfg[HTH1_ID]
-   }
+   },
+   {
+       .CanIfTxPduCanId = CanIfTxPduCanId_2,
+       .CanIfTxPduCanIdMask = CanIfTxPduCanIdMask_2,
+       .CanIfTxPduCanIdType = CanIfTxPduCanIdType_2,
+       .CanIfTxPduId = CanIfTxPduId_2,
+   #if(STD_ON == CanIfPublicReadTxPduNotifyStatusApi)
+       .CanIfTxPduReadNotifyStatus=FALSE,
+   #endif /*CanIfPublicReadTxPduNotifyStatusApi */
+       .CanIfTxPduTruncation = FALSE,
+       .CanIfTxPduType = CanIfTxPduType_2,
+       .CanIfTxPduUserTxConfirmationUL = CanIfTxPduUserTxConfirmationUL_2,
+       .CanIfTxPduBufferRef = (CanIfBufferCfg*)&CanIf_Configuration.CanIfInitCfg.CanIfBufferCfg[HTH2_ID]
+      }
+
   },
   .CanIfRxPduCfg =
   {

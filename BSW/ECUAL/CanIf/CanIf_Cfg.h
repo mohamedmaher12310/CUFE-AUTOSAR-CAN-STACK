@@ -148,18 +148,20 @@
  * Maximum number of Pdus. This parameter is needed only in case of
  * post-build loadable implementation using static memory allocation.
  */
-#define CanIfMaxTxPduCfg                   (2U)
+#define CanIfMaxTxPduCfg                   (3U)
 
 /*ECU wide unique, symbolic handle for transmit CAN L-SDU.*/
 #define CanIfTxPduId_0          (0U)
 #define CanIfTxPduId_1          (1U)
+#define CanIfTxPduId_2          (2U)
 
 /*
  * CAN Identifier of transmit CAN L-PDUs used by the CAN Driver for
  * CAN L-PDU transmission.
  */
 #define CanIfTxPduCanId_0       (0b00000000001)
-#define CanIfTxPduCanId_1       (0b00000000001)
+#define CanIfTxPduCanId_1       (0b00000000010)
+#define CanIfTxPduCanId_2       (0b00000000011)
 
 /*
  * Identifier mask which denotes relevant bits in the CAN Identifier. This
@@ -168,6 +170,7 @@
  */
 #define CanIfTxPduCanIdMask_0   0x0
 #define CanIfTxPduCanIdMask_1   0x0
+#define CanIfTxPduCanIdMask_2   0x0
 
 /*
  * Type of CAN Identifier of the transmit CAN L-PDU used by the CAN
@@ -175,10 +178,12 @@
  */
 #define CanIfTxPduCanIdType_0  (CanIfTxPduCanIdType)STANDARD_CAN
 #define CanIfTxPduCanIdType_1  (CanIfTxPduCanIdType)STANDARD_CAN
+#define CanIfTxPduCanIdType_2  (CanIfTxPduCanIdType)STANDARD_CAN
 
 /* Defines the type of each transmit CAN L-PDU.*/
 #define CanIfTxPduType_0       (CanIfTxPduType)STATIC_ID
 #define CanIfTxPduType_1       (CanIfTxPduType)STATIC_ID
+#define CanIfTxPduType_2       (CanIfTxPduType)STATIC_ID
 
 /*
  * This parameter defines the upper layer (UL) module to which the
@@ -192,6 +197,7 @@
  */
 #define CanIfTxPduUserTxConfirmationUL_0       (CanIfUser)PDUR
 #define CanIfTxPduUserTxConfirmationUL_1       (CanIfUser)PDUR
+#define CanIfTxPduUserTxConfirmationUL_2       (CanIfUser)PDUR
 
 /************************CanIfRxPduCfg Container*******************************/
 
