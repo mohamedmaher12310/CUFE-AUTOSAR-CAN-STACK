@@ -245,4 +245,8 @@
  */
 #define CAN_MAIN_FUNCTION_PERIOD            (float32)0.02/*to handle the time of Com_MainFunction(0.01 sec)*/
 
+/**********************************Mailbox Configurations***************************/
+/* Maximum Number of Mailboxes*/
+#define Max_Mailbox_Count                   (32U)
+
 #endif /* CAN_CFG_H_ */

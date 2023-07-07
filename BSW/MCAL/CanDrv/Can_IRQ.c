@@ -15,7 +15,7 @@
 #include "../../ECUAL/CanIf/CanIf_Cbk.h"
 
 volatile boolean MSG_Object_INT_Flag = 0; /* flag to indicate occurrence of interrupt due to message object */
-volatile uint8 MSG_Number_INT[32] = {0};  /* variable to store the message object number that caused the interrupt */
+volatile uint8 MSG_Number_INT[Max_Mailbox_Count] = {0};  /* variable to store the message object number that caused the interrupt */
 volatile boolean Error_Flag = 0; /* flag to detect an error interrupt has occurred */
 volatile uint8 Error_Status = 0; /* variable to store the error status */
 volatile uint32 Recieve_Count =0; /* variable that increments when a message is received*/

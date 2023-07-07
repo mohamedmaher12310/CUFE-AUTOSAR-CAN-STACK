@@ -431,7 +431,7 @@ uint8 Can_MessageReceive(uint32 Controller_ID, Can_HwHandleType MessageObj_Num, 
 
         Data_REG = (CAN_IF1DA1_OFFSET);
 
-        STATIC uint8 data_ptr[32][ONE_BYTE_DATA] = {INIT_VAL_ZERO};
+        STATIC uint8 data_ptr[Max_Mailbox_Count][ONE_BYTE_DATA] = {INIT_VAL_ZERO};
 
         for(Data_Index = INIT_VAL_ZERO; Data_Index < Message->length ;)
         {
