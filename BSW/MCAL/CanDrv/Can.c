@@ -431,23 +431,23 @@ uint8 Can_MessageReceive(uint32 Controller_ID, Can_HwHandleType MessageObj_Num, 
 
         Data_REG = (CAN_IF1DA1_OFFSET);
 
-        static uint8 data_ptr[ONE_BYTE_DATA] = {INIT_VAL_ZERO};
+        STATIC uint8 data_ptr[32][ONE_BYTE_DATA] = {INIT_VAL_ZERO};
 
         for(Data_Index = INIT_VAL_ZERO; Data_Index < Message->length ;)
         {
             Data_Value = REG_VAL(CAN0_BASE,Data_REG);
             Data_REG+=FOUR_BYTES;
-            data_ptr[Data_Index++] = (uint8)Data_Value;
+            data_ptr[MessageObj_Num-ONE_VALUE][Data_Index++] = (uint8)Data_Value;
             if(Data_Index < Message->length)
             {
-                data_ptr[Data_Index++] = (uint8)(Data_Value >> SHIFT_EIGHT_BITS);
+                data_ptr[MessageObj_Num-ONE_VALUE][Data_Index++] = (uint8)(Data_Value >> SHIFT_EIGHT_BITS);
             }
             else
             {
                 /*Misra*/
             }
         }
-        Message->sdu = data_ptr;
+        Message->sdu = data_ptr[MessageObj_Num-ONE_VALUE];
         /*
          * Setting The value of New data bit to indicate new message
          */

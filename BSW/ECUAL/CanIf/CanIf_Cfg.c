@@ -56,11 +56,11 @@ const CanIf_ConfigType CanIf_Configuration =
     {
      {
       .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_1]
+      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_3]
      },
      {
       .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_3]
+      .CanIfHthIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_4]
      },
      {
       .CanIfHthCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
@@ -81,12 +81,22 @@ const CanIf_ConfigType CanIf_Configuration =
      },
      {
       .CanIfHrhCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
-      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_2],
+      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_1],
       .CanIfHrhSoftwareFilter=TRUE,
       .CanIfHrhRangeCfg=
       {
        .CanIfHrhRangeRxPduLowerCanId=CanIfHrhRangeRxPduLowerCanId_1,
        .CanIfHrhRangeRxPduUpperCanId=CanIfHrhRangeRxPduUpperCanId_1
+      }
+     },
+     {
+      .CanIfHrhCanCtrlIdRef = (CanIfCtrlCfg*)&CanIf_Configuration.CanIfCtrlDrvCfg.CanIfCtrlCfg[CAN0_CONTROLLER_ID],
+      .CanIfHrhIdSymRef = &Can_Configuration.CanConfigSet.CanHardwareObject[CAN_HOH_ID_2],
+      .CanIfHrhSoftwareFilter=TRUE,
+      .CanIfHrhRangeCfg=
+      {
+       .CanIfHrhRangeRxPduLowerCanId=CanIfHrhRangeRxPduLowerCanId_2,
+       .CanIfHrhRangeRxPduUpperCanId=CanIfHrhRangeRxPduUpperCanId_2
       }
      }
     }
@@ -152,6 +162,21 @@ const CanIf_ConfigType CanIf_Configuration =
     .CanIf_RxPduReadData=TRUE,
 #endif /*CanIfPublicReadRxPduDataApi*/
     .CanIfRxPduUserRxIndicationName=CanIfRxPduUserRxIndicationName_1
+   },
+   {
+    .CanIfRxPduCanId = CanIfRxPduCanId_2,
+    .CanIfRxPduCanIdMask =CanIfRxPduCanIdMask_2,
+    .CanIfRxPduHrhIdRef= (CanIfHrhCfg*)&CanIf_Configuration.CanIfInitCfg.CanIfInitHohCfg[CAN_INSTANCE_ID].CanIfHrhCfg[HRH0_ID],
+#if(STD_ON == CanIfPublicReadRxPduNotifyStatusApi)
+    .CanIf_RxPduReadNotifyStatus=TRUE,
+#endif /*CanIfPublicReadRxPduNotifyStatusApi */
+    .CanIfRxPduCanIdType = STANDARD_CAN_Rx,
+    .CanIfRxPduId = CanIfRxPduId_2,
+    .CanIfRxPduDataLength=CanIfRxPduDataLength_2,
+#if(STD_ON == CanIfPublicReadRxPduDataApi)
+    .CanIf_RxPduReadData=TRUE,
+#endif /*CanIfPublicReadRxPduDataApi*/
+    .CanIfRxPduUserRxIndicationName=CanIfRxPduUserRxIndicationName_2
    }
   }
  }

@@ -127,10 +127,11 @@
 
 /************************CanIfHrhCfg Container*******************************/
 /* Number of configured HRH*/
-#define HRH_NUMBER                         (2U)
+#define HRH_NUMBER                         (3U)
 /*HRH Index numbers*/
 #define HRH0_ID                            (0U)
 #define HRH1_ID                            (1U)
+#define HRH2_ID                            (2U)
 
 /************************CanIfHthCfg Container*******************************/
 /* Number of configured HTH*/
@@ -199,7 +200,7 @@
  * Maximum number of Pdus. This parameter is needed only in case of
  * post-build loadable implementation using static memory allocation.
  */
-#define CanIfMaxRxPduCfg                         (2U)
+#define CanIfMaxRxPduCfg                         (3U)
 
 /*
  * ECU wide unique, symbolic handle for receive CAN L-SDU. It shall
@@ -208,6 +209,7 @@
  */
 #define CanIfRxPduId_0            (0U)
 #define CanIfRxPduId_1            (1U)
+#define CanIfRxPduId_2            (2U)
 
 /*
  * Identifier mask which denotes relevant bits in the CAN Identifier. This
@@ -218,6 +220,7 @@
  */
 #define CanIfRxPduCanIdMask_0   (0b11111111111)
 #define CanIfRxPduCanIdMask_1   (0b11111111111)
+#define CanIfRxPduCanIdMask_2   (0b11111111111)
 
 /*
  * CAN Identifier of Receive CAN L-PDUs used by the CAN Interface.
@@ -225,16 +228,20 @@
  * Identifier is assigned to the Pdu. If a range is assigned then the
  * CanIfRxPduCanIdRange parameter shall be used.
  */
-#define CanIfRxPduCanId_0       (0b00000000011)
-#define CanIfRxPduCanId_1       (0b00000000001)
+#define CanIfRxPduCanId_0       (0b00000000001)
+#define CanIfRxPduCanId_1       (0b00000000010)
+#define CanIfRxPduCanId_2       (0b00000000011)
+
 
 /*This parameter defines the name of the <User_RxIndication>.*/
 #define CanIfRxPduUserRxIndicationName_0          (CanIfUser)(PDUR)
 #define CanIfRxPduUserRxIndicationName_1          (CanIfUser)(PDUR)
+#define CanIfRxPduUserRxIndicationName_2          (CanIfUser)(PDUR)
 
 /*Data length of the received CAN L-PDUs used by the CAN Interface.*/
 #define CanIfRxPduDataLength_0                    (8U)
 #define CanIfRxPduDataLength_1                    (8U)
+#define CanIfRxPduDataLength_2                    (8U)
 
 
 /************************CanIfCtrlCfg Container*******************************/
@@ -258,6 +265,7 @@
  */
 #define CanIfHrhRangeRxPduLowerCanId_0              (0b00000000000)
 #define CanIfHrhRangeRxPduLowerCanId_1              (0b00000000000)
+#define CanIfHrhRangeRxPduLowerCanId_2              (0b00000000000)
 
 /*
  * Upper CAN Identifier of a receive CAN L-PDU for identifier range
@@ -265,6 +273,7 @@
  */
 #define CanIfHrhRangeRxPduUpperCanId_0              (0b11111111111)
 #define CanIfHrhRangeRxPduUpperCanId_1              (0b11111111111)
+#define CanIfHrhRangeRxPduUpperCanId_2              (0b11111111111)
 
 /*
  * Selects the hardware receive objects by using the HRH range/list from
@@ -275,6 +284,7 @@
  */
 #define CanIfHrhSoftwareFilter_0       (STD_ON)
 #define CanIfHrhSoftwareFilter_1       (STD_ON)
+#define CanIfHrhSoftwareFilter_2       (STD_ON)
 
 
 

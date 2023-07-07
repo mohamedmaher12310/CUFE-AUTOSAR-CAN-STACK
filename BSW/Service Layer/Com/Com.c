@@ -415,22 +415,27 @@ void Com_MainFunctionRx(void)
     }
     else
     {
-
-        if(check_flag == 1)
+        uint8 iter2=0;
+        for (iter2 = 0 ; iter2 < ComMaxIPduCnt ; iter2 ++)
         {
-            check_flag=0;
-            uint8 signal_index_in_signal_buffer=Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[PDU_INDEX]->ComHandleId;
-            signal_per_pdu=Com.ComIPdu[PDU_INDEX].ComIPduSignalRef[PDU_INDEX];
-            for(iter=0;iter<PDU[PDU_INDEX].SduLength;iter++){
-                SignalObject[signal_index_in_signal_buffer+iter]=(PDU[PDU_INDEX].SduDataPtr)[iter];
-                NotficationAdress= signal_per_pdu->ComNotification;
-                NotficationAdress();
-                signal_per_pdu++;
+            if(check_flag[iter2] == 1)
+            {
+                check_flag[iter2]=0;
+                uint8 signal_index_in_signal_buffer=Com.ComIPdu[iter2].ComIPduSignalRef[iter2]->ComHandleId;
+                signal_per_pdu=Com.ComIPdu[iter2].ComIPduSignalRef[iter2];
+                for(iter=0;iter<PDU[iter2].SduLength;iter++)
+                {
+                    SignalObject[signal_index_in_signal_buffer+iter]=(PDU[iter2].SduDataPtr)[iter];
+                    NotficationAdress= signal_per_pdu->ComNotification;
+                    NotficationAdress();
+                    signal_per_pdu++;
+                }
+
             }
+            else    /*CHECK FLAG NOT SET*/
+            {
 
-        }
-        else    /*CHECK FLAG NOT SET*/
-        {
+            }
 
         }
     }

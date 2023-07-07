@@ -24,16 +24,16 @@ volatile uint32 Transmit_Count =0; /* variable that increments when a message is
 /* Data Normalization */
 extern Can_PduType Temp_Buffer;
 
-
 void CAN0_Handler(void)
 {
     uint8 HOH;
     /*CanIf_RxIndication Arguments*/
     Can_HwType CanIfRx_Mailbox;
     PduInfoType CanIfRx_PduInfoPtr;
+    uint32 status;
 
     MSG_Object_INT_Flag=0;  /* clearing the message object flag for re-use */
-    uint32 status = REG_VAL(CAN0_BASE,CAN_INT_OFFSET);  /* reading the CAN_INT register to detect the interrupt cause */
+    status = REG_VAL(CAN0_BASE,CAN_INT_OFFSET);  /* reading the CAN_INT register to detect the interrupt cause */
     if (STATUS_INTERRUPT == status )  /* if interrupt is a Status interrupt */
     {
         Error_Status = REG_VAL(CAN0_BASE,CAN_STS_OFFSET);  /* store the status register in a variable */

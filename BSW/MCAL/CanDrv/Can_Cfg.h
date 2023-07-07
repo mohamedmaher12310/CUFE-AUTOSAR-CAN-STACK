@@ -195,7 +195,7 @@
  * Specifies if the HardwareObject is used as Transmit or as Receive object
  */
 #define CAN_HOH_TYPE_0                           (CanObjectType)RECIEVE
-#define CAN_HOH_TYPE_1                           (CanObjectType)TRANSMIT
+#define CAN_HOH_TYPE_1                           (CanObjectType)RECIEVE
 #define CAN_HOH_TYPE_2                           (CanObjectType)RECIEVE
 #define CAN_HOH_TYPE_3                           (CanObjectType)TRANSMIT
 #define CAN_HOH_TYPE_4                           (CanObjectType)TRANSMIT

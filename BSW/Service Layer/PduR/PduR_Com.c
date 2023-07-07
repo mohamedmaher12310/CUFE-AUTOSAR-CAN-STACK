@@ -14,7 +14,7 @@
 
 #include "PduR_Com.h"
 
-uint8 check_flag=0;
+uint8 check_flag[ComMaxIPduCnt]={0};
 
 /************************************************************************************
  * Service Name: Com_RxIndication
@@ -74,7 +74,7 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr)
             if( DEFERRED == Com.ComIPdu[RxPduId].ComIPduSignalProcessing)
             {
                 PDU_INDEX=RxPduId;
-                check_flag = 1;
+                check_flag[PDU_INDEX] = 1;
             }
             else    /*immediate*/
             {

@@ -417,4 +417,6 @@ extern volatile uint8 Error_Status ;
 extern volatile uint32 Recieve_Count ;
 extern volatile uint32 Transmit_Count ;
 extern volatile uint32 g_Time_Tick_Count;
+extern volatile uint32 Read_write_clear_tick ;
+
 #endif /* CAN_H_ */

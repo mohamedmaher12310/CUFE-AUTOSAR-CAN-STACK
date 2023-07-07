@@ -21,11 +21,7 @@
 #include "BSW/Service Layer/PduR/PduR.h"
 #include "BSW/Service Layer/PduR/PduR_Com.h"
 #include "BSW/Service Layer/Com/Com.h"
-#define EIGHT_BYTES     (8U)
-Can_PduType Temp_Buffer;
 
-//uint8 Array_RTE_Send[3][8]={"Omar","Maher","Khedr"};
-//uint8 Array_RTE_Receive[24]={0};
 int main(void)
     {
     Os_start();

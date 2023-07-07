@@ -46,7 +46,7 @@ void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
-extern uint8 check_flag;
+extern uint8 check_flag[ComMaxIPduCnt];
 
 
 

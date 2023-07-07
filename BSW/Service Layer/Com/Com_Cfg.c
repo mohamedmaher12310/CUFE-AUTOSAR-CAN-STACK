@@ -46,7 +46,7 @@ const Com_ConfigType Com = {
                                            //                                        .ComIPduCallout = &,
                                            .ComIPduDirection = RECIEVE,
                                            .ComIPduHandleId = ZERO,
-                                           .ComIPduSignalProcessing = IMMEDIATE,
+                                           .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
                                            .ComIPduType = NORMAL,
                                            .ComIPduSignalRef[ZERO] = (ComSignal*)&Com.ComSignal[ZERO],
