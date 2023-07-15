@@ -2,7 +2,7 @@
 
 void UART_INIT(void)
 {
- uint8 delay;
+ volatile uint8 delay;
  /* Enabling the UART 1 module clock */
  REG_VAL(0x400FE000,0x618)= 0x00000002;
  delay=REG_VAL(0x400FE000,0x618);

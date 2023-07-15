@@ -44,7 +44,7 @@
 const Com_ConfigType Com = {
                             .ComIPdu[ZERO] = {
                                            //                                        .ComIPduCallout = &,
-                                           .ComIPduDirection = RECIEVE,
+                                           .ComIPduDirection = RECEIVE,
                                            .ComIPduHandleId = ZERO,
                                            .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
@@ -64,7 +64,7 @@ const Com_ConfigType Com = {
                             },
                             .ComIPdu[ONE] = {
                                            //                                        .ComIPduCallout = &,
-                                           .ComIPduDirection = RECIEVE,
+                                           .ComIPduDirection = RECEIVE,
                                            .ComIPduHandleId = ONE,
                                            .ComIPduSignalProcessing = DEFERRED,
                                            //                                        .ComIPduTriggerTransmitCallout,
