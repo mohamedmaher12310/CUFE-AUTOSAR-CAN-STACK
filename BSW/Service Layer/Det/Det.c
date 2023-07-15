@@ -16,10 +16,10 @@ Std_ReturnType Det_ReportError( uint16 ModuleId,
                       uint8 ApiId,
                       uint8 ErrorId )
 {
-    while(1)
-    {
-
-    }
+//    while(1)
+//    {
+//
+//    }
     return E_OK;
 }
 

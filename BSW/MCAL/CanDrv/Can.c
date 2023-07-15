@@ -447,7 +447,7 @@ uint8 Can_MessageReceive(uint32 Controller_ID, Can_HwHandleType MessageObj_Num, 
                 /*Misra*/
             }
         }
-        Message->sdu = data_ptr;
+        Message->sdu = data_ptr[MessageObj_Num-ONE_VALUE];
         /*
          * Setting The value of New data bit to indicate new message
          */

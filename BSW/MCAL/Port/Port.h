@@ -279,9 +279,15 @@ extern void Port_SetPinMode
 #define PORTE                   (uint8)4
 #define PORTF                   (uint8)5
 /* Some Used Numbers*/
+#ifndef ZERO
 #define ZERO                    (uint8)0
+#endif
+#ifndef ONE
 #define ONE                     (uint8)1
+#endif
+#ifndef FOUR
 #define FOUR                    (uint8)4
+#endif
 /* PINs numbers*/
 #define PIN0                    (uint8)0
 #define PIN1                    (uint8)1

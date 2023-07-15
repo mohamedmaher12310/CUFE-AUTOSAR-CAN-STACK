@@ -221,11 +221,19 @@ extern Com_StatusType ComCurrent_State;
 /*******************************************************************************
  *                       NUMBERS USED                                    *
  *******************************************************************************/
+#ifndef ZERO
 #define ZERO            (0u)
+#endif
+#ifndef ONE
 #define ONE             (1u)
-#define TWO             (2u)
-#define THREE           (3u)
+#endif
+#ifndef FOUR
 #define FOUR            (4u)
+#endif
+#ifndef TWO
+#define TWO             (2u)
+#endif
+#define THREE           (3u)
 #define FIVE            (5u)
 #define SIX             (6u)
 #define SEVEN           (7u)
