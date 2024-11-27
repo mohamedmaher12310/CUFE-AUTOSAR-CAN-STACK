@@ -2,26 +2,16 @@
 
 
 <div align="center">
-
-  <img src="https://d9s1543upwp3n.cloudfront.net/wp-content/uploads/2023/04/AI-generated-car-design-scaled.jpeg" alt="logo" width="2580" height="400" />
   <h1> CUFE-AUTOSAR-COMMUNICATION-STACK</h1>
   
+  ![Logo](https://github.com/user-attachments/assets/4e13fc55-d45e-4dff-83a0-c5f8e6e59cbe)
+
   <p>
    CAN Stack - AUTOSAR Layered Software Architecture V4.3.1 - Cairo University
   </p>
 
   
 <!-- Badges -->
-
-<h4>
-    <a href="https://github.com/Louis3797/awesome-readme-template/">View Demo</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template">Documentation</a>
-  <span> · </span>
-    <a href="https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/issues">Report Bug</a>
-  <span> · </span>
-    <a href="https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/issues">Request Feature</a>
-  </h4>
 </div>
 
 <br />
@@ -30,10 +20,10 @@
 # :notebook_with_decorative_cover: Table of Contents
 
 - [About the Project](#star2-about-the-project)
-  * [Layered AUTOSAR Architecture](##📥Layered-AUTOSAR-Architecture)
-  * [ASW](##💻ASWASW)
-  * [Implemented Modules](##🎯Implemented-Modules)
-- [Environment Variables](#key-Environment-Variables)
+  * [Layered AUTOSAR Architecture](📥Layered-AUTOSAR-Architecture)
+  * [ASW](💻ASW)
+  * [Implemented Modules](🎯Implemented-Modules)
+- [Environment Variables](#key-environment-variables)
 - [Contributing](#wave-contributing)
 - [License](#warning-license)
 - [Contact](#handshake-contact)
@@ -45,7 +35,12 @@
 
 This repository contains the implementation of a Communication Stack based on the AUTOSAR (AUTomotive Open System ARchitecture) Layered Software Architecture. The version used in this project is 4.3.1. This implementation was developed as part of a graduation project.
 <div align="center"> 
-  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
+
+  
+  ![Modules](https://github.com/user-attachments/assets/b3f5c949-abe0-43bb-9e20-787d858499fd)
+
+
+
 </div>
 
 
@@ -85,7 +80,7 @@ This repository contains the implementation of a Communication Stack based on th
 
 | Layer             | Module                                                             |
 | ----------------- | ------------------------------------------------------------------ |
-| Services Layer | [#COM Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Com)- [#PDUR Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/PduR) [#OS](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Os) [#Det](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Det)|
+| Services Layer | [#COM Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Com) - [#PDUR Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/PduR) - [#OS](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Os) - [#Det](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/Service%20Layer/Det)|
 | ECU Abstraction Layer | [#CANIF Module](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/ECUAL/CanIf)|
 |  MCAL Layer | [#CAN Driver](https://github.com/mohamedmaher12310/CUFE-AUTOSAR-CAN-STACK/tree/main/BSW/MCAL/CanDrv)|
 
@@ -103,7 +98,11 @@ To run this project, you will need to add the following environment variables to
 <!-- Roadmap -->
 ## :compass: Roadmap
 <div align="center"> 
-  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
+
+
+![Project Roadmap](https://github.com/user-attachments/assets/afa93e5a-a432-4ceb-83ca-84d4a7dda661)
+
+
 </div>
 
 <!-- Contributing -->
