@@ -20,7 +20,7 @@
 # :notebook_with_decorative_cover: Table of Contents
 
 - [About the Project](#star2-about-the-project)
-  * [Layered AUTOSAR Architecture](📥Layered-AUTOSAR-Architecture)
+  * [Layered AUTOSAR Architecture](📥layered-autosar-architecture)
   * [ASW](💻ASW)
   * [Implemented Modules](🎯Implemented-Modules)
 - [Environment Variables](#key-environment-variables)
