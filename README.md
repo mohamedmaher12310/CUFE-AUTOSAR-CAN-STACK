@@ -20,14 +20,15 @@
 # :notebook_with_decorative_cover: Table of Contents
 
 - [About the Project](#star2-about-the-project)
-  * [Layered AUTOSAR Architecture](layered-autosar-architecture)
-  * [ASW](💻ASW)
-  * [Implemented Modules](🎯Implemented-Modules)
+  - [Layered AUTOSAR Architecture](#layered-autosar-architecture)
+  - [ASW](#asw)
+  - [Implemented Modules](#implemented-modules)
 - [Environment Variables](#key-environment-variables)
 - [Contributing](#wave-contributing)
 - [License](#warning-license)
 - [Contact](#handshake-contact)
 - [Acknowledgements](#gem-acknowledgements)
+
   
 
 <!-- About the Project -->
@@ -43,9 +44,8 @@ This repository contains the implementation of a Communication Stack based on th
 
 </div>
 
-
 <!-- Layeres -->
-### 📥 Layered AUTOSAR Architecture
+### Layered AUTOSAR Architecture
 
 <details>
   <summary>Basic Software (BSW) Layer</summary>
@@ -71,12 +71,12 @@ This repository contains the implementation of a Communication Stack based on th
 </details>
 
 <!-- ASW -->
-### 💻 ASW
+### ASW
 
 - The Communication Stack is our Graduation Project and is implemented using Embedded C.
 
 <!--Implemented Modules -->
-### 🎯  Implemented Modules
+### Implemented Modules
 
 | Layer             | Module                                                             |
 | ----------------- | ------------------------------------------------------------------ |
